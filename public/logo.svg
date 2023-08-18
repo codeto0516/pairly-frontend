@@ -1,0 +1,24 @@
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" id="svg4978" viewBox="0 0 1024 768" height="768px" width="1024px" version="1.1">
+  <metadata id="metadata4984">
+    <rdf:rdf>
+      <cc:work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+      </cc:work>
+    </rdf:rdf>
+  </metadata>
+  <defs id="defs4982"></defs>
+  <g id="logo-group">
+    <g id="logo-center" transform="translate(136.39412500000003 0)">
+      <g id="slogan" style="font-style:normal;font-weight:700;font-size:32px;line-height:1;font-family:Brandmark1BoldColor;font-variant-ligatures:none;text-align:center;text-anchor:middle" transform="translate(0 0)"></g>
+      <g id="title" style="font-style:normal;font-weight:700;font-size:72px;line-height:1;font-family:Brandmark1BoldColor;font-variant-ligatures:normal;text-align:center;text-anchor:middle" transform="translate(0 0)">
+        <g xmlns="" id="path4987" aria-label="P" transform="translate(0 340) translate(50 -21.52000000000001) scale(2.3333333333333335) translate(-389.60506 53.64)"> <path class="c1" d="M115.22217,77.20288c-3.39844-3.50684-8.36035-5.28516-14.75391-5.28516H80.09033v56.16455h11.30469 V82.64673h8.4248c2.78711,0,5.01855,0.66211,6.44434,1.92236c1.41211,1.23145,2.125,3.11084,2.125,5.56592 c0,2.37646-0.69141,4.21973-2.05273,5.47998c-1.59863,1.47607-4.12598,2.2251-7.52441,2.2251h-1.89874v10.72852h2.47491 c2.92285,0,5.62305-0.35254,8.01367-1.04395c2.5498-0.7417,4.75977-1.87207,6.58203-3.36279 c1.92188-1.57666,3.40527-3.5498,4.40625-5.86816c1.00879-2.34033,1.51953-5.0332,1.51953-8.01465 C119.90967,84.89331,118.28955,80.37134,115.22217,77.20288z" transform="translate(309.51473 -125.55772)" stroke-width="0" stroke-linejoin="miter" stroke-miterlimit="2" fill="#fce4d6" stroke="#fce4d6"></path> </g>
+        <g xmlns="" id="path4989" aria-label="A" transform="translate(0 340) translate(143.25924999999995 -21.52000000000001) scale(2.3333333333333335) translate(-423.57331 53.64)"> <polygon class="c1" points="104.82788,71.91748 95.08569,71.91748 73.80786,128.08252 85.77515,128.08252 99.93921,89.14844 114.22534,128.08252 126.19214,128.08252 " transform="translate(349.76545 -125.55748)" stroke-width="0" stroke-linejoin="miter" stroke-miterlimit="2" fill="#fce4d6" stroke="#fce4d6"></polygon> <polygon class="c3" points="100.03819,128.08252 91.09854,114.24284 108.90146,114.24284 " transform="translate(349.76545 -125.55748)" stroke-width="0" stroke-linejoin="miter" stroke-miterlimit="2" fill="#7c6570" stroke="#7c6570"></polygon> </g>
+        <g xmlns="" id="path4991" aria-label="L" transform="translate(0 340) translate(284.06249999999994 -21.52000000000001) scale(2.3333333333333335) translate(-477.91756 53.64)"> <path class="c1" d="M81.71045,75.51782l11.30469-3.6001v45.43604h25.27441v10.72852h-36.5791V75.51782z" transform="translate(396.20711 -125.55772)" stroke-width="0" stroke-linejoin="miter" stroke-miterlimit="2" fill="#fce4d6" stroke="#fce4d6"></path> </g>
+        <g xmlns="" id="path4993" aria-label="L" transform="translate(0 340) translate(391.5781366666665 -21.52000000000001) scale(2.3333333333333335) translate(-517.99569 53.64)"> <path class="c1" d="M81.71045,75.51782l11.30469-3.6001v45.43604h25.27441v10.72852h-36.5791V75.51782z" transform="translate(436.28524 -125.55772)" stroke-width="0" stroke-linejoin="miter" stroke-miterlimit="2" fill="#fce4d6" stroke="#fce4d6"></path> </g>
+        <g xmlns="" id="path4995" aria-label="E" transform="translate(0 340) translate(499.09374999999983 -21.52000000000001) scale(2.3333333333333335) translate(-558.07381 53.64)"> <path class="c1" d="M81.8186,128.08252h36.36279v-10.51367H81.8186V128.08252z M81.8186,105.47217h36.36279v-10.729H81.8186 V105.47217z M81.8186,71.91748v10.729h36.36279v-10.729H81.8186z" transform="translate(476.25521 -125.55748)" stroke-width="0" stroke-linejoin="miter" stroke-miterlimit="2" fill="#fce4d6" stroke="#fce4d6"></path> </g>
+        <g xmlns="" id="path4997" aria-label="T" transform="translate(0 340) translate(603.09975 -21.52000000000001) scale(2.3333333333333335) translate(-596.64781 53.64)"> <path class="c1" d="M94.23975,82.64648H78.97412v-10.729h42.05176v10.729h-15.48145v45.43604H94.23975V82.64648z" transform="translate(517.6736900000001 -125.55748)" stroke-width="0" stroke-linejoin="miter" stroke-miterlimit="2" fill="#fce4d6" stroke="#fce4d6"></path> </g>
+      </g>
+    </g>
+  </g>
+</svg>
