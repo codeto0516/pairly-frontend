@@ -6,19 +6,13 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "next/link";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 // import { signIn } from "@/src/api/sessions";
 
 export const SignIn = () => {
-    const { data: session, status } = useSession();
     const router = useRouter();
-
-    if (status === "authenticated") {
-        router.push("/report");
-    }
 
     const [errorMessage, setErrorMessage] = useState<any>("");
     const handleErrorMessage = (errorMessage: any) => setErrorMessage(() => errorMessage);
@@ -28,67 +22,13 @@ export const SignIn = () => {
         const data = new FormData(event.currentTarget);
         const email = data.get("email");
         const password = data.get("password");
-        if (email && password) onSubmit(email.toString(), password.toString());
+        // if (email && password) onSubmit(email.toString(), password.toString());
     };
 
-    const onSubmit = async (email: string, password: string) => {
-        try {
-            const res = await signIn("credentials", {
-                email,
-                password,
-            });
 
-            if (res?.error) {
-                handleErrorMessage(res.error);
-            } else {
-                console.log("ログイン成功");
 
-                // router.push("/report");
-            }
-        } catch (err: any) {
-            // handleErrorMessage(err);
-            console.log(err);
-        }
-    };
 
-    // const onSubmit = async (email: FormDataEntryValue | null, password: FormDataEntryValue | null) => {
-    //     try {
-    //         await signIn("credentials", {
-    //             redirect: false,
-    //             email,
-    //             password,
-    //         }).then((res) => {
-    //             console.log(res);
 
-    //             if (res?.error) {
-    //                 handleErrorMessage(res.error);
-    //             } else {
-    //                 router.push("/");
-    //             }
-    //         });
-    //     } catch (err: any) {
-    //         // handleErrorMessage(err);
-    //         console.log(err);
-    //     }
-    // };
-
-    const googleAuth = async () => {
-        try {
-            await signIn("google", {
-                redirect: false,
-            }).then((res) => {
-                console.log(res);
-
-                if (res?.error) {
-                    handleErrorMessage(res.error);
-                } else {
-                    router.push("/");
-                }
-            });
-        } catch (err: any) {
-            console.log(err);
-        }
-    };
 
     return (
         <div

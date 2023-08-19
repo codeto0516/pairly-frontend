@@ -4,16 +4,11 @@ import Link from "next/link";
 import Logo from "@/src/components/layouts/Header/Logo";
 import { LoadingButton } from "@/src/components/elements/button/LoadingButton";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 export default function SignUp() {
-    const { data: session, status } = useSession();
 
     const router = useRouter();
 
-    if (status === "authenticated") {
-        router.push("/report");
-    }
 
     const handleSubmit = async () => {
         console.log("hello!");
