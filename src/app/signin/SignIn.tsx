@@ -10,8 +10,9 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+// import { signIn } from "@/src/api/sessions";
 
-export default function Page() {
+export const SignIn = () => {
     const { data: session, status } = useSession();
     const router = useRouter();
 
@@ -27,29 +28,49 @@ export default function Page() {
         const data = new FormData(event.currentTarget);
         const email = data.get("email");
         const password = data.get("password");
-        onSubmit(email, password);
+        if (email && password) onSubmit(email.toString(), password.toString());
     };
 
-    const onSubmit = async (email: FormDataEntryValue | null, password: FormDataEntryValue | null) => {
+    const onSubmit = async (email: string, password: string) => {
         try {
-            await signIn("credentials", {
-                redirect: false,
+            const res = await signIn("credentials", {
                 email,
                 password,
-            }).then((res) => {
-                console.log(res);
-
-                if (res?.error) {
-                    handleErrorMessage(res.error);
-                } else {
-                    router.push("/");
-                }
             });
+
+            if (res?.error) {
+                handleErrorMessage(res.error);
+            } else {
+                console.log("ログイン成功");
+
+                // router.push("/report");
+            }
         } catch (err: any) {
             // handleErrorMessage(err);
             console.log(err);
         }
     };
+
+    // const onSubmit = async (email: FormDataEntryValue | null, password: FormDataEntryValue | null) => {
+    //     try {
+    //         await signIn("credentials", {
+    //             redirect: false,
+    //             email,
+    //             password,
+    //         }).then((res) => {
+    //             console.log(res);
+
+    //             if (res?.error) {
+    //                 handleErrorMessage(res.error);
+    //             } else {
+    //                 router.push("/");
+    //             }
+    //         });
+    //     } catch (err: any) {
+    //         // handleErrorMessage(err);
+    //         console.log(err);
+    //     }
+    // };
 
     const googleAuth = async () => {
         try {
@@ -70,13 +91,13 @@ export default function Page() {
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: -100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -100 }}
+        <div
+            // initial={{ opacity: 0, y: -100 }}
+            // animate={{ opacity: 1, y: 0 }}
+            // exit={{ opacity: 0, y: -100 }}
             className="mt-2 flex flex-col items-center"
         >
-            <Button onClick={googleAuth}>hello</Button>
+            {/* <Button onClick={googleAuth}>hello</Button> */}
             {/* <div className="mb-8">
                 <Logo />
             </div> */}
@@ -121,6 +142,6 @@ export default function Page() {
                     </Link>
                 </div>
             </form>
-        </motion.div>
+        </div>
     );
-}
+};

@@ -12,7 +12,8 @@ import { IconButton, Collapse, Modal } from "@mui/material";
 
 // 型定義
 import { TransactionListType, TransactionType } from "@/src/types/transaction";
-import { TransactionForm } from "./TransactionForm";
+import { TransactionForm } from "../../components/elements/transaction/TransactionForm";
+import { motion } from "framer-motion";
 
 /* -----------------------------------------------------------------------
  本体
@@ -27,7 +28,12 @@ export const TransactionItem = (transaction: TransactionType) => {
     // const openModal = () => setIsModalOpen(true);
     // const closeModal = () => setIsModalOpen(false);
     return (
-        <div className="border border-gray-300 rounded-md overflow-hidden">
+        <motion.div
+            // initial={{ opacity: 0, y: 30 }}
+            // animate={{ opacity: 1, y: 0 }}
+            // exit={{ opacity: 0, y: 30 }}
+            className="border border-gray-300 rounded-md overflow-hidden"
+        >
             {/* -----------------------------------------------------------------------
              リスト（最初に表示されるリスト。下のアコーディオンを開けば詳細が見れる）
             ----------------------------------------------------------------------- */}
@@ -67,6 +73,6 @@ export const TransactionItem = (transaction: TransactionType) => {
                     </div>
                 </div>
             </Modal> */}
-        </div>
+        </motion.div>
     );
 };

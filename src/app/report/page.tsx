@@ -6,7 +6,7 @@ import { TransactionList } from "./TransactionList";
 import SearchBox from "./SearchBox";
 import { FloatingButton } from "@/src/components/elements/button/FloatingButton";
 import { useState } from "react";
-import { TransactionForm } from "./TransactionForm";
+import { TransactionForm } from "../../components/elements/transaction/TransactionForm";
 import { TransactionType } from "@/src/types/transaction";
 import { format } from "date-fns";
 import { Modal } from "@/src/components/elements/utils/Modal";

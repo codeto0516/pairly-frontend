@@ -30,8 +30,8 @@
         "**/**/*.ts",
         "**/*.tsx",
         ".next/types/**/*.ts",
-        "src/components/elements/Logo.tsx",
-        "src/app/(main)/report/TransactionItem.tsx"
+        "src/components/**/*.tsx",
+        "src/app/**/**.tsx", "src/api/cookies.ts",
     ],
     "exclude": ["node_modules"]
 }

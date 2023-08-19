@@ -1,7 +1,8 @@
 "use client";
 import { LoginButton, LogoutButton } from "@/src/components/elements/button/AuthorizationButton";
+import { UserProvider } from "@auth0/nextjs-auth0";
 
-import { SessionProvider, useSession } from "next-auth/react";
+import { SessionProvider } from "next-auth/react";
 
 // const IsAuth = () => {
 //     const { data: session } = useSession();
@@ -24,5 +25,7 @@ import { SessionProvider, useSession } from "next-auth/react";
 // };
 
 export const NextAuthProvider = ({ children }: { children: React.ReactNode }) => {
+    // return <SessionProvider>{children}</SessionProvider>;
     return <SessionProvider>{children}</SessionProvider>;
 };
+ 

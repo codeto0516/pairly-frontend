@@ -4,16 +4,20 @@ import { usePathname } from "next/navigation";
 import { MenuItemType } from "@/src/types/menu";
 
 const HeaderNav = ({ menuList }: { menuList: MenuItemType[] }) => {
+
     const pathname = usePathname();
 
+    
     return (
         <ul className="hidden gap-0 md:gap-4 items-center sm:flex">
             {menuList.map((menu, index) => {
+                
                 return (
                     <li key={index} className="font-bold">
-                        {pathname == menu.href ? ( 
+                        {pathname === menu.href ? (
                             <Link
                                 href={menu.href}
+                                // href="/partner"
                                 className="text-gray-50 bg-red-300 text-sm font-bold py-2 px-4 rounded-sm"
                             >
                                 {menu.name}
@@ -21,6 +25,7 @@ const HeaderNav = ({ menuList }: { menuList: MenuItemType[] }) => {
                         ) : (
                             <Link
                                 href={menu.href}
+                                // href="/partner"
                                 className="text-gray-700 text-sm font-bold py-2 px-4 hover:bg-red-50"
                             >
                                 {menu.name}
