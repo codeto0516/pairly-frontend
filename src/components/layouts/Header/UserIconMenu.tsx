@@ -11,11 +11,10 @@ import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-// import { user } from "@/src/testdatas/user";
+import { user } from "@/src/testdatas/user";
 
 import { UserIcon } from "@/src/components/elements/icon/UsersIcon";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
 
 const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
     return (
@@ -27,7 +26,6 @@ const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title:
 };
 
 export const UserIconMenu = () => {
-    const {data: session} = useSession()
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -41,7 +39,7 @@ export const UserIconMenu = () => {
     return (
         <>
             <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-                <Tooltip title={session?.user?.name}>
+                <Tooltip title={user.userName}>
                     <IconButton
                         onClick={handleClick}
                         size="small"
@@ -50,7 +48,7 @@ export const UserIconMenu = () => {
                         aria-expanded={open ? "true" : undefined}
                         sx={{ padding: 0 }}
                     >
-                        <UserIcon user={session?.user} />
+                        <UserIcon user={user} />
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -91,7 +89,7 @@ export const UserIconMenu = () => {
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
                 <CustomMenuitem handler={handleClose} title="プロフィール">
-                    <UserIcon user={session?.user} />
+                    <UserIcon user={user} />
                 </CustomMenuitem>
 
                 <CustomMenuitem handler={handleClose} title="パートナーを招待">
@@ -104,7 +102,7 @@ export const UserIconMenu = () => {
                     <Settings fontSize="small" />
                 </CustomMenuitem> */}
 
-                <CustomMenuitem handler={signOut} title="ログアウト">
+                <CustomMenuitem handler={""} title="ログアウト">
                     <Logout fontSize="small" />
                 </CustomMenuitem>
             </Menu>

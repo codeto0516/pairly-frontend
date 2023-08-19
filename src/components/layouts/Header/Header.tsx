@@ -3,7 +3,6 @@ import Logo from "./Logo";
 import HumburgerMenu from "./HumburgerMenu";
 import HeaderNav from "./HeaderNav";
 import { UserIconMenu } from "./UserIconMenu";
-import { useSession } from "next-auth/react";
 import { LoginButton } from "../../elements/button/AuthorizationButton";
 import { Skeleton } from "@mui/material";
 import { AnimatePresence, motion, useAnimation } from "framer-motion";
@@ -47,7 +46,6 @@ const BaseHeader = () => {
 };
 
 export const Header = () => {
-    const { data: session, status } = useSession();
     const [isInitialRender, setIsInitialRender] = useState(true);
     const controls = useAnimation();
     const [initial, setInitial] = useState(0)
@@ -57,13 +55,8 @@ export const Header = () => {
         setInitial(1)
     }, []);
 
-    // ローディング中はなにも表示しない
-    if (status === "loading") {
-        // return <header className="fixed  min-w-full flex justify-center p-4 md:p-4 z-50"></header>;
-        return <></>;
-    }
 
-    if (status === "authenticated") {
+    // if (status === "authenticated") {
         return (
             <motion.header
                 initial={{ opacity: initial }}
@@ -74,13 +67,13 @@ export const Header = () => {
                 <BaseHeader />
             </motion.header>
         );
-    } else {
-        return (
-            <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50 ">
-                <Logo />
-            </header>
-        );
-    }
+    // } else {
+    //     return (
+    //         <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50 ">
+    //             <Logo />
+    //         </header>
+    //     );
+    // }
 };
 
 // "use client";

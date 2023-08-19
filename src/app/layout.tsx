@@ -5,10 +5,8 @@ import Main from "@/src/components/layouts/Main";
 import { Header } from "@/src/components/layouts/Header/Header";
 import Footer from "@/src/components/layouts/Footer";
 import { Suspense, useState } from "react";
-import { NextAuthProvider } from "../components/auth/NextAuthProvider";
 import Loading from "./loading";
 import { MotionWrapper } from "../components/animation/MotionWrapper";
-import { UserProvider } from "@auth0/nextjs-auth0";
 
 const roboto = Roboto({
     weight: "400",
@@ -25,15 +23,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="ja" className="overflow-x-hidden">
             <body className={`${roboto.className} text-gray-800 overflow-x-hidden`}>
-                <NextAuthProvider>
-                    <Suspense fallback={<Loading />}>
-                        <MotionWrapper>
-                            <Header />
-                            <Main>{children}</Main>
-                            <Footer />
-                        </MotionWrapper>
-                    </Suspense>
-                </NextAuthProvider>
+                <Suspense fallback={<Loading />}>
+                    <MotionWrapper>
+                        <Header />
+                        <Main>{children}</Main>
+                        <Footer />
+                    </MotionWrapper>
+                </Suspense>
             </body>
         </html>
     );
