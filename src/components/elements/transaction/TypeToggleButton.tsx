@@ -1,6 +1,6 @@
 // 支出か収入かを選ぶボタン
 
-import { useTransactionContext } from "@/src/app/(main)/report/TransactionForm";
+import { useTransactionContext } from "@/src/components/elements/transaction/TransactionForm";
 import { ToggleButton } from "../button/ToggleButton";
 
 const toggleList = [

@@ -2,12 +2,13 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import Main from "@/src/components/layouts/Main";
-import Header from "@/src/components/layouts/Header/Header";
+import { Header } from "@/src/components/layouts/Header/Header";
 import Footer from "@/src/components/layouts/Footer";
 import { Suspense, useState } from "react";
 import { NextAuthProvider } from "../components/auth/NextAuthProvider";
 import Loading from "./loading";
 import { MotionWrapper } from "../components/animation/MotionWrapper";
+import { UserProvider } from "@auth0/nextjs-auth0";
 
 const roboto = Roboto({
     weight: "400",

@@ -1,8 +1,9 @@
+"use server";
 
-interface UserType {
-    email: string;
-    password: string;
-}
+import axios from "axios";
+import { setCookie } from "./cookies";
+import { cookies } from "next/headers";
+
 
 interface UserResponseType {
     allow_password_change: true;
@@ -14,64 +15,47 @@ interface UserResponseType {
     provider: string;
     uid: string;
 }
-
-
-export const signIn = async(email:string, password:string): Promise<any> => {
-    const res = await fetch(`http://localhost:3000/api/v1/auth/sign_in`, {
-        // cache: "no-store", // SSR or CSR
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+///////////////////////////////////////////////////////////////////////////////////////
+// ログイン
+///////////////////////////////////////////////////////////////////////////////////////
+interface signInProps {
+    email: string;
+    password: string;
+}
+export const signIn = async (email: string, password: string): Promise<any> => {
+    try {
+        const res = await axios.post(`http://localhost/api/v1/auth/sign_in`, {
             email: email,
             password: password,
-        }),
-    });
-    if (!res.ok) {
-        // This will activate the closest `error.js` Error Boundary
-        throw new Error("Failed to fetch data");
-    }
-    console.log(res);
+        });
 
-    return res.json();
+        console.log(res);
+
+        cookies().set("uid", res.headers["uid"], { secure: true });
+        cookies().set("access-token", res.headers["access-token"], { secure: true });
+        cookies().set("client", res.headers["client"], { secure: true });
+        return await res.data;
+    } catch (error) {
+        return error;
+    }
 };
 
-// export const addTodo = async (todo: Task): Promise<Task> => {
-//     const res = await fetch(`http://localhost:3001/tasks`, {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
+///////////////////////////////////////////////////////////////////////////////////////
+// ログアウト
+///////////////////////////////////////////////////////////////////////////////////////
+interface signOutProps {
+    uid: string;
+    accessToken: string;
+    client: string;
+}
+export const signOut = async (props: signOutProps): Promise<any> => {
+    const res = await axios.post(`http://localhost/api/v1/auth/sign_in`, {
+        ui: props.uid,
+        "access-token": props.accessToken,
+        client: props.client,
+    });
 
-//         body: JSON.stringify(todo),
-//     });
-//     const newTodos = res.json();
+    console.log(res.headers);
 
-//     return newTodos;
-// };
-
-// export const updateTodo = async (id: string, newText: string): Promise<Task> => {
-//     const res = await fetch(`http://localhost:3001/tasks/${id}`, {
-//         method: "PUT",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ text: newText }),
-//     });
-//     const updatedTodos = res.json();
-
-//     return updatedTodos;
-// };
-
-// export const deleteTodo = async (id: string): Promise<Task> => {
-//     const res = await fetch(`http://localhost:3001/tasks/${id}`, {
-//         method: "DELETE",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//     });
-//     const deletedTodos = res.json();
-
-//     return deletedTodos;
-// };
+    return await res.data;
+};

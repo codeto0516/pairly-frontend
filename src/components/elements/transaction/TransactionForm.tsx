@@ -1,9 +1,9 @@
 "use client";
 
-import { useContext, useState, createContext, useEffect } from "react";
+import { useContext, useState, createContext, useEffect, Suspense } from "react";
 
 // Material UI
-import { Button } from "@mui/material";
+import { Button, Skeleton } from "@mui/material";
 
 // 自作コンポーネント
 import { DateSelectorButton } from "@/src/components/elements/transaction/DateSelectorButton";
@@ -12,11 +12,10 @@ import { CategorySelectorButton } from "@/src/components/elements/transaction/Ca
 import { ContentForm } from "@/src/components/elements/transaction/ContentForm";
 import { AmountForm } from "@/src/components/elements/transaction/AmountForm";
 import { LoadingButton } from "@/src/components/elements/button/LoadingButton";
+import { DeleteDialog } from "@/src/components/elements/utils/Dialog";
 
 // 型定義
 import { TransactionType } from "@/src/types/transaction";
-import { Modal } from "@/src/components/elements/utils/Modal";
-import { DeleteDialog } from "@/src/components/elements/utils/Dialog";
 
 // useContext
 export const TransactionContext = createContext<any>({});
@@ -43,9 +42,9 @@ const sendTransactionData = async () => {
  本体
 ----------------------------------------------------------------------- */
 export const TransactionForm = (props: { transaction: TransactionType }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    // const [isModalOpen, setIsModalOpen] = useState(false);
+    // const openModal = () => setIsModalOpen(true);
+    // const closeModal = () => setIsModalOpen(false);
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const openDialog = () => setIsDialogOpen(true);
@@ -73,7 +72,7 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
     const [saveButtonIsDisable, setSaveButtonIsDisable] = useState(false);
     useEffect(() => {
         // フォームが編集されたら検知して保存ボタンのDisabledを解除
-        setSaveButtonIsDisable(!saveButtonIsDisable);
+        setSaveButtonIsDisable((prev) => !prev);
     }, [transaction]);
 
     /* -----------------------------------------------------------------------

@@ -1,6 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { signIn } from "@/src/api/sessions";
 
 export const options: NextAuthOptions = {
     debug: true,
@@ -22,17 +23,28 @@ export const options: NextAuthOptions = {
             },
             // メルアド認証処理
             async authorize(credentials) {
-                const users = [
-                    { id: "1", email: "codetaisei@gmail.com", password: "Ogawa516", name: "たいせい" },
-                ];
+                // const users = [
+                //     { id: "1", email: "codetaisei@gmail.com", password: "Ogawa516", name: "たいせい" },
+                // ];
 
-                const user = users.find((user) => user.email === credentials?.email);
+                // const user = users.find((user) => user.email === credentials?.email);
 
-                if (user && user?.password === credentials?.password) {
-                    return { id: user.id, name: user.name, email: user.email, role: "admin"};
-                } else {
-                    return null;
+                // if (user && user?.password === credentials?.password) {
+                //     return { id: user.id, name: user.name, email: user.email, role: "admin" };
+                // } else {
+                //     return null;
+                // }
+            
+    
+                if (credentials != undefined) {
+                    const res = await signIn(credentials.email, credentials.password);
+
+                    if (res.data) {
+                        const user = res.data;
+                        return { id: user.id, name: user.name || user.email, email: user.email, role: "admin" };
+                    }
                 }
+                return null;
             },
         }),
     ],

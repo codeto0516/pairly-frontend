@@ -1,6 +1,6 @@
 import { TransactionItem } from "./TransactionItem";
 // デモデータ
-import testdata from "../../../testdatas/testdata";
+import testdata from "@/src/testdatas/testdata";
 
 // 型定義
 import { TransactionListType, TransactionType } from "@/src/types/transaction";

@@ -5,7 +5,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { Children, ReactNode, useCallback, useEffect, useState } from "react";
 import { CategoryList } from "../../../testdatas/category";
-import { useTransactionContext } from "@/src/app/(main)/report/TransactionForm";
+import { useTransactionContext } from "@/src/components/elements/transaction/TransactionForm";
 
 interface SmallCategoryType {
     small_category_id: number;
@@ -71,9 +71,8 @@ export const CategorySelectorButton = () => {
     // 小カテゴリーのイベントハンドラ
     const changeSmallCategory = (newSmallCategoryId: Number) => {
         changeTransaction("small_category_id", newSmallCategoryId);
-        setSmallCategoryId(newSmallCategoryId);
+        setSmallCategoryId(() => newSmallCategoryId);
     };
-
 
     // 大カテゴリーが未入力の場合は小カテゴリーを選択不可にする
     const [isDisable, setIsDisable] = useState<boolean>(true);
@@ -81,7 +80,6 @@ export const CategorySelectorButton = () => {
     // 大カテゴリーを選択した場合の、関連する小カテゴリーを入れる
     const [smallCategoryList, setSmallCategoryList] = useState<SmallCategoryType[]>([]);
     const setSmallCategory = (bigCategoryId: number) => {
-
         const result = CategoryList.find((item) => item.big_category_id == bigCategoryId);
         if (result) {
             setSmallCategoryList(result.small_categories);
@@ -96,10 +94,10 @@ export const CategorySelectorButton = () => {
             // 大カテゴリーで未分類を選択したら、小カテゴリーも自動的に未分類にリセットする
             changeSmallCategory(1);
             // 小カテゴリーを選択不可にする
-            setIsDisable(true);
+            setIsDisable(() => true);
         } else {
             // 小カテゴリーを選択可にする
-            setIsDisable(false);
+            setIsDisable(() => false);
         }
     }, [bigCategoryId]);
 
