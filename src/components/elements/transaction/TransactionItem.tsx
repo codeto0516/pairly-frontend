@@ -12,7 +12,7 @@ import { IconButton, Collapse, Modal } from "@mui/material";
 
 // 型定義
 import { TransactionListType, TransactionType } from "@/src/types/transaction";
-import { TransactionForm } from "../../components/elements/transaction/TransactionForm";
+import { TransactionForm } from "./TransactionForm";
 import { motion } from "framer-motion";
 
 /* -----------------------------------------------------------------------

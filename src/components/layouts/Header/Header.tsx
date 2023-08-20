@@ -46,22 +46,29 @@ const BaseHeader = () => {
 };
 
 export const Header = () => {
-    const {user} = useAuth()
-    console.log(user);
-    
-    if (user) {
-        return (
-            <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50">
-                <BaseHeader />
-            </header>
-        );
-    } else {
+    const { user } = useAuth();
+
+    useEffect(() => {
+        console.log(user);
+    }, [user]);
+
+    if (user === undefined) {
         return (
             <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50 ">
                 <Logo />
             </header>
         );
     }
+
+    // if (user) {
+    return (
+        <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50">
+            <BaseHeader />
+        </header>
+    );
+    // } else {
+
+    // }
 };
 
 // "use client";

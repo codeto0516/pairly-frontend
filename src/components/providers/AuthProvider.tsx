@@ -24,6 +24,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const pathName = usePathname()
 
     const [user, setUser] = useState<any>();
+
+
     const updateUser = (newData: any) => {
         // setUser((prevUserData: any) => ({
         //     ...prevUserData,
@@ -48,6 +50,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
                 const { uid, accessToken, client } = userAllToken;
                 if (uid?.value && accessToken?.value && client?.value) {
+                    console.log("ログインしています");
+                    
                     updateTokens({ uid: uid.value, accessToken: accessToken.value, client: client.value });
                 } else {
                     router.push("/signin");
@@ -56,6 +60,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             })();
         }
     }, [router, pathName]);
+
+    useEffect(() => {
+        
+    }, [])
 
     return <AuthContext.Provider value={{ user, updateUser, tokens }}>{children}</AuthContext.Provider>;
 };
