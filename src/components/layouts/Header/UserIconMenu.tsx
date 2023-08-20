@@ -15,6 +15,9 @@ import { user } from "@/src/testdatas/user";
 
 import { UserIcon } from "@/src/components/elements/icon/UsersIcon";
 import Link from "next/link";
+import { signOut } from "@/src/api/sessions";
+import { useAuth } from "../../providers/AuthProvider";
+import { useRouter, redirect } from "next/navigation";
 
 const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
     return (
@@ -26,7 +29,7 @@ const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title:
 };
 
 export const UserIconMenu = () => {
-
+    const router = useRouter();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -34,6 +37,28 @@ export const UserIconMenu = () => {
     };
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const { tokens } = useAuth();
+    const handleSignOut = async () => {
+        console.log(tokens);
+
+        const res = await signOut(tokens);
+        if (res) {
+            console.log("ログアウト成功");
+            router.push("/signin");
+        }
+
+        // if (res.data) {
+        //     // ログイン成功
+        //     console.log("ログイン成功");
+        //     await updateUser(res.data);
+        //     router.push("/");
+        // } else {
+        //     // ログイン失敗
+        //     console.log("ログイン失敗");
+        //     console.log(res);
+        // }
     };
 
     return (
@@ -102,7 +127,7 @@ export const UserIconMenu = () => {
                     <Settings fontSize="small" />
                 </CustomMenuitem> */}
 
-                <CustomMenuitem handler={""} title="ログアウト">
+                <CustomMenuitem handler={handleSignOut} title="ログアウト">
                     <Logout fontSize="small" />
                 </CustomMenuitem>
             </Menu>

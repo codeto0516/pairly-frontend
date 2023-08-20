@@ -1,15 +1,14 @@
 "use client";
-import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "next/link";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-// import { signIn } from "@/src/api/sessions";
+import { signIn } from "@/src/api/sessions";
+import { useAuth } from "@/src/components/providers/AuthProvider";
 
 export const SignIn = () => {
     const router = useRouter();
@@ -22,19 +21,29 @@ export const SignIn = () => {
         const data = new FormData(event.currentTarget);
         const email = data.get("email");
         const password = data.get("password");
-        // if (email && password) onSubmit(email.toString(), password.toString());
+        if (email && password) {
+            onSubmit(email.toString(), password.toString());
+        }
     };
 
+    const {user, updateUser} = useAuth();
+    const onSubmit = async (email: string, password: string) => {
+        const userData = await signIn({email, password});
+        if (userData) {
+            // ログイン成功
+            console.log("ログイン成功");
+            console.log(userData);
 
-
-
-
+            await updateUser(userData);
+            router.push("/");
+        } else {
+            // ログイン失敗
+            console.log("ログイン失敗");
+        }
+    };
 
     return (
         <div
-            // initial={{ opacity: 0, y: -100 }}
-            // animate={{ opacity: 1, y: 0 }}
-            // exit={{ opacity: 0, y: -100 }}
             className="mt-2 flex flex-col items-center"
         >
             {/* <Button onClick={googleAuth}>hello</Button> */}

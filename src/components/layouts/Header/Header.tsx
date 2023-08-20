@@ -6,6 +6,7 @@ import { UserIconMenu } from "./UserIconMenu";
 import { Skeleton } from "@mui/material";
 import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../providers/AuthProvider";
 
 const menuList = [
     {
@@ -45,34 +46,22 @@ const BaseHeader = () => {
 };
 
 export const Header = () => {
-    const [isInitialRender, setIsInitialRender] = useState(true);
-    const controls = useAnimation();
-    const [initial, setInitial] = useState(0)
-
-    // 初回レンダリング時のみアニメーションをつける（毎回アニメーションをつけるとチカチカするため）
-    useEffect(() => {
-        setInitial(1)
-    }, []);
-
-
-    // if (status === "authenticated") {
+    const {user} = useAuth()
+    console.log(user);
+    
+    if (user) {
         return (
-            <motion.header
-                initial={{ opacity: initial }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 1 }}
-                className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50"
-            >
+            <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50">
                 <BaseHeader />
-            </motion.header>
+            </header>
         );
-    // } else {
-    //     return (
-    //         <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50 ">
-    //             <Logo />
-    //         </header>
-    //     );
-    // }
+    } else {
+        return (
+            <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50 ">
+                <Logo />
+            </header>
+        );
+    }
 };
 
 // "use client";
