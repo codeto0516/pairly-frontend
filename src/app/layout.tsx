@@ -6,7 +6,8 @@ import { Header } from "@/src/components/layouts/Header/Header";
 import Footer from "@/src/components/layouts/Footer";
 import { Suspense, useState } from "react";
 import Loading from "./loading";
-import { MotionWrapper } from "../components/animation/MotionWrapper";
+import { FramerMotionProvider } from "../components/providers/FramerMotionProvider";
+import { AuthProvider } from "../components/providers/AuthProvider";
 
 const roboto = Roboto({
     weight: "400",
@@ -24,11 +25,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="ja" className="overflow-x-hidden">
             <body className={`${roboto.className} text-gray-800 overflow-x-hidden`}>
                 <Suspense fallback={<Loading />}>
-                    <MotionWrapper>
-                        <Header />
-                        <Main>{children}</Main>
-                        <Footer />
-                    </MotionWrapper>
+                    <AuthProvider>
+                        <FramerMotionProvider>
+                            <Header />
+                            <Main>{children}</Main>
+                            <Footer />
+                        </FramerMotionProvider>
+                    </AuthProvider>
                 </Suspense>
             </body>
         </html>

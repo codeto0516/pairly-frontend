@@ -5,9 +5,10 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "next/link";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/src/api/sessions";
+import { useAuth } from "@/src/components/providers/AuthProvider";
 
 export const SignIn = () => {
     const router = useRouter();
@@ -25,14 +26,19 @@ export const SignIn = () => {
         }
     };
 
+    const {user, updateUser} = useAuth();
     const onSubmit = async (email: string, password: string) => {
-        const res = await signIn(email, password);
-        if (res.data) {
+        const userData = await signIn({email, password});
+        if (userData) {
             // ログイン成功
-            console.log(res.data);
+            console.log("ログイン成功");
+            console.log(userData);
+
+            await updateUser(userData);
+            router.push("/");
         } else {
             // ログイン失敗
-            console.log(res);
+            console.log("ログイン失敗");
         }
     };
 

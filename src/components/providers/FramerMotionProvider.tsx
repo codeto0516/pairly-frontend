@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 
 
-export const  MotionWrapper = ({ children }: { children: React.ReactNode }) => {
+export const FramerMotionProvider = ({ children }: { children: React.ReactNode }) => {
     // 一意のキーを設定するためにラップした画面のパスを取得
     const pathName = usePathname();
     return (
@@ -23,4 +23,4 @@ export const  MotionWrapper = ({ children }: { children: React.ReactNode }) => {
             {children}
         </AnimatePresence>
     );
-}
+};
