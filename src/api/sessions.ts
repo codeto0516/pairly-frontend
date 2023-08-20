@@ -31,12 +31,16 @@ export const signIn = async (email: string, password: string): Promise<any> => {
 
         console.log(res);
 
+        
+
         cookies().set("uid", res.headers["uid"], { secure: true });
         cookies().set("access-token", res.headers["access-token"], { secure: true });
         cookies().set("client", res.headers["client"], { secure: true });
         return await res.data;
     } catch (error) {
-        return error;
+        console.log("hsfasfasfjsflasdjfa");
+        
+        return "error";
     }
 };
 
