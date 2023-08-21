@@ -25,13 +25,19 @@
         "dayjs": "^1.11.9",
         "eslint": "8.46.0",
         "eslint-config-next": "13.4.13",
+        "event-stream": "^4.0.1",
+        "firebase": "^10.2.0",
         "framer-motion": "^10.16.0",
         "next": "13.4.13",
         "postcss": "8.4.27",
         "react": "18.2.0",
         "react-dom": "18.2.0",
+        "react-hook-form": "^7.45.4",
         "swr": "^2.2.1",
         "tailwindcss": "3.3.3",
         "typescript": "5.1.6"
+    },
+    "devDependencies": {
+        "encoding": "^0.1.13"
     }
 }

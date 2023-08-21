@@ -6,7 +6,8 @@ import { UserIconMenu } from "./UserIconMenu";
 import { useEffect, useState } from "react";
 
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/src/customHooks/useAuth";
+import { useAuth } from "@/src/hooks/useAuth";
+// import { useAuth } from "@/src/hooks/useAuth";
 
 const menuList = [
     {
@@ -46,9 +47,9 @@ const BaseHeader = () => {
 };
 
 export const Header = () => {
-    const {state} = useAuth();
+    const { currentUser } = useAuth();
 
-    if (state.isAuthenticated) {
+    if (currentUser) {
         return (
             <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50">
                 <BaseHeader />

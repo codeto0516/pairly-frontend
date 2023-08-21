@@ -6,12 +6,14 @@ import { UserIcon } from "../icon/UsersIcon";
 import { useTransactionContext } from "@/src/components/elements/transaction/TransactionForm";
 import { useEffect, useState } from "react";
 import { UserType } from "@/src/types/user";
-import { user } from "@/src/datas/user";
+import { useAuth } from "@/src/hooks/useAuth";
 const CustomAmountForm = (props: { userName: string; userAmount: number; handler: any }) => {
+    const { currentUser } = useAuth();
+    
     return (
         <div className="flex items-end gap-4 ">
             {/* ユーザーアイコン */}
-            <UserIcon user={user} />
+            <UserIcon user={currentUser} />
             {/* 入力フォーム */}
             <TextField
                 label={`${props.userName} の支払い額を入力`}
