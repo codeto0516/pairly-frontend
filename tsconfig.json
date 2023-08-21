@@ -32,7 +32,7 @@
         ".next/types/**/*.ts",
         "src/components/**/*.tsx",
         "src/app/**/**.tsx",
-        "src/customHooks/useCookies.ts"
+        "src/hooks/useCookies.ts"
     ],
     "exclude": ["node_modules"]
 }

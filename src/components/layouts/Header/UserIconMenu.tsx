@@ -10,11 +10,12 @@ import Logout from "@mui/icons-material/Logout";
 
 import { UserIcon } from "@/src/components/elements/icon/UsersIcon";
 
-import { logoutAction } from "../../../customHooks/providers/AuthProvider";
+// import { logoutAction } from "../../../hooks/providers/AuthProvider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useSessions } from "@/src/customHooks/api/useSessions";
-import { useAuth } from "@/src/customHooks/useAuth";
+import { useSessions } from "@/src/hooks/api/useSessions";
+import { useAuth } from "@/src/hooks/useAuth";
+// import { useAuth } from "@/src/hooks/useAuth";
 
 const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
     return (
@@ -36,26 +37,14 @@ export const UserIconMenu = () => {
         setAnchorEl(null);
     };
 
-    const { signOut } = useSessions();
-    const { state, dispatch } = useAuth();
-    const handleSignOut = async () => {
-        const res = await signOut(state.tokens);
-        if (res) {
-            console.log("ログアウト成功");
-            await dispatch(logoutAction());
-
-            router.push("/signin");
-        } else {
-            // ログイン失敗
-            console.log("ログアウト失敗");
-            console.log(res);
-        }
-    };
+    const { signOut, currentUser } = useAuth();
+    // console.log(currentUser);
+    
 
     return (
         <>
             <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-                <Tooltip title={state.user.name}>
+                <Tooltip title={currentUser?.email}>
                     <IconButton
                         onClick={handleClick}
                         size="small"
@@ -64,7 +53,7 @@ export const UserIconMenu = () => {
                         aria-expanded={open ? "true" : undefined}
                         sx={{ padding: 0 }}
                     >
-                        <UserIcon user={state.user} />
+                        <UserIcon user={currentUser} />
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -105,7 +94,7 @@ export const UserIconMenu = () => {
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
                 <CustomMenuitem handler={handleClose} title="プロフィール">
-                    <UserIcon user={state.user} />
+                    <UserIcon user={currentUser} />
                 </CustomMenuitem>
 
                 <CustomMenuitem handler={handleClose} title="パートナーを招待">
@@ -118,7 +107,7 @@ export const UserIconMenu = () => {
                     <Settings fontSize="small" />
                 </CustomMenuitem> */}
 
-                <CustomMenuitem handler={handleSignOut} title="ログアウト">
+                <CustomMenuitem handler={signOut} title="ログアウト">
                     <Logout fontSize="small" />
                 </CustomMenuitem>
             </Menu>

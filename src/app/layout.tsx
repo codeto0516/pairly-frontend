@@ -6,8 +6,8 @@ import { Header } from "@/src/components/layouts/Header/Header";
 import Footer from "@/src/components/layouts/Footer";
 import { Suspense, useState } from "react";
 import Loading from "./loading";
-import { FramerMotionProvider } from "../customHooks/providers/FramerMotionProvider";
-import { AuthProvider } from "../customHooks/providers/AuthProvider";
+import { FramerMotionProvider } from "../hooks/providers/FramerMotionProvider";
+import { AuthProvider } from "../hooks/providers/AuthProvider";
 
 const roboto = Roboto({
     weight: "400",

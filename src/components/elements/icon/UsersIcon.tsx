@@ -9,6 +9,8 @@ interface UserIconProps {
 }
 
 export const UserIcon = ({ user, size }: UserIconProps) => {
+    console.log(user);
+    
     const getSizeClassName = () => {
         switch (size) {
             case "xs":
@@ -25,6 +27,7 @@ export const UserIcon = ({ user, size }: UserIconProps) => {
     };
 
     return (
-        <Avatar alt={user.name} src={user.iconPath && user.iconPath} className={getSizeClassName()} />
+        // <p>avatar</p>
+        <Avatar alt={"user.email"} src={user?.photoURL ? user?.photoURL : ""} className={getSizeClassName()} />
     );
 };
