@@ -3,17 +3,18 @@ import { useEffect, useState } from "react";
 
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../useAuth";
+import Loading from "@/src/app/loading";
 
 export const AuthProvider = ({ children }: { children: React.ReactElement }) => {
     const router = useRouter();
     const pathName = usePathname();
     const { auth, currentUser } = useAuth();
+    const [isCheking, setIsCheking] = useState(true);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             console.log("ログインチェック監視");
             // console.log(user);
-            
 
             if (!user) {
                 router.push("/signin");
@@ -23,11 +24,16 @@ export const AuthProvider = ({ children }: { children: React.ReactElement }) => 
                     router.push("/");
                 }
             }
+            setIsCheking(() => false);
         });
         return unsubscribe;
     }, [router, auth, pathName]);
 
-    return children;
+    if (isCheking) {
+        return <Loading />;
+    } else {
+        return children;
+    }
 };
 
 // "use client";
