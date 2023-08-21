@@ -1,23 +1,20 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
-import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
-import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-import { user } from "@/src/testdatas/user";
 
 import { UserIcon } from "@/src/components/elements/icon/UsersIcon";
-import Link from "next/link";
-import { signOut } from "@/src/api/sessions";
-import { useAuth } from "../../providers/AuthProvider";
-import { useRouter, redirect } from "next/navigation";
+
+import { logoutAction } from "../../../customHooks/providers/AuthProvider";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useSessions } from "@/src/customHooks/api/useSessions";
+import { useAuth } from "@/src/customHooks/useAuth";
 
 const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
     return (
@@ -30,7 +27,7 @@ const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title:
 
 export const UserIconMenu = () => {
     const router = useRouter();
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -39,32 +36,26 @@ export const UserIconMenu = () => {
         setAnchorEl(null);
     };
 
-    const { tokens } = useAuth();
+    const { signOut } = useSessions();
+    const { state, dispatch } = useAuth();
     const handleSignOut = async () => {
-        console.log(tokens);
-
-        const res = await signOut(tokens);
+        const res = await signOut(state.tokens);
         if (res) {
             console.log("ログアウト成功");
-            router.push("/signin");
-        }
+            await dispatch(logoutAction());
 
-        // if (res.data) {
-        //     // ログイン成功
-        //     console.log("ログイン成功");
-        //     await updateUser(res.data);
-        //     router.push("/");
-        // } else {
-        //     // ログイン失敗
-        //     console.log("ログイン失敗");
-        //     console.log(res);
-        // }
+            router.push("/signin");
+        } else {
+            // ログイン失敗
+            console.log("ログアウト失敗");
+            console.log(res);
+        }
     };
 
     return (
         <>
             <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-                <Tooltip title={user.userName}>
+                <Tooltip title={state.user.name}>
                     <IconButton
                         onClick={handleClick}
                         size="small"
@@ -73,7 +64,7 @@ export const UserIconMenu = () => {
                         aria-expanded={open ? "true" : undefined}
                         sx={{ padding: 0 }}
                     >
-                        <UserIcon user={user} />
+                        <UserIcon user={state.user} />
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -114,7 +105,7 @@ export const UserIconMenu = () => {
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
                 <CustomMenuitem handler={handleClose} title="プロフィール">
-                    <UserIcon user={user} />
+                    <UserIcon user={state.user} />
                 </CustomMenuitem>
 
                 <CustomMenuitem handler={handleClose} title="パートナーを招待">

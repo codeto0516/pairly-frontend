@@ -1,5 +1,5 @@
 import { TransactionType } from "@/src/types/transaction";
-import testdata from "../testdatas/testdata2";
+import testdata from "../datas/testdata2";
 
 interface GroupByDateType {
     date: string;
@@ -25,6 +25,5 @@ const groupByDate = (transactionList: TransactionType[]) => {
 
     return groupedData;
 };
-
 
 groupByDate(testdata);

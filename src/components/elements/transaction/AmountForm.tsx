@@ -6,7 +6,7 @@ import { UserIcon } from "../icon/UsersIcon";
 import { useTransactionContext } from "@/src/components/elements/transaction/TransactionForm";
 import { useEffect, useState } from "react";
 import { UserType } from "@/src/types/user";
-import { user } from "@/src/testdatas/user";
+import { user } from "@/src/datas/user";
 const CustomAmountForm = (props: { userName: string; userAmount: number; handler: any }) => {
     return (
         <div className="flex items-end gap-4 ">

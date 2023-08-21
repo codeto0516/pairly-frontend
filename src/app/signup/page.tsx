@@ -1,9 +1,7 @@
-import SignUp from "./Signup"
+import SignUp from "./SignUpForm";
 
 const page = () => {
-    return (
-        <SignUp/>
-    );
-}
+    return <SignUp />;
+};
 
 export default page;

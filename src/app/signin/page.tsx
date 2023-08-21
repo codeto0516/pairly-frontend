@@ -1,5 +1,4 @@
-
-import { SignIn } from "./SignIn";
+import { SignIn } from "./SignInForm";
 
 const page = () => {
     return <SignIn />;

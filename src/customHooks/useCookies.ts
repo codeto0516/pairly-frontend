@@ -15,12 +15,9 @@ export const getAllCookie = () => {
 };
 
 export const getAllToken = () => {
-   
     const uid = cookies().get("uid");
     const accessToken = cookies().get("access-token");
     const client = cookies().get("client");
-
-
     return {uid, accessToken, client}
 };
 
