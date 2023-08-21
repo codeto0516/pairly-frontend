@@ -31,7 +31,8 @@
         "**/*.tsx",
         ".next/types/**/*.ts",
         "src/components/**/*.tsx",
-        "src/app/**/**.tsx", "src/api/cookies.ts",
+        "src/app/**/**.tsx",
+        "src/customHooks/useCookies.ts"
     ],
     "exclude": ["node_modules"]
 }

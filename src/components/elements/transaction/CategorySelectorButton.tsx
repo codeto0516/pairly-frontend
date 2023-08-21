@@ -4,7 +4,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { Children, ReactNode, useCallback, useEffect, useState } from "react";
-import { CategoryList } from "../../../testdatas/category";
+import { CategoryList } from "../../../datas/category";
 import { useTransactionContext } from "@/src/components/elements/transaction/TransactionForm";
 
 interface SmallCategoryType {
