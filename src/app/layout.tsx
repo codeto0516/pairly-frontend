@@ -8,6 +8,7 @@ import { Suspense, useState } from "react";
 import Loading from "./loading";
 import { FramerMotionProvider } from "../hooks/providers/FramerMotionProvider";
 import { AuthProvider } from "../hooks/providers/AuthProvider";
+import { AuthGuard } from "../hooks/providers/AuthGuard";
 
 const roboto = Roboto({
     weight: "400",
@@ -24,15 +25,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="ja" className="overflow-x-hidden">
             <body className={`${roboto.className} text-gray-800 overflow-x-hidden`}>
-                <Suspense fallback={<Loading />}>
-                    <AuthProvider>
+                {/* <Suspense fallback={<Loading />}> */}
+
+                <AuthProvider>
+                    <AuthGuard>
                         <FramerMotionProvider>
                             <Header />
                             <Main>{children}</Main>
                             <Footer />
                         </FramerMotionProvider>
-                    </AuthProvider>
-                </Suspense>
+                    </AuthGuard>
+                </AuthProvider>
+
+                {/* </Suspense> */}
             </body>
         </html>
     );

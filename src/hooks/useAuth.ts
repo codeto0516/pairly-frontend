@@ -1,5 +1,4 @@
 
-
 import {
     GoogleAuthProvider,
     createUserWithEmailAndPassword,
@@ -11,7 +10,6 @@ import {
 import { auth, useUser } from "@/src/hooks/firebase";
 import { useState } from "react";
 import { redirect } from "next/navigation";
-
 
 export const useAuth = () => {
     const currentUser = useUser();
@@ -59,7 +57,7 @@ export const useAuth = () => {
 
     const signInWithGoogle = async () => {
         const provider = new GoogleAuthProvider();
-        await signInWithRedirect(auth, provider);
+        await signInWithPopup(auth, provider);
     };
 
     return { signUp, signIn, signOut, signInWithGoogle, currentUser, isLoading, auth };

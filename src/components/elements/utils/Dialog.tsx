@@ -56,3 +56,4 @@ export const DeleteDialog = (props: BaseDialogProps) => {
 
     return <BaseDialog texts={texts} props={props} />;
 };
+

@@ -20,7 +20,6 @@ export default function SignUp() {
         handleSubmit,
         formState: { errors },
     } = useForm<SingUpInputs>();
- 
 
     const { signUp, currentUser, isLoading, signInWithGoogle } = useAuth();
 
@@ -32,7 +31,11 @@ export default function SignUp() {
         }
     };
 
-
+    useEffect(() => {
+        if (currentUser) {
+            router.push("/");
+        }
+    }, [router, currentUser]);
 
     return (
         <div className="mt-2 flex flex-col items-center gap-4 w-full max-w-[360px]">

@@ -1,86 +1,73 @@
 "use client";
-import { useEffect, useState } from "react";
-
+import { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../useAuth";
 import Loading from "@/src/app/loading";
+import { User } from "firebase/auth";
 
-export const AuthProvider = ({ children }: { children: React.ReactElement }) => {
-    const router = useRouter();
-    const pathName = usePathname();
-    const { auth, currentUser } = useAuth();
-    const [isCheking, setIsCheking] = useState(true);
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            console.log("ログインチェック監視");
-            // console.log(user);
-
-            if (!user) {
-                router.push("/signin");
-            } else {
-                // ログインしているなら
-                if (pathName === "/signup" || pathName === "/signin") {
-                    router.push("/");
-                }
-            }
-            setIsCheking(() => false);
-        });
-        return unsubscribe;
-    }, [router, auth, pathName]);
-
-    if (isCheking) {
-        return <Loading />;
-    } else {
-        return children;
-    }
+export type GlobalAuthState = {
+    user: User | null | undefined;
+};
+const initialState: GlobalAuthState = {
+    user: undefined,
 };
 
+const AuthContext = createContext<GlobalAuthState>(initialState);
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+    const [user, setUser] = useState<GlobalAuthState>(initialState);
+
+    const { auth, currentUser } = useAuth();
+
+    useEffect(() => {
+        try {
+            return auth.onAuthStateChanged((user) => {
+                setUser({
+                    user,
+                });
+            });
+        } catch (error) {
+            setUser(initialState);
+            throw error;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
+};
+
+export const useAuthContext = () => useContext(AuthContext);
+
 // "use client";
-// import { useRouter, redirect } from "next/navigation";
-// import { createContext, useReducer, useContext, useEffect } from "react";
+// import { useEffect, useState } from "react";
 
-// // アクションの定義
-// export const loginAction = (userData: any, tokens: any) => ({
-//     type: "LOGIN",
-//     userData: userData,
-//     tokens: tokens,
-// });
-// export const logoutAction = () => ({ type: "LOGOUT" });
-
-// // レデューサー
-// const authReducer = (state: any, action: any) => {
-//     switch (action.type) {
-//         case "LOGIN":
-//             return {
-//                 ...state,
-//                 user: action.userData,
-//                 tokens: action.tokens,
-//                 isAuthenticated: true,
-//             };
-//         case "LOGOUT":
-//             return {
-//                 ...state,
-//                 user: null,
-//                 tokens: null,
-//                 isAuthenticated: false,
-//             };
-//         default:
-//             return state;
-//     }
-// };
-
-// // 初期状態
-// const initialAuthState = {
-//     user: null,
-//     tokens: null,
-//     isAuthenticated: false,
-// };
-
-// export const AuthContext = createContext<any>({});
+// import { usePathname, useRouter } from "next/navigation";
+// import { useAuth } from "../useAuth";
+// import Loading from "@/src/app/loading";
 
 // export const AuthProvider = ({ children }: { children: React.ReactElement }) => {
-//     const [state, dispatch] = useReducer(authReducer, initialAuthState);
+//     const router = useRouter();
+//     const pathName = usePathname();
+//     const { auth, currentUser } = useAuth();
+//     const [isCheking, setIsCheking] = useState(true);
 
-//     return <AuthContext.Provider value={{ state, dispatch }}>{children}</AuthContext.Provider>;
+//     useEffect(() => {
+//         return auth.onAuthStateChanged((user) => {
+//             console.log("ログインチェック監視");
+//             // console.log(user);
+
+//             if (!user && pathName != "/signin" && pathName != "/signup") {
+//                 router.push("/signin");
+//             }
+
+//             setIsCheking(() => false);
+//         });
+//         // eslint-disable-next-line react-hooks/exhaustive-deps
+//     }, []);
+
+//     if (isCheking) {
+//         return <Loading />;
+//     } else {
+//         return children;
+//     }
 // };

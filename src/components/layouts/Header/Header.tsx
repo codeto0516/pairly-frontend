@@ -48,8 +48,19 @@ const BaseHeader = () => {
 
 export const Header = () => {
     const { currentUser } = useAuth();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    if (currentUser) {
+    useEffect(() => {
+        // console.log(currentUser, isAuthenticated);
+        
+        if (currentUser) {
+            setIsAuthenticated(() => true);
+        } else {
+            setIsAuthenticated(() => false);
+        }
+    }, [currentUser]);
+
+    if (isAuthenticated) {
         return (
             <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50">
                 <BaseHeader />

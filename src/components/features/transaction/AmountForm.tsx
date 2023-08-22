@@ -1,38 +1,11 @@
 import TextField from "@mui/material/TextField";
-
-import { IconButton, InputAdornment } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import { UserIcon } from "../icon/UsersIcon";
-import { useTransactionContext } from "@/src/components/elements/transaction/TransactionForm";
+import { InputAdornment } from "@mui/material";
+import { UserIcon } from "../../elements/icon/UsersIcon";
+import { useTransactionContext } from "@/src/components/features/transaction/TransactionForm";
 import { useEffect, useState } from "react";
-import { UserType } from "@/src/types/user";
 import { useAuth } from "@/src/hooks/useAuth";
-const CustomAmountForm = (props: { userName: string; userAmount: number; handler: any }) => {
-    const { currentUser } = useAuth();
-    
-    return (
-        <div className="flex items-end gap-4 ">
-            {/* ユーザーアイコン */}
-            <UserIcon user={currentUser} />
-            {/* 入力フォーム */}
-            <TextField
-                label={`${props.userName} の支払い額を入力`}
-                variant="standard"
-                className="w-full"
-                type="number"
-                value={props.userAmount <= 0 ? "" : props.userAmount}
-                onChange={(e) => props.handler(Number(e.target.value))}
-                InputProps={{
-                    inputProps: {
-                        inputMode: "numeric",
-                        pattern: "[0-9]*", // 数値以外の文字を削除
-                    },
-                    startAdornment: <InputAdornment position="start">¥</InputAdornment>,
-                }}
-            />
-        </div>
-    );
-};
+
+
 
 export const AmountForm = () => {
     const { transaction, changeTransaction } = useTransactionContext();
@@ -77,6 +50,34 @@ export const AmountForm = () => {
             <p className="text-gray-500">
                 合計: ¥ {totalAmount} <span className="text-xs">(税込)</span>
             </p>
+        </div>
+    );
+};
+
+
+const CustomAmountForm = (props: { userName: string; userAmount: number; handler: any }) => {
+    const { currentUser } = useAuth();
+
+    return (
+        <div className="flex items-end gap-4 ">
+            {/* ユーザーアイコン */}
+            <UserIcon user={currentUser} />
+            {/* 入力フォーム */}
+            <TextField
+                label={`${props.userName} の支払い額を入力`}
+                variant="standard"
+                className="w-full"
+                type="number"
+                value={props.userAmount <= 0 ? "" : props.userAmount}
+                onChange={(e) => props.handler(Number(e.target.value))}
+                InputProps={{
+                    inputProps: {
+                        inputMode: "numeric",
+                        pattern: "[0-9]*", // 数値以外の文字を削除
+                    },
+                    startAdornment: <InputAdornment position="start">¥</InputAdornment>,
+                }}
+            />
         </div>
     );
 };

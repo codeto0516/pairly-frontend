@@ -1,7 +1,7 @@
 // 支出か収入かを選ぶボタン
 
-import { useTransactionContext } from "@/src/components/elements/transaction/TransactionForm";
-import { ToggleButton } from "../button/ToggleButton";
+import { useTransactionContext } from "@/src/components/features/transaction/TransactionForm";
+import { ToggleButton } from "../../elements/button/ToggleButton";
 
 const toggleList = [
     { title: "支出", value: "spending" },

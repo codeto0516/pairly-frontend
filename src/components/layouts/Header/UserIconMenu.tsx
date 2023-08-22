@@ -1,3 +1,5 @@
+"use client";
+
 import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,9 +13,8 @@ import Logout from "@mui/icons-material/Logout";
 import { UserIcon } from "@/src/components/elements/icon/UsersIcon";
 
 // import { logoutAction } from "../../../hooks/providers/AuthProvider";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
-import { useSessions } from "@/src/hooks/api/useSessions";
 import { useAuth } from "@/src/hooks/useAuth";
 // import { useAuth } from "@/src/hooks/useAuth";
 
@@ -39,7 +40,7 @@ export const UserIconMenu = () => {
 
     const { signOut, currentUser } = useAuth();
     // console.log(currentUser);
-    
+    const handleSingOut = () => {};
 
     return (
         <>
@@ -107,9 +108,12 @@ export const UserIconMenu = () => {
                     <Settings fontSize="small" />
                 </CustomMenuitem> */}
 
-                <CustomMenuitem handler={signOut} title="ログアウト">
+                <CustomMenuitem handler={handleSingOut} title="ログアウト">
                     <Logout fontSize="small" />
                 </CustomMenuitem>
+                <a href="./signin" onClick={signOut}>
+                    ログアウト
+                </a>
             </Menu>
         </>
     );

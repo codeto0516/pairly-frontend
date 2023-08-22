@@ -2,7 +2,7 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { IconButton } from "@mui/material";
 
-export const DisplayMonthSelectorButton = () => {
+export const MonthSelectorButton = () => {
     return (
         <div className="flex gap-4 items-center">
             <IconButton className=" rounded-md h-8 border border-gray-400 border-solid">

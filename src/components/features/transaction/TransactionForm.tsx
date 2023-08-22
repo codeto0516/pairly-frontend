@@ -1,21 +1,22 @@
 "use client";
 
-import { useContext, useState, createContext, useEffect, Suspense } from "react";
+import { useContext, useState, createContext, useEffect, Suspense, useCallback } from "react";
 
 // Material UI
 import { Button, Skeleton } from "@mui/material";
 
 // 自作コンポーネント
-import { DateSelectorButton } from "@/src/components/elements/transaction/DateSelectorButton";
-import { TypeToggleButton } from "@/src/components/elements/transaction/TypeToggleButton";
-import { CategorySelectorButton } from "@/src/components/elements/transaction/CategorySelectorButton";
-import { ContentForm } from "@/src/components/elements/transaction/ContentForm";
-import { AmountForm } from "@/src/components/elements/transaction/AmountForm";
+import { DateSelectorButton } from "@/src/components/features/transaction/DateSelectorButton";
+import { TypeToggleButton } from "@/src/components/features/transaction/TypeToggleButton";
+import { CategorySelectorButton } from "@/src/components/features/transaction/CategorySelectorButton";
+import { ContentForm } from "@/src/components/features/transaction/ContentForm";
+import { AmountForm } from "@/src/components/features/transaction/AmountForm";
 import { LoadingButton } from "@/src/components/elements/button/LoadingButton";
 import { DeleteDialog } from "@/src/components/elements/utils/Dialog";
 
 // 型定義
 import { TransactionType } from "@/src/types/transaction";
+import { useToggle } from "@/src/hooks/useToggle";
 
 // useContext
 export const TransactionContext = createContext<any>({});
@@ -42,20 +43,14 @@ const sendTransactionData = async () => {
  本体
 ----------------------------------------------------------------------- */
 export const TransactionForm = (props: { transaction: TransactionType }) => {
-    // const [isModalOpen, setIsModalOpen] = useState(false);
-    // const openModal = () => setIsModalOpen(true);
-    // const closeModal = () => setIsModalOpen(false);
+    const [isDialog, toggleDialog] = useToggle(false);
 
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const openDialog = () => setIsDialogOpen(true);
-    const closeDialog = () => setIsDialogOpen(false);
-
-    const [isNew] = useState(props.transaction.id ? false : true);
+    const [isNewTransaction] = useState(props.transaction.id ? false : true);
 
     const [transaction, setTransaction] = useState(props.transaction);
-    const changeTransaction = (field: any, value: any) => {
+    const changeTransaction = useCallback((field: any, value: any) => {
         setTransaction((prevTransaction) => ({ ...prevTransaction, [field]: value }));
-    };
+    }, []);
 
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
@@ -69,41 +64,43 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
         console.log("削除します");
     };
 
-    const [saveButtonIsDisable, setSaveButtonIsDisable] = useState(false);
+    const [isButtonDisable, toggleButtonDisable] = useToggle(false);
     useEffect(() => {
         // フォームが編集されたら検知して保存ボタンのDisabledを解除
-        setSaveButtonIsDisable((prev) => !prev);
+        toggleButtonDisable()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transaction]);
 
     /* -----------------------------------------------------------------------
     ----------------------------------------------------------------------- */
     return (
         <TransactionContext.Provider value={{ transaction, changeTransaction }}>
-            <div
-                className="
-                flex flex-col gap-2
-                text-sx bg-white
-                w-full
-                px-6 py-8
-
-            "
-            >
-                {/* <IconButton aria-label="" className="">
-                    <CloseIcon/>
-                </IconButton> */}
-
+            <div className="flex flex-col gap-2 text-sx bg-white w-full px-6 py-8">
                 {/* 削除ボタンと日付を水平に配置する */}
                 <div className="flex justify-between items-center">
                     {/* 削除ボタン */}
-                    {isNew ? (
+                    {isNewTransaction ? (
                         <>
-                            <Button className="text-sm text-blue-500" onClick={openDialog}>
+                            <Button className="text-sm text-blue-500" onClick={() => toggleDialog(true)}>
                                 清算する
                             </Button>
-                            <DeleteDialog open={isDialogOpen} handleExec={handleDelete} handleClose={closeDialog} />
+                            {/* <DeleteDialog
+                                open={isDialog}
+                                handleExec={handleDelete}
+                                handleClose={() => toggleDialog(false)}
+                            /> */}
                         </>
                     ) : (
-                        <Button className="text-sm text-red-500">削除する</Button>
+                        <>
+                            <Button className="text-sm text-red-500" onClick={() => toggleDialog(true)}>
+                                削除する
+                            </Button>
+                            <DeleteDialog
+                                open={isDialog}
+                                handleExec={handleDelete}
+                                handleClose={() => toggleDialog(false)}
+                            />
+                        </>
                     )}
 
                     {/* 日付 */}
@@ -123,8 +120,8 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
                 <ContentForm />
 
                 {/* 保存ボタン */}
-                <LoadingButton onClick={handleSave} Disabled={saveButtonIsDisable}>
-                    {isNew ? "保存" : "変更"}
+                <LoadingButton onClick={handleSave} Disabled={isButtonDisable}>
+                    {isNewTransaction ? "保存" : "変更"}
                 </LoadingButton>
             </div>
         </TransactionContext.Provider>

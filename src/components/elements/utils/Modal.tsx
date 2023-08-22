@@ -35,28 +35,3 @@ export const Modal = (props: CustomModalProps)=>{
         </div>
     );
 }
-
-// import { Modal as MuiModal } from "@mui/material";
-
-// interface CustomModalProps {
-//     open: boolean;
-//     onClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void;
-//     children: React.ReactElement;
-// }
-// export const Modal = (props: CustomModalProps) => {
-//     return (
-//         <MuiModal
-//             open={props.open}
-//             onClose={props.onClose}
-//             sx={{
-//                 position: "fixed",
-//                 inset: "50%",
-//                 display: "flex",
-//                 alignItems: "center",
-//                 justifyContent: "center",
-//             }}
-//         >
-//             {props.children}
-//         </MuiModal>
-//     );
-// };
