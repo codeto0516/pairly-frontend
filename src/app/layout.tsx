@@ -6,9 +6,10 @@ import { Header } from "@/src/components/layouts/Header/Header";
 import Footer from "@/src/components/layouts/Footer";
 import { Suspense, useState } from "react";
 import Loading from "./loading";
-import { FramerMotionProvider } from "../hooks/providers/FramerMotionProvider";
-import { AuthProvider } from "../hooks/providers/AuthProvider";
-import { AuthGuard } from "../hooks/providers/AuthGuard";
+import { FramerMotionProvider } from "../providers/FramerMotionProvider";
+import { AuthProvider } from "../providers/AuthProvider";
+import { AuthGuard } from "../providers/AuthGuard";
+import { SessionProvider } from "../providers/SessionProvider";
 
 const roboto = Roboto({
     weight: "400",
@@ -26,17 +27,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="ja" className="overflow-x-hidden">
             <body className={`${roboto.className} text-gray-800 overflow-x-hidden`}>
                 {/* <Suspense fallback={<Loading />}> */}
-
-                <AuthProvider>
-                    <AuthGuard>
-                        <FramerMotionProvider>
-                            <Header />
-                            <Main>{children}</Main>
-                            <Footer />
-                        </FramerMotionProvider>
-                    </AuthGuard>
-                </AuthProvider>
-
+                <SessionProvider>
+                    {/* <AuthProvider>
+                    <AuthGuard> */}
+                    <FramerMotionProvider>
+                        <Header />
+                        <Main>{children}</Main>
+                        <Footer />
+                    </FramerMotionProvider>
+                    {/* </AuthGuard>
+                </AuthProvider> */}
+                </SessionProvider>
                 {/* </Suspense> */}
             </body>
         </html>

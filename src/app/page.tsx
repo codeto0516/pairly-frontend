@@ -9,8 +9,15 @@ import { format } from "date-fns";
 import { Modal } from "@/src/components/elements/utils/Modal";
 import { CloseButton } from "@/src/components/elements/button/IconButton";
 import { useToggle } from "../hooks/useToggle";
+import { useCategory } from "../hooks/api/useCategory";
+import { useEffect } from "react";
+
 
 const Page = () => {
+
+
+
+
     return (
         <div className="flex flex-col md:flex-row gap-8 w-full">
             {/* 取引の新規登録フォーム */}

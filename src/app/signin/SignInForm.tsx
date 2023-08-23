@@ -4,49 +4,35 @@ import { useRouter } from "next/navigation";
 import { LoadingButton } from "@mui/lab";
 import { useAuth } from "@/src/hooks/useAuth";
 import { Suspense, useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { MailField, PasswordField } from "@/src/components/elements/form/TextField";
 import Loading from "../loading";
 
-interface SingInInputs {
-    email: string;
-    password: string;
-}
 export const SignIn = () => {
+    
     const router = useRouter();
 
-    const { signIn, currentUser, isLoading, signInWithGoogle } = useAuth();
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<SingInInputs>();
+    const { signIn, isLoading, signInWithGoogle } = useAuth();
 
-    // const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    const onSubmit: SubmitHandler<SingInInputs> = ({ email, password }) => {
-        signIn(email, password);
-    };
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
 
-    useEffect(() => {
-        if (currentUser) {
-            router.push("/");
+        const data = new FormData(event.currentTarget);
+        const email = data.get("email")?.toString();
+        const password = data.get("password")?.toString();
+        if (email && password) {
+            const res = await signIn(email, password);
         }
-    }, [router, currentUser]);
-
-    const handleGoogleSignIn = async () => {
-        const res = await signInWithGoogle();
-        router.push("/");
     };
 
     return (
         <Suspense fallback={<Loading />}>
             <div className="mt-2 flex flex-col items-center gap-4 w-3xl">
                 <h1 className="text-xl">ログイン</h1>
-                <button onClick={handleGoogleSignIn}>Googleでログイン</button>
+                <button onClick={signInWithGoogle}>Googleでログイン</button>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="mt-3 flex flex-col gap-3 w-full  sm:w-[380px] ">
-                    <MailField register={register} />
-                    <PasswordField register={register} />
+                <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-3 w-full  sm:w-[380px] ">
+                    <MailField />
+                    <PasswordField />
                     <LoadingButton type="submit" fullWidth variant="outlined" className="h-14" loading={isLoading}>
                         ログイン
                     </LoadingButton>

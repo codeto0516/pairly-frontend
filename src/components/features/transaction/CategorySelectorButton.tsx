@@ -6,7 +6,12 @@ import MenuItem from "@mui/material/MenuItem";
 import { useCallback, useEffect, useState } from "react";
 import { CategoryList } from "../../../datas/category";
 import { useTransactionContext } from "@/src/components/features/transaction/TransactionForm";
-
+import useSWR from "swr";
+import { parseCookies, setCookie, destroyCookie } from "nookies";
+import { getCookie } from "cookies-next";
+import { useSession } from "next-auth/react";
+import { useUserData } from "@/src/providers/SessionProvider";
+import { useCategory } from "@/src/hooks/api/useCategory";
 interface BigCategory {
     big_category_id: number;
     big_category: string;
@@ -34,6 +39,12 @@ export const CategorySelectorButton = (): any => {
     // ①違う大カテゴリーを選択しなおしたら、小カテゴリーを未分類にリセットする
     // ②大カテゴリーが選択されたら、それに関連する小カテゴリーに切り替える
     // ③大カテゴリーが選択されていない時は、小カテゴリーを選択不可にする
+
+    const { getAllCategories } = useCategory();
+
+    useEffect(() => {
+        getAllCategories();
+    }, []);
 
     // 取引データのコンテキスト
     const { transaction, changeTransaction } = useTransactionContext();

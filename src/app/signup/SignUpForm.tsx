@@ -14,41 +14,30 @@ interface SingUpInputs {
 }
 
 export default function SignUp() {
-    const router = useRouter();
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<SingUpInputs>();
+    const { signInWithGoogle, signUp } = useAuth();
 
-    const { signUp, currentUser, isLoading, signInWithGoogle } = useAuth();
-
-    const onSubmit: SubmitHandler<SingUpInputs> = ({ email, password, confirmPassword }) => {
-        if (password === confirmPassword) {
-            signUp(email, password);
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const email = data.get("email");
+        const password = data.get("password");
+        const confirmPassword = data.get("password");
+        if (email && password && password === confirmPassword) {
+            signUp(email.toString(), password.toString());
         } else {
             alert("パスワードが一致しません！");
         }
     };
 
-    useEffect(() => {
-        if (currentUser) {
-            router.push("/");
-        }
-    }, [router, currentUser]);
-
     return (
         <div className="mt-2 flex flex-col items-center gap-4 w-full max-w-[360px]">
             <button onClick={signInWithGoogle}>Googleで新規登録</button>
             <h1 className="text-xl mb-8">新規登録</h1>
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-3 flex flex-col gap-3 w-full">
-                <MailField register={register} />
-                {errors.email && <p>メールアドレスは必須です</p>}
-                <PasswordField register={register} />
-                {errors.password && <p>パスワードは必須です</p>}
-                <ConfirmPasswordField register={register} />
-                {errors.confirmPassword && <p>パスワードは必須です</p>}
-                <LoadingButton type="submit" fullWidth variant="outlined" className="h-14" loading={isLoading}>
+            <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-3 w-full">
+                <MailField />
+                <PasswordField />
+                <ConfirmPasswordField />
+                <LoadingButton type="submit" fullWidth variant="outlined" className="h-14">
                     登録
                 </LoadingButton>
             </form>
