@@ -10,18 +10,20 @@ export const useCategory = () => {
 
     const user = useUserData()
 
-    const getAllCategories = async () => {
+    const getAllCategories = async (): Promise<any> => {
+        console.log("hello");
+        
         if (!user?.token) return null
-
+        
         const res = await fetch("http://localhost:80/api/v1/categories", {
-            // cache: "force-cache",
+            cache: "force-cache",
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${user.token}`,
             },
         });
-        console.log(res.json())
+        return res.json();
         
     };
 

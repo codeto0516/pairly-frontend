@@ -7,8 +7,6 @@ import Footer from "@/src/components/layouts/Footer";
 import { Suspense, useState } from "react";
 import Loading from "./loading";
 import { FramerMotionProvider } from "../providers/FramerMotionProvider";
-import { AuthProvider } from "../providers/AuthProvider";
-import { AuthGuard } from "../providers/AuthGuard";
 import { SessionProvider } from "../providers/SessionProvider";
 
 const roboto = Roboto({
@@ -28,15 +26,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <body className={`${roboto.className} text-gray-800 overflow-x-hidden`}>
                 {/* <Suspense fallback={<Loading />}> */}
                 <SessionProvider>
-                    {/* <AuthProvider>
-                    <AuthGuard> */}
                     <FramerMotionProvider>
                         <Header />
                         <Main>{children}</Main>
                         <Footer />
                     </FramerMotionProvider>
-                    {/* </AuthGuard>
-                </AuthProvider> */}
                 </SessionProvider>
                 {/* </Suspense> */}
             </body>
