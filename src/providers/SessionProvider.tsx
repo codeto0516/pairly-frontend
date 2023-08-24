@@ -20,10 +20,13 @@ export const CustomSessionProvider = ({ children }: { children: React.ReactNode 
         }
     }, [session]);
 
+    // console.log(pathName);
+
+    if (pathName === "/signin" || pathName === "/signup") {
+        return children; // ローディングを表示しない
+    }
+
     if (status === "loading" || user === null) {
-        if (pathName === "/signin" || pathName === "/signup") {
-            return children; // ローディングを表示しない
-        }
         return <Loading />;
     }
 
