@@ -1,4 +1,3 @@
-
 // const testdata = [
 //     {
 //         date: "2023-05-16",
@@ -22,7 +21,7 @@
 //         ],
 //     },
 // ];
-const testdata = [
+const transactionList = [
     {
         id: 1,
         date: "2023-05-16",
@@ -30,41 +29,10 @@ const testdata = [
         big_category_id: 2,
         small_category_id: 4,
         content: "セブンでごはんだみ",
-        total_amount: 50000,
-        user: "まゆみ",
-        description: [
-            { user: "まゆみ", amount: 200 },
-            { user: "たいせい", amount: 300 },
+        amount: [
+            { user_id: 1, amount: 200 },
+            { user_id: 2, amount: 200 },
         ],
-    },
-    {
-        id: 2,
-        date: "2023-05-16",
-        type: "spending",
-        big_category_id: 2,
-        small_category_id: 4,
-        content: "セブンでごはんだみ",
-        total_amount: 50000,
-        user: "まゆみ",
-        description: [
-            { user: "まゆみ", amount: 200 },
-            { user: "たいせい", amount: 300 },
-        ],
-    },
-    {
-        id: 3,
-        date: "2023-05-16",
-        type: "spending",
-        big_category_id: 2,
-        small_category_id: 4,
-        content: "セブンでごはんだみ",
-        total_amount: 50000,
-        user: "まゆみ",
-        description: [
-            { user: "まゆみ", amount: 200 },
-            { user: "たいせい", amount: 300 },
-        ],
+        registrant_user_id: 1,
     },
 ];
-
-export default testdata;
