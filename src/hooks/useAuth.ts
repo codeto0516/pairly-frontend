@@ -1,14 +1,12 @@
 import {
     GoogleAuthProvider,
     createUserWithEmailAndPassword,
-    getRedirectResult,
     signInWithEmailAndPassword,
     signInWithPopup,
-    signInWithRedirect,
     signOut as signOutFireBase,
 } from "firebase/auth";
 import { signIn as signInByNextAuth, signOut as signOutByNextAuth } from "next-auth/react";
-import { auth } from "@/src/firebase/client";
+import { auth } from "@/src/firebase/config";
 import { useState } from "react";
 
 export const useAuth = () => {
