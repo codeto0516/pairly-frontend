@@ -20,9 +20,20 @@ export const useAuth = () => {
                 idToken,
                 callbackUrl: "/",
             });
-            console.log("ユーザー登録完了!");
-        } catch (error) {
-            console.log(error);
+
+        } catch (error: any) {
+            switch (error.code) {
+                case "auth/email-already-in-use":
+                    throw new Error("このメールアドレスは既に使用されています。");
+                case "auth/invalid-email":
+                    throw new Error("無効なメールアドレスです。");
+                case "auth/operation-not-allowed":
+                    throw new Error("この操作は許可されていません。");
+                case "auth/weak-password":
+                    throw new Error("パスワードが弱すぎます。6文字以上入力してください。");
+                default:
+                    throw new Error("エラーが発生しました。もう一度お試しください。");
+            }
         }
     };
 
@@ -39,28 +50,18 @@ export const useAuth = () => {
                 idToken,
                 callbackUrl: "/",
             });
-
-            // const res = await fetch("http://localhost:80/api/v1/users", {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //         Authorization: `Bearer ${idToken}`,
-            //     },
-            // });
-            // console.log(res.json());
         } catch (error: any) {
-            console.log(error);
+            console.log(error.code);
 
             switch (error.code) {
                 case "auth/user-not-found":
+                    throw new Error("ユーザーが存在しません。");
                 case "auth/invalid-email":
+                    throw new Error("無効なメールアドレスです。");
                 case "auth/wrong-password":
-                    console.log("パスワードが合致しない、ユーザが存在しなかったときの処理");
-
-                    // パスワードが合致しない、ユーザが存在しなかったときの処理
-                    break;
+                    throw new Error("パスワードが間違っています。");
                 default:
-                // その他のエラー時の処理
+                    // throw new Error("エラーが発生しました。もう一度お試しください。");
             }
         }
     };
@@ -71,7 +72,6 @@ export const useAuth = () => {
     };
 
     const signInWithGoogle = async () => {
-
         const provider = new GoogleAuthProvider();
         const userCredential = await signInWithPopup(auth, provider);
         const idToken = await userCredential.user.getIdToken();

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MailField, ConfirmPasswordField, PasswordField } from "../../components/elements/form/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { LoadingButton } from "@mui/lab";
+import { Alert, LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/src/hooks/useAuth";
 
@@ -16,14 +16,23 @@ interface SingUpInputs {
 export default function SignUp() {
     const { signInWithGoogle, signUp } = useAuth();
 
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setErrorMessage(null); // エラーメッセージをリセット
         const data = new FormData(event.currentTarget);
-        const email = data.get("email");
-        const password = data.get("password");
-        const confirmPassword = data.get("password");
-        if (email && password && password === confirmPassword) {
-            signUp(email.toString(), password.toString());
+        const email = data.get("email")?.toString();
+        const password = data.get("password")?.toString();
+        const confirmPassword = data.get("password")?.toString();
+        if (password === confirmPassword && email && password) {
+            try {
+                await signUp(email, password);
+            } catch (error: any) {
+                console.log(error);
+
+                setErrorMessage(error.message); // エラーメッセージをセット
+            }
         } else {
             alert("パスワードが一致しません！");
         }
@@ -40,6 +49,8 @@ export default function SignUp() {
                 <LoadingButton type="submit" fullWidth variant="outlined" className="h-14">
                     登録
                 </LoadingButton>
+
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             </form>
             <div className="w-full">
                 <Link href="/signin" className="text-sm text-blue-800 flex justify-end mt-4">
