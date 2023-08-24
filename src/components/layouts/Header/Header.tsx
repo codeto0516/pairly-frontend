@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/src/hooks/useAuth";
 import { useUserData } from "@/src/providers/SessionProvider";
+import { useSession } from "next-auth/react";
 // import { useAuth } from "@/src/hooks/useAuth";
 
 const menuList = [
@@ -48,22 +49,11 @@ const BaseHeader = () => {
 };
 
 export const Header = () => {
-    // const { currentUser } = useAuth();
-    // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    // useEffect(() => {
-    //     // console.log(currentUser, isAuthenticated);
 
-    //     if (currentUser) {
-    //         setIsAuthenticated(() => true);
-    //     } else {
-    //         setIsAuthenticated(() => false);
-    //     }
-    // }, [currentUser]);
+    const {status} = useSession()
 
-    const user = useUserData();
-
-    if (user) {
+    if (status === "authenticated") {
         return (
             <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50">
                 <BaseHeader />
