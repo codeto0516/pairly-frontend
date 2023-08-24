@@ -27,7 +27,7 @@ export default withAuth(
 );
 
 export const config = {
-    // matcher: ["/((?!signup|api).*)"],
+    matcher: ["/((?!signup|api|signin).*)"],
     // matcher: ["/", "/report", "/partner", "/setting", "/signin"],
-    matcher: ["/(.*)"],
+    // matcher: ["/(.*)"],
 };
