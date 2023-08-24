@@ -16,6 +16,7 @@ import { UserIcon } from "@/src/components/elements/icon/UsersIcon";
 import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/src/hooks/useAuth";
+import { useUserData } from "@/src/providers/SessionProvider";
 // import { useAuth } from "@/src/hooks/useAuth";
 
 const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
@@ -38,25 +39,25 @@ export const UserIconMenu = () => {
         setAnchorEl(null);
     };
 
-    const { signOut, currentUser } = useAuth();
-    // console.log(currentUser);
-    const handleSingOut = () => {};
+    const user = useUserData();
+
+    const { signOut } = useAuth();
 
     return (
         <>
             <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-                <Tooltip title={currentUser?.email}>
-                    <IconButton
-                        onClick={handleClick}
-                        size="small"
-                        aria-controls={open ? "account-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        sx={{ padding: 0 }}
-                    >
-                        <UserIcon user={currentUser} />
-                    </IconButton>
-                </Tooltip>
+                {/* <Tooltip title={user.email}> */}
+                <IconButton
+                    onClick={handleClick}
+                    size="small"
+                    aria-controls={open ? "account-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                    sx={{ padding: 0 }}
+                >
+                    <UserIcon user={user} />
+                </IconButton>
+                {/* </Tooltip> */}
             </Box>
 
             <Menu
@@ -95,7 +96,7 @@ export const UserIconMenu = () => {
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
                 <CustomMenuitem handler={handleClose} title="プロフィール">
-                    <UserIcon user={currentUser} />
+                    <UserIcon user={user} />
                 </CustomMenuitem>
 
                 <CustomMenuitem handler={handleClose} title="パートナーを招待">
@@ -108,12 +109,10 @@ export const UserIconMenu = () => {
                     <Settings fontSize="small" />
                 </CustomMenuitem> */}
 
-                <CustomMenuitem handler={handleSingOut} title="ログアウト">
+                <CustomMenuitem handler={signOut} title="ログアウト">
                     <Logout fontSize="small" />
                 </CustomMenuitem>
-                <a href="./signin" onClick={signOut}>
-                    ログアウト
-                </a>
+              
             </Menu>
         </>
     );

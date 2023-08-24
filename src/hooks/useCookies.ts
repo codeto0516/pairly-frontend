@@ -1,29 +1,33 @@
 "use server";
 import { cookies } from "next/headers";
 
+export const useCookie = () => {
+    const getAllCookie = () => {
+        return cookies().getAll();
+    };
 
-export const setCookie = () => {
-    cookies().set("test", "testdesu", { secure: true });
-};
+    const getCookie = (key: string) => {
+        const cookie = cookies().get(key);
+        console.log(cookie);
 
-export const getAllCookie = () => {
-    console.log("hello!");
-    
-    console.log(cookies().getAll());
-    
-    return cookies().getAll()
-};
+        return cookie;
+    };
 
-export const getAllToken = () => {
-    const uid = cookies().get("uid");
-    const accessToken = cookies().get("access-token");
-    const client = cookies().get("client");
-    return {uid, accessToken, client}
-};
+    const setCookie = (key: string, value: string) => {
+        return cookies().set(key, value, { secure: true });
+    };
 
+    const deleteCookie = (key: string) => {
+        return cookies().delete(key);
+    };
 
-export const deleteAllToken = () => {
-    const uid = cookies().delete("uid");
-    const accessToken = cookies().delete("access-token");
-    const client = cookies().delete("client");
+    const getCookieTest = (key: string) => {
+        
+        const cookie = cookies().get("next-auth.session-token");
+        console.log(cookie);
+
+        return cookie;
+    };
+
+    return { getAllCookie, getCookie, setCookie, deleteCookie, getCookieTest };
 };
