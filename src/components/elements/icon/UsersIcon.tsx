@@ -1,7 +1,5 @@
-import { UserType } from "@/src/types/user";
 import { Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import { useState } from "react";
 
 interface UserIconProps {
     user: any;
@@ -10,9 +8,6 @@ interface UserIconProps {
 }
 
 export const UserIcon = ({ user, size }: UserIconProps) => {
-    // console.log(user);
-
-
     const getSizeClassName = () => {
         switch (size) {
             case "xs":
@@ -29,10 +24,10 @@ export const UserIcon = ({ user, size }: UserIconProps) => {
     };
 
     return (
-        <Tooltip title={user ? user.email : ""}>
+        <Tooltip title={user.email ? user.email : "user"}>
             <Avatar
-                alt={user?.email ? user.email : ""}
-                src={user?.image ? user?.image : ""}
+                alt={user.email ? user.email : ""}
+                src={user.image ? user.image : ""}
                 className={getSizeClassName()}
             />
         </Tooltip>
