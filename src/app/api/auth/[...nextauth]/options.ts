@@ -5,12 +5,16 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { DefaultSession } from "next-auth";
 import { JWT } from "next-auth/jwt";
 
-// 型を拡張
+/////////////////////////////////////////////////////////////////
+// 型拡張
+/////////////////////////////////////////////////////////////////
 declare module "next-auth/jwt" {
     interface JWT {
         // Firebaseの認証情報
         uid: string;
         emailVerified: boolean;
+        image: string | undefined | null;
+        token: string;
     }
 }
 
@@ -20,11 +24,14 @@ declare module "next-auth" {
             // Firebaseの認証情報
             uid: string;
             emailVerified?: boolean;
-            token: any;
+            idToken: any;
         } & DefaultSession["user"];
     }
 }
 
+/////////////////////////////////////////////////////////////////
+// 設定
+/////////////////////////////////////////////////////////////////
 export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
@@ -45,8 +52,9 @@ export const authOptions: NextAuthOptions = {
                             },
                         });
                         const decoded = await res.json();
-        
-                        return { ...decoded, token: idToken };
+                        // console.log(decoded.user);
+
+                        return { ...decoded.user, token: idToken };
                     } catch (err) {
                         console.error(err);
                     }
@@ -63,11 +71,15 @@ export const authOptions: NextAuthOptions = {
             return { ...token, ...user };
         },
         // sessionにJWTトークンからのユーザ情報を格納
-        session: async ({ session, token }: { session: Session; token: JWT }) => {
-            session.user.emailVerified = token.emailVerified;
+        session: async ({ session, token }: { session: Session; token: JWT; user: User }) => {
+            // 各データをセッションに追加
+            session.user.email = token.email;
+            session.user.image = token.image;
+            session.user.name = token.name;
             session.user.uid = token.uid;
-            session.user.token = token.token;
+            session.user.idToken = token.token;
             return session;
+            // useSessionで参照できるdata: sessionに格納される
         },
     },
 };

@@ -10,17 +10,14 @@ const SessionContext = createContext<any>({});
 export const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: session, status } = useSession();
     const [user, setUser] = useState(session ? session.user : null);
-    // console.log(session, user);
     const pathName = usePathname();
-
+    // console.log(user);
+    
     useEffect(() => {
         if (session) {
             setUser(session.user);
-            // console.log(session);
         }
     }, [session]);
-
-    // console.log(pathName);
 
     if (pathName === "/signin" || pathName === "/signup") {
         return children; // ローディングを表示しない
