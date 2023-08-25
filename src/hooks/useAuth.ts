@@ -40,11 +40,11 @@ export const useAuth = () => {
     const signIn = async (email: string, password: string) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const isNotVerified = !userCredential.user.emailVerified;
-            if (isNotVerified) {
-                // await reSendVerifyMail(userCredencial.user);
-                // await signOut();
-            }
+            // const isNotVerified = !userCredential.user.emailVerified;
+            // if (isNotVerified) {
+            //     // await reSendVerifyMail(userCredencial.user);
+            //     // await signOut();
+            // }
             const idToken = await userCredential.user.getIdToken();
             await signInByNextAuth("credentials", {
                 idToken,
