@@ -3,21 +3,23 @@ import { FormControl, Skeleton } from "@mui/material";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import { useCallback, useEffect, useState } from "react";
-import { CategoryList } from "../../../datas/category";
+import { useEffect, useState } from "react";
 import { useTransactionContext } from "@/src/components/features/transaction/TransactionForm";
 import { useUserData } from "@/src/providers/SessionProvider";
 
-interface SmallCategory {
-    small_category_id: number;
-    small_category: string;
+interface BigCategory {
+    big_category_id: number;
+    big_category_name: string;
+    small_categories: SmallCategory[];
 }
 
-interface Props {
-    changeBig: (newBig: number) => void;
-    changeSmall: (newSmall: number) => void;
-    smallList: SmallCategory[];
-    categoryList: any;
+interface SmallCategory {
+    small_category_id: number;
+    small_category_name: string;
+}
+
+interface CategoryList {
+    [index: number]: BigCategory;
 }
 
 
@@ -29,14 +31,13 @@ interface Props {
 // ②大カテゴリーが選択されたら、それに関連する小カテゴリーに切り替える
 // ③大カテゴリーが選択されていない時は、小カテゴリーを選択不可にする
 ///////////////////////////////////////////////////////////////////////////////
-export const CategorySelectorButton = (): any => {
-    const [categoryList, setCategoryList] = useState<any>(null);
-    // const { getAllCategories } = useCategory();
+export const CategorySelectorButton = () => {
+    const [categoryList, setCategoryList] = useState<CategoryList | null>(null);
     const user = useUserData();
 
     useEffect(() => {
         (async () => {
-            const res = await fetch("http://localhost:80/api/v1/categories", {
+            const res = await fetch("http://192.168.1.10:80/api/v1/categories", {
                 cache: "force-cache",
                 method: "GET",
                 headers: {
@@ -44,7 +45,7 @@ export const CategorySelectorButton = (): any => {
                     Authorization: `Bearer ${user.token}`,
                 },
             });
-            const data = await res.json();
+            const data:CategoryList = await res.json();
             setCategoryList(() => data);
         })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,13 +69,13 @@ export const CategorySelectorButton = (): any => {
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-//
+// 大カテゴリー
 ///////////////////////////////////////////////////////////////////////////////
-const BigCategorySelector = (categoryList: any) => {
+const BigCategorySelector = (categoryList: CategoryList) => {
     // 取引データのコンテキスト
     const { transaction, changeTransaction } = useTransactionContext();
 
-    const changeBig = (newBig: any) => changeTransaction("big_category_id", newBig);
+    const changeBig = (newBigCategoryId: any) => changeTransaction("big_category_id", newBigCategoryId);
 
     return (
         <FormControl sx={{ m: 0, width: "100%" }} size="small">
@@ -97,25 +98,25 @@ const BigCategorySelector = (categoryList: any) => {
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-//
+// 小カテゴリー
 ///////////////////////////////////////////////////////////////////////////////
-const SmallCategorySelector = (categoryList: any) => {
+const SmallCategorySelector = (categoryList: CategoryList) => {
     // 取引データのコンテキスト
     const { transaction, changeTransaction } = useTransactionContext();
 
-    const changeSmall = (newSmall: number) => changeTransaction("small_category_id", newSmall);
+    const changeSmall = (newSmallCategoryId: number) => changeTransaction("small_category_id", newSmallCategoryId);
 
-    const [smallCategoryList, setSmallCategoryList] = useState(categoryList[0].small_categories);
+    const [smallCategoryList, setSmallCategoryList] = useState<SmallCategory[]>(categoryList[0].small_categories);
 
     useEffect(() => {
         (async () => {
-            const result: any = await Object.values(categoryList).find(
-                (item: any) => item.big_category_id == transaction.big_category_id
+            const bigCategory: BigCategory = await Object.values(categoryList).find(
+                (bigCategory: BigCategory) => bigCategory.big_category_id == transaction.big_category_id
             );
 
-            setSmallCategoryList(() => result?.small_categories);
+            setSmallCategoryList(() => bigCategory?.small_categories);
 
-            const firstId = result.small_categories[0].small_category_id;
+            const firstId = bigCategory.small_categories[0].small_category_id;
 
             changeTransaction("small_category_id", firstId);
         })();

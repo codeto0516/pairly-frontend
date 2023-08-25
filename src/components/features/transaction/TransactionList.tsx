@@ -51,7 +51,7 @@ export const TransactionList = () => {
 };
 
 /* -----------------------------------------------------------------------
- リストアイテム
+ アイテム
 ----------------------------------------------------------------------- */
 export const TransactionContext = createContext<TransactionType | undefined>(undefined);
 
