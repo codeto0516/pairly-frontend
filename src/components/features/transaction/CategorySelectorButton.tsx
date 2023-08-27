@@ -22,8 +22,6 @@ interface CategoryList {
     [index: number]: BigCategory;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // 本体
 // 【機能】
@@ -33,7 +31,7 @@ interface CategoryList {
 ///////////////////////////////////////////////////////////////////////////////
 export const CategorySelectorButton = () => {
     const [categoryList, setCategoryList] = useState<CategoryList | null>(null);
-    const user = useUserData();
+    const {user} = useUserData();
 
     useEffect(() => {
         (async () => {
@@ -42,13 +40,13 @@ export const CategorySelectorButton = () => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
+                    Authorization: `Bearer ${user.idToken}`,
                 },
             });
-            const data:CategoryList = await res.json();
+            const data: CategoryList = await res.json();
             setCategoryList(() => data);
         })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -71,7 +69,7 @@ export const CategorySelectorButton = () => {
 ///////////////////////////////////////////////////////////////////////////////
 // 大カテゴリー
 ///////////////////////////////////////////////////////////////////////////////
-const BigCategorySelector = (categoryList: CategoryList) => {
+const BigCategorySelector = (categoryList: CategoryList) => {        
     // 取引データのコンテキスト
     const { transaction, changeTransaction } = useTransactionContext();
 
@@ -112,7 +110,7 @@ const SmallCategorySelector = (categoryList: CategoryList) => {
         (async () => {
             const bigCategory: BigCategory = await Object.values(categoryList).find(
                 (bigCategory: BigCategory) => bigCategory.big_category_id == transaction.big_category_id
-            );
+            );            
 
             setSmallCategoryList(() => bigCategory?.small_categories);
 

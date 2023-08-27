@@ -3,7 +3,7 @@
 // デモデータ
 import testdata from "@/src/datas/testdata";
 
-import { createContext } from "react";
+import { createContext, useEffect, useState } from "react";
 
 // Material UI
 import {
@@ -18,18 +18,47 @@ import { TransactionForm } from "./TransactionForm";
 import { TransactionListType, TransactionType } from "@/src/types/transaction";
 
 import { useToggle } from "@/src/hooks/useToggle";
-
+import { useTransaction } from "@/src/hooks/api/useTransaction";
+import { groupByDate } from "@/src/hooks/groupByDate";
 
 /* -----------------------------------------------------------------------
  リスト
 ----------------------------------------------------------------------- */
 export const TransactionList = () => {
-    const transactionList = testdata;
+    const { getTransactionList } = useTransaction();
+    const [transactionList, setTransactionList] = useState<any>();
+
+
+    useEffect(() => {
+        (async () => {
+            const res = await getTransactionList(1, 10);
+
+            const groupByDateList: any = groupByDate(res.data);
+
+            setTransactionList(() => groupByDateList);
+        })();
+    }, []);
+
+
+    if (transactionList === undefined) {
+        return "...loading";
+    }
+
+    if (transactionList.length === 0) { 
+        return (
+            <div className="flex justify-center">
+                <p>取引はありません</p>
+            </div>
+        );
+    }
+    
+    console.log(transactionList);
+    
 
     return (
         <div className="flex flex-col gap-4 w-full text-gray-500">
             {/* 取得したデータをmapで1つずつ取り出す */}
-            {transactionList.map((transactionList: TransactionListType, index: number) => (
+            {transactionList.map((transactionList: any, index: number) => (
                 // 日付ごとに取引を分けて表示する
                 <div key={index} className="rounded-sm overflow-hidden">
                     {/* 日付 */}
@@ -39,8 +68,8 @@ export const TransactionList = () => {
 
                     {/* その日付の全ての記録一覧を表示 */}
                     <ul className="flex flex-col gap-0.5">
-                        {transactionList.transactions.map((transaction: TransactionType, transIndex: number) => (
-                            <TransactionItem key={transIndex} {...transaction} />
+                        {transactionList.transactions.map((transaction: TransactionType) => (
+                            <TransactionItem key={transaction.id} {...transaction} />
                             // ↓下のリストアイテムを表示
                         ))}
                     </ul>
@@ -75,7 +104,9 @@ const TransactionItem = (transaction: TransactionType) => {
                 <p className="flex-grow truncate">{transaction.content}</p>
 
                 {/* 金額 */}
-                <p className="whitespace-nowrap">¥ -{transaction.total_amount}</p>
+                <p className="whitespace-nowrap">
+                    ¥ -{transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0)}
+                </p>
 
                 {/* 開閉ボタン */}
                 <IconButton size="small">

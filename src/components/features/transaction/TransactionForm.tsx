@@ -11,54 +11,47 @@ import { TypeToggleButton } from "@/src/components/features/transaction/TypeTogg
 import { CategorySelectorButton } from "@/src/components/features/transaction/CategorySelectorButton";
 import { ContentForm } from "@/src/components/features/transaction/ContentForm";
 import { AmountForm } from "@/src/components/features/transaction/AmountForm";
-import { LoadingButton } from "@/src/components/elements/button/LoadingButton";
+// import { LoadingButton } from "@/src/components/elements/button/LoadingButton";
 import { DeleteDialog } from "@/src/components/elements/utils/Dialog";
 
 // 型定義
 import { TransactionType } from "@/src/types/transaction";
 import { useToggle } from "@/src/hooks/useToggle";
+import { LoadingButton } from "@mui/lab";
+import { useUserData } from "@/src/providers/SessionProvider";
+import { useTransaction } from "@/src/hooks/api/useTransaction";
+import { useUser } from "@/src/hooks/api/useUser";
 
 // useContext
 export const TransactionContext = createContext<any>({});
 export const useTransactionContext = () => useContext(TransactionContext);
 
-/* -----------------------------------------------------------------------
- サーバーに送信
------------------------------------------------------------------------ */
-const sendTransactionData = async () => {
-    console.log("送信中・・");
-
-    // Promiseを作成
-    const promise = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve("success"); // 非同期処理完了を通知
-        }, 2000);
-    });
-
-    // Promiseが完了するまで待つ
-    return await promise;
-};
-
-/* -----------------------------------------------------------------------
- 本体
------------------------------------------------------------------------ */
+//////////////////////////////////////////////////////////////////////////////////
+// 本体
+//////////////////////////////////////////////////////////////////////////////////
 export const TransactionForm = (props: { transaction: TransactionType }) => {
     const [isDialog, toggleDialog] = useToggle(false);
+    const [isLoading, toggleLoading] = useToggle(false);
+    const { user } = useUserData();
+    const { sendTransaction, updateTransaction } = useTransaction();
 
     const [isNewTransaction] = useState(props.transaction.id ? false : true);
 
     const [transaction, setTransaction] = useState(props.transaction);
-    const changeTransaction = useCallback((field: any, value: any) => {
+    const changeTransaction = useCallback((field: string, value: string | number) => {
         setTransaction((prevTransaction) => ({ ...prevTransaction, [field]: value }));
     }, []);
 
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
-        // Promiseが完了するまで待つ
-        const result = await sendTransactionData();
-        console.log(result);
-        console.log("以下を送信しました");
+        sendTransaction(transaction);
     };
+
+    const handleUpdate = () => { 
+        updateTransaction(transaction)
+        console.log(transaction);
+        
+    }
 
     const handleDelete = () => {
         console.log("削除します");
@@ -67,14 +60,15 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
     const [isButtonDisable, toggleButtonDisable] = useToggle(false);
     useEffect(() => {
         // フォームが編集されたら検知して保存ボタンのDisabledを解除
-        toggleButtonDisable()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        toggleButtonDisable();
+        // console.log(transaction);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transaction]);
 
-    /* -----------------------------------------------------------------------
-    ----------------------------------------------------------------------- */
+    //////////////////////////////////////////////////////////////////////////////////
     return (
-        <TransactionContext.Provider value={{ transaction, changeTransaction }}>
+        <TransactionContext.Provider value={{ transaction, changeTransaction, setTransaction }}>
             <div className="flex flex-col gap-2 text-sx bg-white w-full px-6 py-8">
                 {/* 削除ボタンと日付を水平に配置する */}
                 <div className="flex justify-between items-center">
@@ -119,10 +113,15 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
                 {/* 購入内容等の入力フォーム */}
                 <ContentForm />
 
-                {/* 保存ボタン */}
-                <LoadingButton onClick={handleSave} Disabled={isButtonDisable}>
-                    {isNewTransaction ? "保存" : "変更"}
-                </LoadingButton>
+                {isNewTransaction ? (
+                    <LoadingButton variant="outlined" onClick={handleSave} loading={isLoading}>
+                        保存
+                    </LoadingButton>
+                ) : (
+                    <LoadingButton variant="outlined" onClick={handleUpdate} loading={isLoading}>
+                        変更
+                    </LoadingButton>
+                )}
             </div>
         </TransactionContext.Provider>
     );

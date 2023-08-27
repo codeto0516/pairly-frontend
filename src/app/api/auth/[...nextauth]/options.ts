@@ -11,10 +11,15 @@ import { JWT } from "next-auth/jwt";
 declare module "next-auth/jwt" {
     interface JWT {
         // Firebaseの認証情報
-        uid: string;
+        id: string;
         emailVerified: boolean;
         image: string | undefined | null;
         token: string;
+        partner: {
+            id: string;
+            name: string;
+            image: string;
+        }
     }
 }
 
@@ -22,10 +27,17 @@ declare module "next-auth" {
     interface Session {
         user: {
             // Firebaseの認証情報
-            uid: string;
+            id: string;
             emailVerified?: boolean;
             idToken: any;
         } & DefaultSession["user"];
+
+        partner: {
+            id: string;
+            name: string;
+            image: string;
+
+        }
     }
 }
 
@@ -52,9 +64,9 @@ export const authOptions: NextAuthOptions = {
                             },
                         });
                         const decoded = await res.json();
-                        // console.log(decoded.user);
-
-                        return { ...decoded.user, token: idToken };
+                        const currentUser = decoded.user;
+                        const partner = decoded.partner;
+                        return { ...currentUser, partner: partner, token: idToken };
                     } catch (err) {
                         console.error(err);
                     }
@@ -76,8 +88,9 @@ export const authOptions: NextAuthOptions = {
             session.user.email = token.email;
             session.user.image = token.image;
             session.user.name = token.name;
-            session.user.uid = token.uid;
+            session.user.id = token.id;
             session.user.idToken = token.token;
+            session.partner = token.partner;
             return session;
             // useSessionで参照できるdata: sessionに格納される
         },

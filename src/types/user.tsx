@@ -1,5 +1,5 @@
 export interface UserType {
-    userId?: number;
+    id?: number;
     userName?: string;
     iconPath?: string;
     partnerId?: number;
