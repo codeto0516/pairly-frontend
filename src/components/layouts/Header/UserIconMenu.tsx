@@ -39,14 +39,13 @@ export const UserIconMenu = () => {
         setAnchorEl(null);
     };
 
-    const user = useUserData();
+    const { user } = useUserData();
 
     const { signOut } = useAuth();
 
     return (
         <>
             <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-                {/* <Tooltip title={user.email}> */}
                 <IconButton
                     onClick={handleClick}
                     size="small"
@@ -57,7 +56,6 @@ export const UserIconMenu = () => {
                 >
                     <UserIcon user={user} />
                 </IconButton>
-                {/* </Tooltip> */}
             </Box>
 
             <Menu
@@ -112,7 +110,6 @@ export const UserIconMenu = () => {
                 <CustomMenuitem handler={signOut} title="ログアウト">
                     <Logout fontSize="small" />
                 </CustomMenuitem>
-              
             </Menu>
         </>
     );

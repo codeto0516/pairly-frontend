@@ -1,13 +1,27 @@
+import { useUser } from "@/src/hooks/api/useUser";
 import { Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
+import { User } from "next-auth";
+import { useEffect, useState } from "react";
 
-interface UserIconProps {
+interface UserIcon {
     user: any;
     size?: "xs" | "sm" | "md" | "lg";
     src?: string;
 }
 
-export const UserIcon = ({ user, size }: UserIconProps) => {
+export const UserIcon = ({ user, size }: UserIcon) => {
+    // const { getUser } = useUser();
+
+    // const [user, setUser] = useState<any>();
+
+    // useEffect(() => {
+    //     (async () => {
+    //         const res: any = await getUser(userId);
+    //         setUser(() => res?.user);
+    //     })();
+    // }, []);
+
     const getSizeClassName = () => {
         switch (size) {
             case "xs":
@@ -24,10 +38,10 @@ export const UserIcon = ({ user, size }: UserIconProps) => {
     };
 
     return (
-        <Tooltip title={user.email ? user.email : "user"}>
+        <Tooltip title={user?.email ? user.email : "user"}>
             <Avatar
-                alt={user.email ? user.email : ""}
-                src={user.image ? user.image : ""}
+                alt={user?.email ? user.email : ""}
+                src={user?.image ? user.image : ""}
                 className={getSizeClassName()}
             />
         </Tooltip>

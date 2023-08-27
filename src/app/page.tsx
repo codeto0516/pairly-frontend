@@ -11,13 +11,10 @@ import { CloseButton } from "@/src/components/elements/button/IconButton";
 import { useToggle } from "../hooks/useToggle";
 import { useCategory } from "../hooks/api/useCategory";
 import { useEffect } from "react";
-
+import { TransactionType } from "../types/transaction";
+import { useUserData } from "../providers/SessionProvider";
 
 const Page = () => {
-
-
-
-
     return (
         <div className="flex flex-col md:flex-row gap-8 w-full">
             {/* 取引の新規登録フォーム */}
@@ -63,19 +60,23 @@ const TransactionListWrapper = () => {
 ///////////////////////////////////////////////////////////////////////////
 const NewTransactionForm = () => {
     const [isModal, toggleModal] = useToggle();
+    const { user, partner } = useUserData();
 
     // 新規データ
-    const newTransaction = {
-        date: format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"),
-        type: "spending",
+    const newTransaction: TransactionType = {
+        paid_date: format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"),
+        type: "支出",
         big_category_id: 1,
         small_category_id: 1,
         content: "",
-        user: "まゆみ",
-        description: [
-            { user: "まゆみ", amount: 0 },
-            { user: "たいせい", amount: 0 },
-        ],
+        amounts: partner
+            ? [
+                  { user_id: user.id, amount: 0 },
+                  { user_id: partner.id, amount: 0 },
+              ]
+            : [{ user_id: user.id, amount: 0 }],
+
+        created_by: user.id,
     };
 
     return (

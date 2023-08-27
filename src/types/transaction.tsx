@@ -1,15 +1,14 @@
 
 export interface TransactionType {
     id?: number;
-    date: string;
+    paid_date: string;
     type: string;
     big_category_id: number;
     small_category_id: number;
     content: string;
-    total_amount?: number;
-    user: string;
-    description: {
-        user: string;
+    created_by: number;
+    amounts: {
+        user_id?: number;
         amount: number;
     }[];
 }

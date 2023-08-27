@@ -11,7 +11,7 @@
 // import { useState } from "react";
 // import { TransactionForm } from "../report/TransactionForm";
 // import { format } from "date-fns";
-// import { TransactionType } from "@/src/types/transaction";
+// import { Transaction } from "@/src/types/transaction";
 
 // const drawerBleeding = 40;
 
@@ -20,7 +20,7 @@
 
 //     const toggleDrawer = (newOpen: boolean) => () => setOpen(newOpen);
 
-//     const [newTransaction, setNewTransaction] = useState<TransactionType>({
+//     const [newTransaction, setNewTransaction] = useState<Transaction>({
 //         date: format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"),
 //         type: "spending",
 //         big_category_id: 1,
@@ -69,13 +69,8 @@
 //     );
 // }
 
-
 const page = () => {
-    return (
-        <div>
-            Enter
-        </div>
-    );
-}
+    return <div>Enter</div>;
+};
 
 export default page;

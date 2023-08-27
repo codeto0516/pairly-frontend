@@ -12,6 +12,9 @@ import { useState } from "react";
 export const useAuth = () => {
     const [isLoading, setIsLoading] = useState(false);
 
+    //////////////////////////////////////////////////////////////////////
+    // 新規登録（メールアドレス・パスワード）
+    //////////////////////////////////////////////////////////////////////
     const signUp = async (email: string, password: string) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -20,7 +23,6 @@ export const useAuth = () => {
                 idToken,
                 callbackUrl: "/",
             });
-
         } catch (error: any) {
             switch (error.code) {
                 case "auth/email-already-in-use":
@@ -37,6 +39,9 @@ export const useAuth = () => {
         }
     };
 
+    //////////////////////////////////////////////////////////////////////
+    // ログイン（メールアドレス・パスワード）
+    //////////////////////////////////////////////////////////////////////
     const signIn = async (email: string, password: string) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -61,16 +66,14 @@ export const useAuth = () => {
                 case "auth/wrong-password":
                     throw new Error("パスワードが間違っています。");
                 default:
-                    // throw new Error("エラーが発生しました。もう一度お試しください。");
+                // throw new Error("エラーが発生しました。もう一度お試しください。");
             }
         }
     };
 
-    const signOut = async () => {
-        await signOutFireBase(auth);
-        await signOutByNextAuth();
-    };
-
+    //////////////////////////////////////////////////////////////////////
+    // Googleアカウントで新規登録・ログイン
+    //////////////////////////////////////////////////////////////////////
     const signInWithGoogle = async () => {
         const provider = new GoogleAuthProvider();
         const userCredential = await signInWithPopup(auth, provider);
@@ -79,6 +82,14 @@ export const useAuth = () => {
             idToken,
             callbackUrl: "/",
         });
+    };
+
+    //////////////////////////////////////////////////////////////////////
+    // ログアウト（共通）
+    //////////////////////////////////////////////////////////////////////
+    const signOut = async () => {
+        await signOutFireBase(auth); // Firebaseのログアウト
+        await signOutByNextAuth(); // NextAuth.jsのログアウト
     };
 
     return { signUp, signIn, signOut, signInWithGoogle, isLoading };

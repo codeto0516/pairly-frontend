@@ -1,5 +1,4 @@
 import { TransactionType } from "@/src/types/transaction";
-import testdata from "../datas/testdata2";
 
 interface GroupByDateType {
     date: string;
@@ -7,12 +6,16 @@ interface GroupByDateType {
 }
 
 // 日付ごとに取引データをグループ化する関数
-const groupByDate = (transactionList: TransactionType[]) => {
+export const groupByDate = (transactionList: TransactionType[]) => {
     const groupedData: GroupByDateType[] = [];
     const dateMap = new Map();
 
+    console.log(transactionList);
+    
+    if(!transactionList) return groupedData;
+
     transactionList.forEach((transaction) => {
-        const date = transaction.date;
+        const date = transaction.paid_date;
         if (!dateMap.has(date)) {
             dateMap.set(date, []);
         }
@@ -26,4 +29,3 @@ const groupByDate = (transactionList: TransactionType[]) => {
     return groupedData;
 };
 
-groupByDate(testdata);
