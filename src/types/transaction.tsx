@@ -1,4 +1,9 @@
 
+export interface Amount {
+    user_id: number;
+    amount: number;
+}
+
 export interface TransactionType {
     id?: number;
     paid_date: string;
@@ -7,10 +12,7 @@ export interface TransactionType {
     small_category_id: number;
     content: string;
     created_by: number;
-    amounts: {
-        user_id?: number;
-        amount: number;
-    }[];
+    amounts: Amount[];
 }
 
 export interface TransactionListType {

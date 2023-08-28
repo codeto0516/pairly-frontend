@@ -44,14 +44,15 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
 
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
+        console.log(transaction);
         sendTransaction(transaction);
     };
 
-    const handleUpdate = () => { 
-        updateTransaction(transaction)
+    const handleUpdate = () => {
         console.log(transaction);
-        
-    }
+
+        updateTransaction(transaction);
+    };
 
     const handleDelete = () => {
         console.log("削除します");

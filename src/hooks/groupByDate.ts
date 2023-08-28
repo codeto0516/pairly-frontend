@@ -10,7 +10,6 @@ export const groupByDate = (transactionList: TransactionType[]) => {
     const groupedData: GroupByDateType[] = [];
     const dateMap = new Map();
 
-    console.log(transactionList);
     
     if(!transactionList) return groupedData;
 

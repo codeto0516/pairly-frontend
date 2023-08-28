@@ -2,60 +2,58 @@ import TextField from "@mui/material/TextField";
 import { InputAdornment, Skeleton } from "@mui/material";
 import { UserIcon } from "../../elements/icon/UsersIcon";
 import { useTransactionContext } from "@/src/components/features/transaction/TransactionForm";
-import { useUserData } from "@/src/providers/SessionProvider";
 import { useEffect, useState } from "react";
 import { useUser } from "@/src/hooks/api/useUser";
+import { Amount, TransactionType } from "@/src/types/transaction";
 
 export const AmountForm = () => {
     const { transaction, setTransaction } = useTransactionContext();
 
-    const changeAmount = (userId: any, value: any) => {
-        setTransaction((prevTransaction: any) => ({
+    const changeAmount = (userId: number, amount: number) => {
+        setTransaction((prevTransaction: TransactionType) => ({
             ...prevTransaction,
             amounts: prevTransaction.amounts.map((item: any) =>
-                item.user_id === userId ? { ...item, amount: value } : item
+                item.user_id === userId ? { ...item, amount: amount } : item
             ),
         }));
     };
 
     return (
         <div className="flex flex-col gap-2">
-            {transaction.amounts.map((item: any) => {
-                return <BaseForm key={item.user_id} item={item} changeAmount={changeAmount} />;
+            {transaction.amounts.map((item: Amount) => {
+                return <BaseAmountForm key={item.user_id} item={item} changeAmount={changeAmount} />;
             })}
 
             <p className="text-gray-500">
-                合計: ¥ {transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0)}{" "}
-                <span className="text-xs">(税込)</span>
+                合計: ¥ {transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0)}
+                <span className="text-xs"> (税込)</span>
             </p>
         </div>
     );
 };
 
-const BaseForm = ({item, changeAmount}: {item:any, changeAmount: any}) => {
+const BaseAmountForm = ({item, changeAmount}: {item:any, changeAmount: any}) => {
     const [user, setUser] = useState<any>(null);
     const { getUser } = useUser();
 
     useEffect(() => {
         (async () => {
             const res: any = await getUser(item.user_id);
-            console.log(res);
-            
             setUser(() => res.user);
         })();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (user == null) {
         return (
             <div className="flex flex-row gap-4 items-baseline">
-                <Skeleton variant="circular"  animation="wave" style={{minWidth:"32px", minHeight:"32px"}} />
-                <Skeleton variant="rectangular" width="100%" height={48} animation="wave" />
+                <Skeleton variant="circular" animation="wave" style={{ minWidth: "32px", minHeight: "32px" }} />
+                <Skeleton variant="rectangular" animation="wave" width="100%" height={48} />
             </div>
         );
     }
 
-    console.log(typeof item.amount);
-    
 
     return (
         <div key={item.user_id} className="flex items-end gap-4">

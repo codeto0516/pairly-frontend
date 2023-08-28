@@ -28,7 +28,7 @@ export const CustomSessionProvider = ({ children }: { children: React.ReactNode 
         return <Loading />;
     }
 
-    console.log(user, partner);
+    // console.log(user, partner);
 
     return <SessionContext.Provider value={{user, partner}}>{children}</SessionContext.Provider>;
 };
