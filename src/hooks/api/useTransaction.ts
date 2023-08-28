@@ -6,7 +6,6 @@ export const useTransaction = () => {
 
     const endPoint = "http://192.168.1.10:80/api/v1/transactions";
 
-
     const getTransactionList = async (page: number, perPage: number) => {
         // page: 何ページ目か  perPage: 表示数
         const res: any = await api.get({
@@ -17,17 +16,15 @@ export const useTransaction = () => {
     };
 
     const sendTransaction = async (transaction: any) => {
-        const res:any = await api.post({
+        const res: any = await api.post({
             url: endPoint,
             data: transaction,
         });
 
-        return res
-        
+        return res;
     };
 
     const updateTransaction = async (transaction: any) => {
-        
         const res: any = await api.put({
             url: `${endPoint}/${transaction.id}`,
             data: transaction,
@@ -36,6 +33,13 @@ export const useTransaction = () => {
         return res;
     };
 
+    const delteTransaction = async (transaction_id: number) => {
+        const res: any = await api.del({
+            url: `${endPoint}/${transaction_id}`,
+        });
 
-    return { getTransactionList, sendTransaction, updateTransaction };
+        return res;
+    };
+
+    return { getTransactionList, sendTransaction, updateTransaction, delteTransaction };
 };
