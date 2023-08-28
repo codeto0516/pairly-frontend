@@ -36,7 +36,7 @@ export const TransactionList = () => {
 
             setTransactionList(() => groupByDateList);
         })();
-    }, []);
+    }, [transactionList]);
 
 
     if (transactionList === undefined) {

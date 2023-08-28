@@ -21,6 +21,7 @@ import { LoadingButton } from "@mui/lab";
 import { useUserData } from "@/src/providers/SessionProvider";
 import { useTransaction } from "@/src/hooks/api/useTransaction";
 import { useUser } from "@/src/hooks/api/useUser";
+import { useRouter } from "next/navigation";
 
 // useContext
 export const TransactionContext = createContext<any>({});
@@ -32,8 +33,7 @@ export const useTransactionContext = () => useContext(TransactionContext);
 export const TransactionForm = (props: { transaction: TransactionType }) => {
     const [isDialog, toggleDialog] = useToggle(false);
     const [isLoading, toggleLoading] = useToggle(false);
-    const { user } = useUserData();
-    const { sendTransaction, updateTransaction } = useTransaction();
+    const { sendTransaction, updateTransaction, delteTransaction } = useTransaction();
 
     const [isNewTransaction] = useState(props.transaction.id ? false : true);
 
@@ -44,18 +44,17 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
 
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
-        console.log(transaction);
         sendTransaction(transaction);
     };
 
     const handleUpdate = () => {
-        console.log(transaction);
-
         updateTransaction(transaction);
     };
 
-    const handleDelete = () => {
-        console.log("削除します");
+    const handleDelete = async () => {
+        if (transaction.id) {
+            const res = await delteTransaction(transaction.id);
+        }
     };
 
     const [isButtonDisable, toggleButtonDisable] = useToggle(false);
