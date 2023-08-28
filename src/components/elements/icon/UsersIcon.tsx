@@ -2,47 +2,24 @@ import { useUser } from "@/src/hooks/api/useUser";
 import { Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { User } from "next-auth";
-import { useEffect, useState } from "react";
 
-interface UserIcon {
-    user: any;
-    size?: "xs" | "sm" | "md" | "lg";
-    src?: string;
-}
+export const UserIcon = ({ user, size = 32 }: { user: User; size?: number }) => {
 
-export const UserIcon = ({ user, size }: UserIcon) => {
-    // const { getUser } = useUser();
-
-    // const [user, setUser] = useState<any>();
-
-    // useEffect(() => {
-    //     (async () => {
-    //         const res: any = await getUser(userId);
-    //         setUser(() => res?.user);
-    //     })();
-    // }, []);
-
-    const getSizeClassName = () => {
-        switch (size) {
-            case "xs":
-                return "w-4 h-4";
-            case "sm":
-                return "w-6 h-6";
-            case "md":
-                return "w-8 h-8";
-            case "lg":
-                return "w-10 h-10";
-            default:
-                return "w-8 h-8"; // デフォルトサイズ
-        }
-    };
+    let title: string;
+    if (user.name) {
+        title = user.name
+    } else if (user.email) {
+        title = user.email
+    } else {
+        title = "ユーザー"
+    }
 
     return (
-        <Tooltip title={user?.email ? user.email : "user"}>
+        <Tooltip title={title}>
             <Avatar
-                alt={user?.email ? user.email : ""}
+                alt={title}
                 src={user?.image ? user.image : ""}
-                className={getSizeClassName()}
+                sx={{ width: size, height: size }}
             />
         </Tooltip>
     );

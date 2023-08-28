@@ -6,6 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useEffect, useState } from "react";
 import { useTransactionContext } from "@/src/components/features/transaction/TransactionForm";
 import { useUserData } from "@/src/providers/SessionProvider";
+import { useCategory } from "@/src/hooks/api/useCategory";
 
 interface BigCategory {
     big_category_id: number;
@@ -30,24 +31,24 @@ interface CategoryList {
 // ③大カテゴリーが選択されていない時は、小カテゴリーを選択不可にする
 ///////////////////////////////////////////////////////////////////////////////
 export const CategorySelectorButton = () => {
+
+    const { transaction, changeTransaction } = useTransactionContext();
+
     const [categoryList, setCategoryList] = useState<CategoryList | null>(null);
-    const {user} = useUserData();
+    const { user } = useUserData();
+    
+    const { getCategories } = useCategory()
 
     useEffect(() => {
         (async () => {
-            const res = await fetch("http://192.168.1.10:80/api/v1/categories", {
-                cache: "force-cache",
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.idToken}`,
-                },
-            });
-            const data: CategoryList = await res.json();
-            setCategoryList(() => data);
+            const res = await getCategories(transaction.type);
+            
+            changeTransaction("big_category_id", res.data[0].big_category_id)
+            changeTransaction("small_category_id", res.data[0].small_categories[0].small_category_id)
+            setCategoryList(() => res.data);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [transaction.type]);
 
     return (
         <div className="flex w-full gap-1 mt-2">
@@ -128,7 +129,7 @@ const SmallCategorySelector = (categoryList: CategoryList) => {
                 value={transaction.small_category_id}
                 label="大カテゴリー"
                 onChange={(e) => changeSmall(Number(e.target.value))}
-                disabled={transaction.big_category_id === 1 ? true : false}
+                // disabled={transaction.big_category_id === 1 ? true : false}
             >
                 {Object.values(smallCategoryList).map((item: any, index: number) => {
                     return (

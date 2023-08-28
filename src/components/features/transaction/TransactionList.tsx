@@ -1,7 +1,6 @@
 "use client";
 
 // デモデータ
-import testdata from "@/src/datas/testdata";
 
 import { createContext, useEffect, useState } from "react";
 
@@ -52,7 +51,7 @@ export const TransactionList = () => {
         );
     }
     
-    console.log(transactionList);
+    // console.log(transactionList);
     
 
     return (

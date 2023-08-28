@@ -24,6 +24,8 @@ export const useApi = () => {
 
     const sendRequest = async <T>(config: ApiConfig): Promise<T | null> => {
         if (!user.idToken) return null;
+        console.log(JSON.stringify(config.data));
+        
         try {
             const res = await fetch(config.url, {
                 cache: config.cache,
@@ -48,6 +50,7 @@ export const useApi = () => {
             url: url,
             cache: cache,
         };
+        
         return await sendRequest<T>(config);
     };
 

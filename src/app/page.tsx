@@ -65,7 +65,7 @@ const NewTransactionForm = () => {
     // 新規データ
     const newTransaction: TransactionType = {
         paid_date: format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"),
-        type: "支出",
+        type: "spending",
         big_category_id: 1,
         small_category_id: 1,
         content: "",
