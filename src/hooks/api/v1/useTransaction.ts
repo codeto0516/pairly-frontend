@@ -6,7 +6,7 @@ export const useTransaction = () => {
 
     const endPoint = "http://192.168.1.10:80/api/v1/transactions";
 
-    const getTransactionList = async (page: number, perPage: number) => {
+    const getTransactionList = async ({ page, perPage }: { page: number; perPage: number }) => {
         // page: 何ページ目か  perPage: 表示数
         const res: any = await api.get({
             url: `${endPoint}?page=${page}&per-page=${perPage}`,

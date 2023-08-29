@@ -1,11 +1,17 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MailField, ConfirmPasswordField, PasswordField } from "../../components/elements/form/TextField";
+import { MailField, ConfirmPasswordField, PasswordField } from "../../../components/elements/form/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Alert, LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/src/hooks/useAuth";
+
+const page = () => {
+    return <SignUp />;
+};
+
+export default page;
 
 interface SingUpInputs {
     email: string;
@@ -13,7 +19,7 @@ interface SingUpInputs {
     confirmPassword: string;
 }
 
-export default function SignUp() {
+const SignUp = () => {
     const { signInWithGoogle, signUp } = useAuth();
 
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -59,4 +65,4 @@ export default function SignUp() {
             </div>
         </div>
     );
-}
+};

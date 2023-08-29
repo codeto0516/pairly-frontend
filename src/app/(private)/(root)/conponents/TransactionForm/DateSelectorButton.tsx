@@ -11,7 +11,7 @@ import { jaJP } from "@mui/x-date-pickers";
 import { useState } from "react";
 import { format } from "date-fns";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import { useTransactionContext } from "@/src/components/features/transaction/TransactionForm";
+import { useTransactionContext } from "@/src/app/(private)/(root)/conponents/TransactionForm/TransactionForm";
 
 interface ButtonFieldProps
     extends UseDateFieldProps<Date>,
@@ -28,7 +28,7 @@ export const DateSelectorButton = () => {
     const changeDate = (newDate: Date | null) => {
         if (newDate) {
             const formattedDate = format(new Date(newDate), "yyyy-MM-dd");
-            changeTransaction("date", formattedDate);
+            changeTransaction("paid_date", formattedDate);
         }
     };
 

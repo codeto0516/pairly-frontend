@@ -6,7 +6,7 @@ import {
     signOut as signOutFireBase,
 } from "firebase/auth";
 import { signIn as signInByNextAuth, signOut as signOutByNextAuth } from "next-auth/react";
-import { auth } from "@/src/firebase/config";
+import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
 import { useState } from "react";
 
 export const useAuth = () => {

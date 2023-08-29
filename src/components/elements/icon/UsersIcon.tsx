@@ -1,4 +1,4 @@
-import { useUser } from "@/src/hooks/api/useUser";
+
 import { Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { User } from "next-auth";
