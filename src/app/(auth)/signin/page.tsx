@@ -5,14 +5,18 @@ import { Alert, LoadingButton } from "@mui/lab";
 import { useAuth } from "@/src/hooks/useAuth";
 import { Suspense, useEffect, useState } from "react";
 import { MailField, PasswordField } from "@/src/components/elements/form/TextField";
-import Loading from "../loading";
+import Loading from "../../loading";
 
-export const SignIn = () => {
-    
+const page = () => {
+    return <SignIn />;
+};
+
+export default page;
+
+const SignIn = () => {
     const router = useRouter();
     const { signIn, isLoading, signInWithGoogle } = useAuth();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -23,7 +27,7 @@ export const SignIn = () => {
         if (email && password) {
             try {
                 const res = await signIn(email, password);
-            } catch (error:any) {
+            } catch (error: any) {
                 setErrorMessage(error.message);
             }
         }

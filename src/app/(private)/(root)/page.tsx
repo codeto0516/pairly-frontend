@@ -1,18 +1,18 @@
 "use client";
 import { Pagination } from "@mui/material";
-import { DisplayNumberSelectorButton } from "@/src/components/features/transaction/DisplayNumberSelectorButton";
-import { TransactionList } from "@/src/components/features/transaction/TransactionList";
-import SearchBox from "@/src/components/elements/form/SearchBox";
+import { PerPageSelectorButton } from "@/src/app/(private)/(root)/conponents/SearchBox/PerPageSelectorButton";
+import { TransactionList } from "@/src/app/(private)/(root)/conponents/TransactionList";
+import SearchBox from "@/src/app/(private)/(root)/conponents/SearchBox/SearchBox";
 import { FloatingButton } from "@/src/components/elements/button/FloatingButton";
-import { TransactionForm } from "@/src/components/features/transaction/TransactionForm";
+import { TransactionForm } from "@/src/app/(private)/(root)/conponents/TransactionForm/TransactionForm";
 import { format } from "date-fns";
 import { Modal } from "@/src/components/elements/utils/Modal";
 import { CloseButton } from "@/src/components/elements/button/IconButton";
-import { useToggle } from "../hooks/useToggle";
-import { useCategory } from "../hooks/api/useCategory";
-import { useEffect } from "react";
-import { TransactionType } from "../types/transaction";
-import { useUserData } from "../providers/SessionProvider";
+import { useToggle } from "../../../hooks/useToggle";
+import { ChangeEvent, useState } from "react";
+import { TransactionType } from "../../../types/transaction";
+import { useUserData } from "../../../providers/SessionProvider";
+import { useObject } from "../../../hooks/useObject";
 
 const Page = () => {
     return (
@@ -31,7 +31,18 @@ export default Page;
 ///////////////////////////////////////////////////////////////////////////
 // 取引一覧とその他のコンポーネント
 ///////////////////////////////////////////////////////////////////////////
-const TransactionListWrapper = () => {
+const TransactionListWrapper = (handleChange: any) => {
+    // ページネーションの設定
+    const [pagenation, changePagenation] = useObject<{ page: number; count: number; perPage: number }>({
+        page: 1,
+        count: 1,
+        perPage: 10,
+    });
+
+    // ページの変更
+    const changePage = (page: number) => changePagenation("page", page);
+    const changePerPage = (perPage: number) => changePagenation("perPage", perPage);
+
     return (
         <div className="flex flex-col gap-4 w-full">
             {/* 検索ボックス */}
@@ -43,14 +54,20 @@ const TransactionListWrapper = () => {
             <div className="flex justify-end w-full gap-2 ju">
                 {/* 表示する月を選択 */}
                 {/* <DisplayOrderSelectorButton /> */}
-                <DisplayNumberSelectorButton />
+                <PerPageSelectorButton perPage={pagenation.perPage} changePerPage={changePerPage} />
             </div>
 
             {/* 取引記録一覧を表示 */}
-            <TransactionList />
+            <TransactionList pagenation={pagenation} changePagenation={changePagenation} />
 
             {/* ページネーション */}
-            <Pagination count={3} page={1} shape="rounded" className="flex justify-center mt-8" />
+            <Pagination
+                page={pagenation.page}
+                count={pagenation.count}
+                onChange={(e: ChangeEvent<unknown>, page: number) => changePage(page)}
+                shape="rounded"
+                className="flex justify-center mt-8"
+            />
         </div>
     );
 };

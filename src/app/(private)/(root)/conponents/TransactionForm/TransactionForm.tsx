@@ -6,11 +6,11 @@ import { useContext, useState, createContext, useEffect, Suspense, useCallback }
 import { Button, Skeleton } from "@mui/material";
 
 // 自作コンポーネント
-import { DateSelectorButton } from "@/src/components/features/transaction/DateSelectorButton";
-import { TypeToggleButton } from "@/src/components/features/transaction/TypeToggleButton";
-import { CategorySelectorButton } from "@/src/components/features/transaction/CategorySelectorButton";
-import { ContentForm } from "@/src/components/features/transaction/ContentForm";
-import { AmountForm } from "@/src/components/features/transaction/AmountForm";
+import { DateSelectorButton } from "@/src/app/(private)/(root)/conponents/TransactionForm/DateSelectorButton";
+import { TypeToggleButton } from "@/src/app/(private)/(root)/conponents/TransactionForm/TypeToggleButton";
+import { CategorySelectorButton } from "@/src/app/(private)/(root)/conponents/TransactionForm/CategorySelectorButton";
+import { ContentForm } from "@/src/app/(private)/(root)/conponents/TransactionForm/ContentForm";
+import { AmountForm } from "@/src/app/(private)/(root)/conponents/TransactionForm/AmountForm";
 // import { LoadingButton } from "@/src/components/elements/button/LoadingButton";
 import { DeleteDialog } from "@/src/components/elements/utils/Dialog";
 
@@ -19,9 +19,11 @@ import { TransactionType } from "@/src/types/transaction";
 import { useToggle } from "@/src/hooks/useToggle";
 import { LoadingButton } from "@mui/lab";
 import { useUserData } from "@/src/providers/SessionProvider";
-import { useTransaction } from "@/src/hooks/api/useTransaction";
-import { useUser } from "@/src/hooks/api/useUser";
+import { useTransaction } from "@/src/hooks/api/v1/useTransaction";
+import { useUser } from "@/src/hooks/api/v1/useUser";
 import { useRouter } from "next/navigation";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { transactionState } from "@/src/recoil/transaction";
 
 // useContext
 export const TransactionContext = createContext<any>({});
@@ -31,9 +33,11 @@ export const useTransactionContext = () => useContext(TransactionContext);
 // 本体
 //////////////////////////////////////////////////////////////////////////////////
 export const TransactionForm = (props: { transaction: TransactionType }) => {
+    const router = useRouter();
     const [isDialog, toggleDialog] = useToggle(false);
     const [isLoading, toggleLoading] = useToggle(false);
     const { sendTransaction, updateTransaction, delteTransaction } = useTransaction();
+    const changeIsTransaction = useSetRecoilState(transactionState);
 
     const [isNewTransaction] = useState(props.transaction.id ? false : true);
 
@@ -44,16 +48,29 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
 
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
-        sendTransaction(transaction);
+        const res = await sendTransaction(transaction);
+        console.log(res);
+
+        if (res.status === "SUCCESS") {
+            changeIsTransaction((prev) => !prev);
+        }
     };
 
-    const handleUpdate = () => {
-        updateTransaction(transaction);
+    const handleUpdate = async () => {
+        const res: any = await updateTransaction(transaction);
+        console.log(res);
+
+        if (res.status === "SUCCESS") {
+            changeIsTransaction((prev) => !prev);
+        }
     };
 
     const handleDelete = async () => {
         if (transaction.id) {
             const res = await delteTransaction(transaction.id);
+            if (res.status === "SUCCESS") {
+                changeIsTransaction((prev) => !prev);
+            }
         }
     };
 
@@ -114,11 +131,21 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
                 <ContentForm />
 
                 {isNewTransaction ? (
-                    <LoadingButton variant="outlined" onClick={handleSave} loading={isLoading}>
+                    <LoadingButton
+                        variant="outlined"
+                        onClick={handleSave}
+                        loading={isLoading}
+                        disabled={isButtonDisable}
+                    >
                         保存
                     </LoadingButton>
                 ) : (
-                    <LoadingButton variant="outlined" onClick={handleUpdate} loading={isLoading}>
+                    <LoadingButton
+                        variant="outlined"
+                        onClick={handleUpdate}
+                        loading={isLoading}
+                        disabled={isButtonDisable}
+                    >
                         変更
                     </LoadingButton>
                 )}

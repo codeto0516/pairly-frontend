@@ -1,9 +1,9 @@
 import TextField from "@mui/material/TextField";
 import { InputAdornment, Skeleton } from "@mui/material";
-import { UserIcon } from "../../elements/icon/UsersIcon";
-import { useTransactionContext } from "@/src/components/features/transaction/TransactionForm";
+import { UserIcon } from "../../../../../components/elements/icon/UsersIcon";
+import { useTransactionContext } from "@/src/app/(private)/(root)/conponents/TransactionForm/TransactionForm";
 import { useEffect, useState } from "react";
-import { useUser } from "@/src/hooks/api/useUser";
+import { useUser } from "@/src/hooks/api/v1/useUser";
 import { Amount, TransactionType } from "@/src/types/transaction";
 
 export const AmountForm = () => {
@@ -32,7 +32,7 @@ export const AmountForm = () => {
     );
 };
 
-const BaseAmountForm = ({item, changeAmount}: {item:any, changeAmount: any}) => {
+const BaseAmountForm = ({ item, changeAmount }: { item: any; changeAmount: any }) => {
     const [user, setUser] = useState<any>(null);
     const { getUser } = useUser();
 
@@ -42,7 +42,7 @@ const BaseAmountForm = ({item, changeAmount}: {item:any, changeAmount: any}) => 
             setUser(() => res.user);
         })();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (user == null) {
@@ -53,7 +53,6 @@ const BaseAmountForm = ({item, changeAmount}: {item:any, changeAmount: any}) => 
             </div>
         );
     }
-
 
     return (
         <div key={item.user_id} className="flex items-end gap-4">

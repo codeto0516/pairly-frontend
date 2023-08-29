@@ -5,13 +5,12 @@ interface GroupByDateType {
     transactions: TransactionType[];
 }
 
-// 日付ごとに取引データをグループ化する関数
+// 日付ごとに取引データをグループ化し、各グループ内の取引データをソートする関数
 export const groupByDate = (transactionList: TransactionType[]) => {
-    const groupedData: GroupByDateType[] = [];
+    const groupedAndSortedData: GroupByDateType[] = [];
     const dateMap = new Map();
 
-    
-    if(!transactionList) return groupedData;
+    if (!transactionList) return groupedAndSortedData;
 
     transactionList.forEach((transaction) => {
         const date = transaction.paid_date;
@@ -21,10 +20,17 @@ export const groupByDate = (transactionList: TransactionType[]) => {
         dateMap.get(date).push(transaction);
     });
 
+    // グループ化したデータをソートして新しい配列に格納
     dateMap.forEach((transactions, date) => {
-        groupedData.push({ date, transactions });
+        groupedAndSortedData.push({ date, transactions });
     });
 
-    return groupedData;
-};
+    // 日付の新しい順に並び替え
+    groupedAndSortedData.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA; // 新しい日付が先にくるようにソート
+    });
 
+    return groupedAndSortedData;
+};

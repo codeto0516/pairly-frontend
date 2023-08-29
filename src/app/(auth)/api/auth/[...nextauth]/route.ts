@@ -1,4 +1,4 @@
-import { authOptions } from "./options";
+import { authOptions } from "./firebase";
 import NextAuth from "next-auth";
 
 const handler = NextAuth(authOptions);

@@ -10,49 +10,77 @@ import {
     KeyboardArrowDown as KeyboardArrowDownIcon,
     KeyboardArrowUp as KeyboardArrowUpIcon,
 } from "@mui/icons-material";
-import { IconButton, Collapse } from "@mui/material";
+import { IconButton, Collapse, Skeleton } from "@mui/material";
 
 // 型定義
-import { TransactionForm } from "./TransactionForm";
+import { TransactionForm } from "./TransactionForm/TransactionForm";
 import { TransactionListType, TransactionType } from "@/src/types/transaction";
 
 import { useToggle } from "@/src/hooks/useToggle";
-import { useTransaction } from "@/src/hooks/api/useTransaction";
+import { useTransaction } from "@/src/hooks/api/v1/useTransaction";
 import { groupByDate } from "@/src/hooks/groupByDate";
-
+import { useRecoilState, useRecoilValue } from "recoil";
+import { transactionState } from "@/src/recoil/transaction";
+import { motion } from "framer-motion";
 /* -----------------------------------------------------------------------
  リスト
 ----------------------------------------------------------------------- */
-export const TransactionList = () => {
+interface TransactionListProps {
+    pagenation: any;
+    changePagenation: any;
+}
+
+export const TransactionList = ({ pagenation, changePagenation }: TransactionListProps) => {
     const { getTransactionList } = useTransaction();
     const [transactionList, setTransactionList] = useState<any>();
+    const isTransaction = useRecoilValue<any>(transactionState);
 
+    const handleGetTransactionList = async () => {
+        // 取引リストを取得
+        const res = await getTransactionList({
+            page: pagenation.page,
+            perPage: pagenation.perPage,
+        });
+
+        if (!res) return;
+
+        changePagenation("count", Math.ceil(res.data.total_count / pagenation.perPage));
+
+        const groupByDateList: any = groupByDate(res.data.transactions);
+
+        setTransactionList(() => groupByDateList);
+    };
 
     useEffect(() => {
-        (async () => {
-            const res = await getTransactionList(1, 10);
-
-            const groupByDateList: any = groupByDate(res.data);
-
-            setTransactionList(() => groupByDateList);
-        })();
-    }, [transactionList]);
-
+        handleGetTransactionList();
+    }, [isTransaction]);
 
     if (transactionList === undefined) {
-        return "...loading";
+        // return "...loading";
+        return (
+            <div className="flex flex-col gap-1 w-full">
+                {[...Array(pagenation.perPage)].map((_, index: number) => {
+                    return (
+                        <Skeleton
+                            key={index}
+                            variant="rounded"
+                            animation="wave"
+                            height={60}
+                            style={{ width: "100%" }}
+                        />
+                    );
+                })}
+            </div>
+        );
     }
 
-    if (transactionList.length === 0) { 
+    if (transactionList.length === 0) {
         return (
             <div className="flex justify-center">
                 <p>取引はありません</p>
             </div>
         );
     }
-    
-    // console.log(transactionList);
-    
 
     return (
         <div className="flex flex-col gap-4 w-full text-gray-500">
@@ -68,7 +96,7 @@ export const TransactionList = () => {
                     {/* その日付の全ての記録一覧を表示 */}
                     <ul className="flex flex-col gap-0.5">
                         {transactionList.transactions.map((transaction: TransactionType) => (
-                            <TransactionItem key={transaction.id} {...transaction} />
+                            <TransactionItem key={transaction.id} transaction={transaction} />
                             // ↓下のリストアイテムを表示
                         ))}
                     </ul>
@@ -81,14 +109,19 @@ export const TransactionList = () => {
 /* -----------------------------------------------------------------------
  アイテム
 ----------------------------------------------------------------------- */
-export const TransactionContext = createContext<TransactionType | undefined>(undefined);
-
-const TransactionItem = (transaction: TransactionType) => {
+const TransactionItem = ({ transaction }: { transaction: TransactionType }) => {
     // アコーディオンの開閉状態管理用
     const [isAccordion, toggleAccordion] = useToggle(false);
 
     return (
-        <div className="border border-gray-300 rounded-md overflow-hidden">
+        <motion.div
+            key={transaction.id}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 30 }}
+            transition={{ duration: 0.5 }}
+            className="border border-gray-300 rounded-md overflow-hidden"
+        >
             {/* -----------------------------------------------------------------------
              最初に表示される個別のリストアイテム。下のアコーディオンを開けば詳細が見れる
             ----------------------------------------------------------------------- */}
@@ -121,6 +154,6 @@ const TransactionItem = (transaction: TransactionType) => {
                     <TransactionForm transaction={transaction} />
                 </Collapse>
             </li>
-        </div>
+        </motion.div>
     );
 };
