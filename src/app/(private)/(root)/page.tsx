@@ -13,6 +13,8 @@ import { ChangeEvent, useState } from "react";
 import { TransactionType } from "../../../types/transaction";
 import { useUserData } from "../../../providers/SessionProvider";
 import { useObject } from "../../../hooks/useObject";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { countSelector, pageSelector } from "@/src/recoil/transactionListParams";
 
 const Page = () => {
     return (
@@ -31,17 +33,11 @@ export default Page;
 ///////////////////////////////////////////////////////////////////////////
 // 取引一覧とその他のコンポーネント
 ///////////////////////////////////////////////////////////////////////////
-const TransactionListWrapper = (handleChange: any) => {
-    // ページネーションの設定
-    const [pagenation, changePagenation] = useObject<{ page: number; count: number; perPage: number }>({
-        page: 1,
-        count: 1,
-        perPage: 10,
-    });
+const TransactionListWrapper = () => {
 
-    // ページの変更
-    const changePage = (page: number) => changePagenation("page", page);
-    const changePerPage = (perPage: number) => changePagenation("perPage", perPage);
+    const [page, setPage] = useRecoilState<number>(pageSelector);
+    const count = useRecoilValue(countSelector);
+
 
     return (
         <div className="flex flex-col gap-4 w-full">
@@ -54,17 +50,17 @@ const TransactionListWrapper = (handleChange: any) => {
             <div className="flex justify-end w-full gap-2 ju">
                 {/* 表示する月を選択 */}
                 {/* <DisplayOrderSelectorButton /> */}
-                <PerPageSelectorButton perPage={pagenation.perPage} changePerPage={changePerPage} />
+                <PerPageSelectorButton />
             </div>
 
             {/* 取引記録一覧を表示 */}
-            <TransactionList pagenation={pagenation} changePagenation={changePagenation} />
+            <TransactionList />
 
             {/* ページネーション */}
             <Pagination
-                page={pagenation.page}
-                count={pagenation.count}
-                onChange={(e: ChangeEvent<unknown>, page: number) => changePage(page)}
+                page={page}
+                count={count}
+                onChange={(e: ChangeEvent<unknown>, page: number) => setPage(page)}
                 shape="rounded"
                 className="flex justify-center mt-8"
             />

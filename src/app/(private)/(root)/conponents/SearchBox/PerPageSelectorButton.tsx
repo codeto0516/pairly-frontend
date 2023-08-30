@@ -1,7 +1,9 @@
 // "use client";
 
 import { SelectorButton } from "@/src/components/elements/form/SelectorButton";
+import { perPageSelector } from "@/src/recoil/transactionListParams";
 import { SelectChangeEvent } from "@mui/material";
+import { useRecoilState } from "recoil";
 
 const selectorItemList = [
     { name: "10件", value: 10 },
@@ -16,11 +18,12 @@ interface PerPageSelectorButton {
     changePerPage: (perPage: number) => void;
 }
 
-export const PerPageSelectorButton = ({ perPage, changePerPage }: PerPageSelectorButton) => {
+export const PerPageSelectorButton = () => {
+    const [perPage, setPerPage] = useRecoilState<any>(perPageSelector);
     return (
         <SelectorButton
             selectedItem={perPage}
-            handler={(e: SelectChangeEvent) => changePerPage(Number(e.target.value))}
+            handler={(e: SelectChangeEvent) => setPerPage(Number(e.target.value))}
             itemList={selectorItemList}
             label={"表示件数"}
         />

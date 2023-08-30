@@ -19,9 +19,17 @@ import { TransactionListType, TransactionType } from "@/src/types/transaction";
 import { useToggle } from "@/src/hooks/useToggle";
 import { useTransaction } from "@/src/hooks/api/v1/useTransaction";
 import { groupByDate } from "@/src/hooks/groupByDate";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { SetRecoilState, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { transactionState } from "@/src/recoil/transaction";
 import { motion } from "framer-motion";
+import {
+    TransactionListParams,
+    countSelector,
+    isButtonClickSelector,
+    pageSelector,
+    perPageSelector,
+    transactionListParamsState,
+} from "@/src/recoil/transactionListParams";
 /* -----------------------------------------------------------------------
  リスト
 ----------------------------------------------------------------------- */
@@ -30,36 +38,38 @@ interface TransactionListProps {
     changePagenation: any;
 }
 
-export const TransactionList = ({ pagenation, changePagenation }: TransactionListProps) => {
+export const TransactionList = () => {
     const { getTransactionList } = useTransaction();
     const [transactionList, setTransactionList] = useState<any>();
-    const isTransaction = useRecoilValue<any>(transactionState);
 
-    const handleGetTransactionList = async () => {
-        // 取引リストを取得
-        const res = await getTransactionList({
-            page: pagenation.page,
-            perPage: pagenation.perPage,
-        });
-
-        if (!res) return;
-
-        changePagenation("count", Math.ceil(res.data.total_count / pagenation.perPage));
-
-        const groupByDateList: any = groupByDate(res.data.transactions);
-
-        setTransactionList(() => groupByDateList);
-    };
+    const page = useRecoilValue<number>(pageSelector);
+    const perPage = useRecoilValue<number>(perPageSelector);
+    const isClickButton = useRecoilValue<boolean>(isButtonClickSelector);
+    const setCount = useSetRecoilState(countSelector);
 
     useEffect(() => {
-        handleGetTransactionList();
-    }, [isTransaction]);
+        (async () => {
+            // 取引リストを取得
+            const res = await getTransactionList({
+                page: page,
+                perPage: perPage,
+            });
+
+            if (!res) return;
+
+            setCount(Math.ceil(res.data.total_count / perPage));
+
+            const groupByDateList: any = groupByDate(res.data.transactions);
+
+            setTransactionList(() => groupByDateList);
+        })();
+    }, [page, perPage, isClickButton]);
+
 
     if (transactionList === undefined) {
-        // return "...loading";
         return (
             <div className="flex flex-col gap-1 w-full">
-                {[...Array(pagenation.perPage)].map((_, index: number) => {
+                {[...Array(perPage)].map((_, index: number) => {
                     return (
                         <Skeleton
                             key={index}
@@ -82,6 +92,8 @@ export const TransactionList = ({ pagenation, changePagenation }: TransactionLis
         );
     }
 
+    console.log(transactionList);
+    
     return (
         <div className="flex flex-col gap-4 w-full text-gray-500">
             {/* 取得したデータをmapで1つずつ取り出す */}
@@ -116,9 +128,9 @@ const TransactionItem = ({ transaction }: { transaction: TransactionType }) => {
     return (
         <motion.div
             key={transaction.id}
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0}}
             transition={{ duration: 0.5 }}
             className="border border-gray-300 rounded-md overflow-hidden"
         >
