@@ -24,6 +24,7 @@ import { useUser } from "@/src/hooks/api/v1/useUser";
 import { useRouter } from "next/navigation";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { transactionState } from "@/src/recoil/transaction";
+import { isButtonClickSelector } from "@/src/recoil/transactionListParams";
 
 // useContext
 export const TransactionContext = createContext<any>({});
@@ -33,13 +34,14 @@ export const useTransactionContext = () => useContext(TransactionContext);
 // 本体
 //////////////////////////////////////////////////////////////////////////////////
 export const TransactionForm = (props: { transaction: TransactionType }) => {
-    const router = useRouter();
     const [isDialog, toggleDialog] = useToggle(false);
     const [isLoading, toggleLoading] = useToggle(false);
     const { sendTransaction, updateTransaction, delteTransaction } = useTransaction();
-    const changeIsTransaction = useSetRecoilState(transactionState);
 
     const [isNewTransaction] = useState(props.transaction.id ? false : true);
+
+    const setIsClickButton = useSetRecoilState(isButtonClickSelector);
+
 
     const [transaction, setTransaction] = useState(props.transaction);
     const changeTransaction = useCallback((field: string, value: string | number) => {
@@ -52,7 +54,7 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
         console.log(res);
 
         if (res.status === "SUCCESS") {
-            changeIsTransaction((prev) => !prev);
+            setIsClickButton((prev) => !prev);
         }
     };
 
@@ -61,7 +63,7 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
         console.log(res);
 
         if (res.status === "SUCCESS") {
-            changeIsTransaction((prev) => !prev);
+            setIsClickButton((prev) => !prev);
         }
     };
 
@@ -69,7 +71,7 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
         if (transaction.id) {
             const res = await delteTransaction(transaction.id);
             if (res.status === "SUCCESS") {
-                changeIsTransaction((prev) => !prev);
+                setIsClickButton((prev) => !prev);
             }
         }
     };
