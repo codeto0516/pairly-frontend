@@ -60,7 +60,7 @@ const BaseAmountForm = ({ item, changeAmount }: { item: any; changeAmount: any }
             <UserIcon user={user} />
             {/* 入力フォーム */}
             <TextField
-                label={`${user.name} の支払い額を入力`}
+                label={`${user.name ?? user.email} の支払い額を入力`}
                 variant="standard"
                 className="w-full"
                 type="number"

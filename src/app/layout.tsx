@@ -29,9 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <Suspense fallback={<Loading />}>
                         <SessionProvider>
                             <FramerMotionProvider>
-                                <Header />
-                                <Main>{children}</Main>
-                                <Footer />
+                                {children}
                             </FramerMotionProvider>
                         </SessionProvider>
                     </Suspense>
