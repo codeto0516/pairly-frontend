@@ -1,9 +1,9 @@
 "use client";
 
-import { useContext, useState, createContext, useEffect, Suspense, useCallback } from "react";
+import { useContext, useState, createContext, useEffect, useCallback } from "react";
 
 // Material UI
-import { Button, Skeleton } from "@mui/material";
+import { Button } from "@mui/material";
 
 // 自作コンポーネント
 import { DateSelectorButton } from "@/src/app/(private)/(root)/conponents/TransactionForm/DateSelectorButton";
@@ -18,12 +18,8 @@ import { DeleteDialog } from "@/src/components/elements/utils/Dialog";
 import { TransactionType } from "@/src/types/transaction";
 import { useToggle } from "@/src/hooks/useToggle";
 import { LoadingButton } from "@mui/lab";
-import { useUserData } from "@/src/providers/SessionProvider";
 import { useTransaction } from "@/src/hooks/api/v1/useTransaction";
-import { useUser } from "@/src/hooks/api/v1/useUser";
-import { useRouter } from "next/navigation";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { transactionState } from "@/src/recoil/transaction";
+import { useSetRecoilState } from "recoil";
 import { isButtonClickSelector } from "@/src/recoil/transactionListParams";
 
 // useContext
@@ -33,15 +29,18 @@ export const useTransactionContext = () => useContext(TransactionContext);
 //////////////////////////////////////////////////////////////////////////////////
 // 本体
 //////////////////////////////////////////////////////////////////////////////////
+
 export const TransactionForm = (props: { transaction: TransactionType }) => {
     const [isDialog, toggleDialog] = useToggle(false);
     const [isLoading, toggleLoading] = useToggle(false);
+    const [isButtonDisable, toggleButtonDisable] = useToggle(false);
+
+
     const { sendTransaction, updateTransaction, delteTransaction } = useTransaction();
 
     const [isNewTransaction] = useState(props.transaction.id ? false : true);
 
     const setIsClickButton = useSetRecoilState(isButtonClickSelector);
-
 
     const [transaction, setTransaction] = useState(props.transaction);
     const changeTransaction = useCallback((field: string, value: string | number) => {
@@ -51,19 +50,17 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
         const res = await sendTransaction(transaction);
-        console.log(res);
-
         if (res.status === "SUCCESS") {
             setIsClickButton((prev) => !prev);
+            toggleButtonDisable(true);
         }
     };
 
     const handleUpdate = async () => {
         const res: any = await updateTransaction(transaction);
-        console.log(res);
-
         if (res.status === "SUCCESS") {
             setIsClickButton((prev) => !prev);
+            toggleButtonDisable(true);
         }
     };
 
@@ -76,10 +73,11 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
         }
     };
 
-    const [isButtonDisable, toggleButtonDisable] = useToggle(false);
     useEffect(() => {
         // フォームが編集されたら検知して保存ボタンのDisabledを解除
-        toggleButtonDisable();
+
+        toggleButtonDisable(false);
+
         // console.log(transaction);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps

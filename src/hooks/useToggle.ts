@@ -4,10 +4,10 @@ export const useToggle = (initialValue = false) => {
     const [state, setState] = useState(initialValue);
 
     const toggle = useCallback((specificState?: boolean) => {
-        if (specificState) {
-            setState(() => specificState);
-        } else {
+        if (specificState === undefined) {
             setState((prevState) => !prevState);
+        } else {
+            setState(() => specificState);
         }
     }, []);
 
