@@ -4,7 +4,7 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { useEffect, useState } from "react";
-import { useTransactionContext } from "@/src/app/(private)/(root)/conponents/TransactionForm/TransactionForm";
+import { useTransactionContext } from "@/src/app/(private)/(root)/components/TransactionForm/TransactionForm";
 import { useUserData } from "@/src/providers/SessionProvider";
 import { useCategory } from "@/src/hooks/api/v1/useCategory";
 

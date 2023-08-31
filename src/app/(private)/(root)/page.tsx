@@ -1,10 +1,10 @@
 "use client";
 import { Pagination } from "@mui/material";
-import { PerPageSelectorButton } from "@/src/app/(private)/(root)/conponents/SearchBox/PerPageSelectorButton";
-import { TransactionList } from "@/src/app/(private)/(root)/conponents/TransactionList";
-import SearchBox from "@/src/app/(private)/(root)/conponents/SearchBox/SearchBox";
+import { PerPageSelectorButton } from "@/src/app/(private)/(root)/components/SearchBox/PerPageSelectorButton";
+import { TransactionList } from "@/src/app/(private)/(root)/components/TransactionList";
+import SearchBox from "@/src/app/(private)/(root)/components/SearchBox/SearchBox";
 import { FloatingButton } from "@/src/components/elements/button/FloatingButton";
-import { TransactionForm } from "@/src/app/(private)/(root)/conponents/TransactionForm/TransactionForm";
+import { TransactionForm } from "@/src/app/(private)/(root)/components/TransactionForm/TransactionForm";
 import { format } from "date-fns";
 import { Modal } from "@/src/components/elements/utils/Modal";
 import { CloseButton } from "@/src/components/elements/button/IconButton";

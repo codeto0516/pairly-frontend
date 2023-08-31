@@ -1,4 +1,4 @@
-import { useTransactionContext } from "@/src/app/(private)/(root)/conponents/TransactionForm/TransactionForm";
+import { useTransactionContext } from "@/src/app/(private)/(root)/components/TransactionForm/TransactionForm";
 import { TextField } from "@mui/material";
 
 export const ContentForm = () => {

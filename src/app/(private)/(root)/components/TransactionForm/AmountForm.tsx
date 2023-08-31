@@ -1,7 +1,7 @@
 import TextField from "@mui/material/TextField";
 import { InputAdornment, Skeleton } from "@mui/material";
 import { UserIcon } from "../../../../../components/elements/icon/UsersIcon";
-import { useTransactionContext } from "@/src/app/(private)/(root)/conponents/TransactionForm/TransactionForm";
+import { useTransactionContext } from "@/src/app/(private)/(root)/components/TransactionForm/TransactionForm";
 import { useEffect, useState } from "react";
 import { useUser } from "@/src/hooks/api/v1/useUser";
 import { Amount, TransactionType } from "@/src/types/transaction";
