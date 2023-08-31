@@ -10,9 +10,10 @@ const SessionContext = createContext<any>({});
 export const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: session, status } = useSession();
     const [user, setUser] = useState(session ? session.user : null);
+    const updateUser = (newUserData: any) => setUser(() => newUserData);
     const [partner, setPartner] = useState(session ? session.partner : null);
     const pathName = usePathname();
-    
+
     useEffect(() => {
         if (session) {
             setUser(session.user);
@@ -30,7 +31,7 @@ export const CustomSessionProvider = ({ children }: { children: React.ReactNode 
 
     // console.log(user, partner);
 
-    return <SessionContext.Provider value={{user, partner}}>{children}</SessionContext.Provider>;
+    return <SessionContext.Provider value={{ user, setUser, partner }}>{children}</SessionContext.Provider>;
 };
 
 export const SessionProvider = ({ children }: { children: React.ReactNode }) => {

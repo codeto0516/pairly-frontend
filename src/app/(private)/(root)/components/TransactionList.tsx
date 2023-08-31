@@ -55,7 +55,7 @@ export const TransactionList = () => {
                 perPage: perPage,
             });
 
-            if (res.data === undefined) {
+            if (res === undefined) {
                 setTransactionList(() => []);
                 return;
             }

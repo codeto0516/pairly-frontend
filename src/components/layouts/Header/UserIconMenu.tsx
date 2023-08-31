@@ -17,6 +17,7 @@ import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/src/hooks/useAuth";
 import { useUserData } from "@/src/providers/SessionProvider";
+import Link from "next/link";
 // import { useAuth } from "@/src/hooks/useAuth";
 
 const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
@@ -93,9 +94,11 @@ export const UserIconMenu = () => {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-                <CustomMenuitem handler={handleClose} title="プロフィール">
-                    <UserIcon user={user} />
-                </CustomMenuitem>
+                <Link href="/profile">
+                    <CustomMenuitem handler={handleClose} title="プロフィール">
+                        <UserIcon user={user} />
+                    </CustomMenuitem>
+                </Link>
 
                 <CustomMenuitem handler={handleClose} title="パートナーを招待">
                     <PersonAdd fontSize="small" />
