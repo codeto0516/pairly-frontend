@@ -14,7 +14,7 @@ export const useUser = () => {
     const getUser = async (userId: string) => {
         const res = await api.get({
             url: `${endPoint}/${userId}`,
-            cache: "force-cache",
+            // cache: "force-cache",
         });
         return res
     };
