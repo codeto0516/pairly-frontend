@@ -1,6 +1,6 @@
 // 支出か収入かを選ぶボタン
 
-import { useTransactionContext } from "@/src/app/(private)/(root)/conponents/TransactionForm/TransactionForm";
+import { useTransactionContext } from "@/src/app/(private)/(root)/components/TransactionForm/TransactionForm";
 import { ToggleButton } from "../../../../../components/elements/button/ToggleButton";
 
 const toggleList = [
