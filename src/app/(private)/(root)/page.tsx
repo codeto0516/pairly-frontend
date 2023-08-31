@@ -34,10 +34,8 @@ export default Page;
 // 取引一覧とその他のコンポーネント
 ///////////////////////////////////////////////////////////////////////////
 const TransactionListWrapper = () => {
-
     const [page, setPage] = useRecoilState<number>(pageSelector);
     const count = useRecoilValue(countSelector);
-
 
     return (
         <div className="flex flex-col gap-4 w-full">
@@ -77,7 +75,7 @@ const NewTransactionForm = () => {
 
     // 新規データ
     const newTransaction: TransactionType = {
-        paid_date: format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"),
+        paid_date: format(new Date(), "yyyy-MM-dd"),
         type: "spending",
         big_category_id: 1,
         small_category_id: 1,
