@@ -55,7 +55,10 @@ export const TransactionList = () => {
                 perPage: perPage,
             });
 
-            if (!res) return;
+            if (res.data === undefined) {
+                setTransactionList(() => []);
+                return;
+            }
 
             setCount(Math.ceil(res.data.total_count / perPage));
 
@@ -92,7 +95,7 @@ export const TransactionList = () => {
         );
     }
 
-    console.log(transactionList);
+
     
     return (
         <div className="flex flex-col gap-4 w-full text-gray-500">
