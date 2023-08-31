@@ -12,7 +12,7 @@ const Main = ({ children }: { children: React.ReactNode }) => {
             // animate={{ opacity: 1 }}
             // exit={{ opacity: 0 }}
             className="
-                flex flex-col items-center justify-center
+                flex flex-col items-center justify-start
                 min-h-screen
                 w-full
                 bg-white
