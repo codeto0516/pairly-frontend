@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker, DatePickerProps } from "@mui/x-date-pickers/DatePicker";
 import { UseDateFieldProps } from "@mui/x-date-pickers/DateField";
@@ -25,10 +23,13 @@ interface ButtonFieldProps
 export const DateSelectorButton = () => {
     const { transaction, changeTransaction } = useTransactionContext();
 
+    const [label, setLabel] = useState<string | null>(transaction.paid_date ?? null);
+
     const changeDate = (newDate: Date | null) => {
         if (newDate) {
             const formattedDate = format(new Date(newDate), "yyyy-MM-dd");
             changeTransaction("paid_date", formattedDate);
+            setLabel(() => formattedDate);
         }
     };
 
@@ -39,10 +40,7 @@ export const DateSelectorButton = () => {
             adapterLocale={ja}
             localeText={jaJP.components.MuiLocalizationProvider.defaultProps.localeText}
         >
-            <CustomDatePicker
-                label={transaction.date && format(new Date(transaction.date), "yyyy年 MM月 dd日")}
-                onChange={(selectedDate) => changeDate(selectedDate)}
-            />
+            <CustomDatePicker label={label} onChange={(selectedDate) => changeDate(selectedDate)} />
         </LocalizationProvider>
     );
 };
@@ -60,8 +58,7 @@ const ButtonField = (props: ButtonFieldProps) => {
             onClick={() => setOpen?.((prev) => !prev)}
         >
             <CalendarMonthOutlinedIcon className="relative -top-0.5" fontSize="small" />
-
-            <p className="">{label ?? "日付を選択してください。"}</p>
+            <button>{label ?? "日付を選択してください。"}</button>
         </div>
     );
 };
@@ -81,6 +78,9 @@ const CustomDatePicker = (props: Omit<DatePickerProps<Date>, "open" | "onOpen" |
             slotProps={{
                 field: { setOpen } as any,
                 toolbar: { hidden: true },
+                actionBar: {
+                    actions: ["today"],
+                },
             }}
             {...props}
             open={open}
