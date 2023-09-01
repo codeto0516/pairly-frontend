@@ -11,10 +11,10 @@ import { CloseButton } from "@/src/components/elements/button/IconButton";
 import { useToggle } from "../../../hooks/useToggle";
 import { ChangeEvent, useState } from "react";
 import { TransactionType } from "../../../types/transaction";
-import { useUserData } from "../../../providers/SessionProvider";
 import { useObject } from "../../../hooks/useObject";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { countSelector, pageSelector } from "@/src/recoil/transactionListParams";
+import { useUser } from "@/src/hooks/api/v1/useUser";
 
 const Page = () => {
     return (
@@ -71,8 +71,9 @@ const TransactionListWrapper = () => {
 ///////////////////////////////////////////////////////////////////////////
 const NewTransactionForm = () => {
     const [isModal, toggleModal] = useToggle();
-    const { user, partner } = useUserData();
-
+    const { currentUser } = useUser();
+    const partner = null
+    
     // 新規データ
     const newTransaction: TransactionType = {
         paid_date: format(new Date(), "yyyy-MM-dd"),
@@ -82,12 +83,12 @@ const NewTransactionForm = () => {
         content: "",
         amounts: partner
             ? [
-                  { user_id: user.id, amount: 0 },
-                  { user_id: partner.id, amount: 0 },
+                  { user_id: currentUser.uid, amount: 0 },
+                  { user_id: partner, amount: 0 },
               ]
-            : [{ user_id: user.id, amount: 0 }],
+            : [{ user_id: currentUser.uid, amount: 0 }],
 
-        created_by: user.id,
+        created_by: currentUser.uid,
     };
 
     return (

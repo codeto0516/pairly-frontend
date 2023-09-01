@@ -8,38 +8,29 @@ import { JWT } from "next-auth/jwt";
 /////////////////////////////////////////////////////////////////
 // 型拡張
 /////////////////////////////////////////////////////////////////
-declare module "next-auth/jwt" {
-    interface JWT {
-        // Firebaseの認証情報
-        id: string;
-        emailVerified: boolean;
-        image: string | undefined | null;
-        token: string;
-        partner: {
-            id: string;
-            name: string;
-            image: string;
-        }
-    }
-}
+// declare module "next-auth/jwt" {
+//     interface JWT {
+//         // Firebaseの認証情報
+//         user_id: string;
+//         emailVerified: boolean;
+//         name: string | null;
+//         picture: string | undefined | null;
+//         token: string;
+//     }
+// }
 
-declare module "next-auth" {
-    interface Session {
-        user: {
-            // Firebaseの認証情報
-            id: string;
-            emailVerified?: boolean;
-            idToken: any;
-        } & DefaultSession["user"];
-
-        partner: {
-            id: string;
-            name: string;
-            image: string;
-
-        }
-    }
-}
+// declare module "next-auth" {
+//     interface Session {
+//         user: {
+//             // Firebaseの認証情報
+//             id: string;
+//             emailVerified?: boolean;
+//             name: string | null;
+//             picture: string | undefined | null;
+//             token: string;
+//         } & DefaultSession["user"];
+//     }
+// }
 
 /////////////////////////////////////////////////////////////////
 // 設定
@@ -63,12 +54,15 @@ export const authOptions: NextAuthOptions = {
                                 Authorization: `Bearer ${idToken}`,
                             },
                         });
+
+                        // 認証エラー
+                        if (res.statusText === "Unauthorized") throw new Error("Unauthorized");
+
                         const decoded = await res.json();
-                        const currentUser = decoded.user;
-                        const partner = decoded.partner;
-                        return { ...currentUser, partner: partner, token: idToken };
+
+                        return idToken
                     } catch (err) {
-                        console.error(err);
+                        return err;
                     }
                 }
                 return null;
@@ -78,21 +72,24 @@ export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt",
     },
-    callbacks: {
-        jwt: async ({ token, user }: { token: JWT; user: User }) => {
-            return { ...token, ...user };
-        },
-        // sessionにJWTトークンからのユーザ情報を格納
-        session: async ({ session, token }: { session: Session; token: JWT; user: User }) => {
-            // 各データをセッションに追加
-            session.user.email = token.email;
-            session.user.image = token.image;
-            session.user.name = token.name;
-            session.user.id = token.id;
-            session.user.idToken = token.token;
-            session.partner = token.partner;
-            return session;
-            // useSessionで参照できるdata: sessionに格納される
-        },
-    },
+    // callbacks: {
+    //     jwt: async ({ token, user }: { token: JWT; user: User }) => {
+    //         console.log(user);
+            
+    //         return { ...token, ...user };
+    //     },
+    //     // sessionにJWTトークンからのユーザ情報を格納
+    //     session: async ({ session, token }: { session: Session; token: JWT; user: User }) => {
+    //         // 各データをセッションに追加
+    //         // session.user.id = token.user_id;
+    //         // session.user.name = token.name;
+    //         // session.user.email = token.email;
+    //         // session.user.picture = token.picture;
+    //         // session.user.token = token.token;
+    //         // console.log(session, token);
+            
+    //         return session;
+    //         // useSessionで参照できるdata: sessionに格納される
+    //     },
+    // },
 };

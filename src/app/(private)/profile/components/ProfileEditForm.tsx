@@ -1,108 +1,110 @@
 "use client";
 
-import { useUserData } from "@/src/providers/SessionProvider";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
-import { Avatar } from "@mui/material";
-import { useApi } from "@/src/hooks/api/v1/useApi";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
+import { Alert, Avatar, Snackbar } from "@mui/material";
+import { useUser } from "@/src/hooks/api/v1/useUser";
+import { useFirebaseStorageImage } from "@/src/hooks/useFirebaseStorage";
+import { useToggle } from "@/src/hooks/useToggle";
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// 本体
+//////////////////////////////////////////////////////////////////////////////////////////
 export const ProfileEditForm = () => {
-    const { user, setUser } = useUserData();
-    const [editingData, setEditingData] = useState(user);
-    const changeEditingData = (field: any, value: any) => {
-        setEditingData({ ...editingData, [field]: value });
-    };
+    const { getUser } = useUser();
 
-    const api = useApi();
+    const { currentUser } = useUser();
+    const { editUser } = useUser();
+    const { uploadImage, deleteImage } = useFirebaseStorageImage();
+    
 
-    const postImage = async (image: any) => {
-        let uploadResult = "";
+    const [displayName, setDisplayName] = useState(currentUser.displayName);
+    const [imageFile, setImageFile] = useState(currentUser.photoURL);
+    const changeDisplayName = (newDisplayName: string) => setDisplayName(() => newDisplayName);
+    const changeImageFile = (newImageFile: string) => setImageFile(() => newImageFile);
 
-        if (image.name) {
-            const storageRef = ref(storage);
-            const ext = image.name.split(".").pop();
-            const hashName = Math.random().toString(36).slice(-8);
-            const fullPath = "/images/" + hashName + "." + ext;
-            const uploadRef = ref(storageRef, fullPath);
+    const [loading, loadingToggle] = useToggle(false);
 
-            // 'file' comes from the Blob or File API
-            await uploadBytes(uploadRef, image).then(async function (result) {
-                console.log(result);
-                console.log("Uploaded a blob or file!");
-
-                await getDownloadURL(uploadRef).then(function (url) {
-                    uploadResult = url;
-                });
-            });
-        }
-
-        return uploadResult;
-    };
+    const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
 
     const handleSubmit = async (event: any) => {
+        console.log(displayName, imageFile);
+        
+        // ローディング開始
+        loadingToggle(true);
+
+        // デフォルトのイベントをキャンセル
         event.preventDefault();
 
-        const url = await postImage(editingData.image);
+        // Firebase Storageに画像をアップロード
+        const imageUrl = await uploadImage(imageFile);
 
-        const res: any = await api.put({
-            url: `http://localhost/api/v1/users/${user.id}`,
-            data: {
-                name: editingData.name,
-                image: url,
-            },
-        });
+        // Firebase Authのユーザー情報を更新
+        const res = await editUser(displayName, imageUrl ?? currentUser.photoURL);
 
-        if (res.error) {
-            return;
+        if (res) {
+            setIsSuccess(true);
+        } else {
+            setIsSuccess(false);
         }
-        if (res.user) {
-            const userData = await res.user;
-            console.log(userData);
 
-            setUser(() => userData);
-        }
+        // ローディング終了
+        loadingToggle(false);
+
+        setTimeout(() => {
+            setIsSuccess(null);
+        }, 5000);
     };
+
+
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-8 justify-center items-center w-[300px]">
-            <EditProfoleImage editingData={editingData} changeEditingData={changeEditingData} />
+            <EditProfoleImage imageFile={imageFile} changeImageFile={changeImageFile} />
             <TextField
-                id="name"
+                id="displayName"
                 label="名前"
-                value={editingData.name}
-                onChange={(e: any) => changeEditingData("name", e.target.value)}
+                value={displayName}
+                onChange={(e: any) => changeDisplayName(e.target.value)}
                 sx={{ width: "100%" }}
             />
-            <LoadingButton type="submit" variant="outlined" sx={{ width: "100%", height: "50px" }}>
+            <LoadingButton type="submit" variant="outlined" sx={{ width: "100%", height: "50px" }} loading={loading}>
                 更新
             </LoadingButton>
+            {isSuccess === null ? (
+                <></>
+            ) : isSuccess ? (
+                <Alert severity="success" sx={{ width: "100%" }}>
+                    更新に成功しました。
+                </Alert>
+            ) : (
+                <Alert severity="error" sx={{ width: "100%" }}>
+                    更新に失敗しました。
+                </Alert>
+            )}
         </form>
     );
 };
 
-const EditProfoleImage = (props: { editingData: any; changeEditingData: any }) => {
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
+//////////////////////////////////////////////////////////////////////////////////////////
+// 画像選択
+//////////////////////////////////////////////////////////////////////////////////////////
+const EditProfoleImage = (props: { imageFile: any; changeImageFile: any }) => {
+    const [previewPhotoURL, setPreviewPhotoURL] = useState<string | null>(null);
 
     const handleImageChange = (event: any) => {
         const selectedImage = event.target.files[0];
-        // console.log(event.target.files);
 
         if (selectedImage instanceof File) {
-            props.changeEditingData("image", selectedImage);
-            setPreviewImage(() => URL.createObjectURL(selectedImage));
+            props.changeImageFile(selectedImage);
+            setPreviewPhotoURL(() => URL.createObjectURL(selectedImage));
         }
     };
 
     return (
         <div className="relative overflow-hidden rounded-full w-fit">
-            <Avatar
-                alt={props.editingData.email ?? ""}
-                src={previewImage ? previewImage : props.editingData.image}
-                sx={{ width: 100, height: 100 }}
-            />
+            <Avatar alt="プロフィール画像" src={previewPhotoURL ?? props.imageFile} sx={{ width: 100, height: 100 }} />
             <label htmlFor="image" className="absolute bottom-0 left-0 right-0 text-center cursor-pointer">
                 <div className="bg-black bg-opacity-60">
                     <p className="text-[10px] text-white pb-1.5 pt-1">変更する</p>

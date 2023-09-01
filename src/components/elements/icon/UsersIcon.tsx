@@ -1,26 +1,20 @@
-
 import { Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { User } from "next-auth";
 
-export const UserIcon = ({ user, size = 32 }: { user: User; size?: number }) => {
-
+export const UserIcon = ({ user, size = 32 }: { user: any; size?: number }) => {
     let title: string;
     if (user.name) {
-        title = user.name
+        title = user.displayName;
     } else if (user.email) {
-        title = user.email
+        title = user.email;
     } else {
-        title = "ユーザー"
+        title = "ユーザー";
     }
 
     return (
         <Tooltip title={title}>
-            <Avatar
-                alt={title}
-                src={user?.image ? user.image : ""}
-                sx={{ width: size, height: size }}
-            />
+            <Avatar alt={title} src={user?.photoURL ?? ""} sx={{ width: size, height: size }} />
         </Tooltip>
     );
 };
