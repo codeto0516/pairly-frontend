@@ -5,8 +5,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { useEffect, useState } from "react";
 import { useTransactionContext } from "@/src/app/(private)/(root)/components/TransactionForm/TransactionForm";
-import { useUserData } from "@/src/providers/SessionProvider";
 import { useCategory } from "@/src/hooks/api/v1/useCategory";
+import { useUser } from "@/src/hooks/api/v1/useUser";
 
 interface BigCategory {
     big_category_id: number;
@@ -34,17 +34,16 @@ export const CategorySelectorButton = () => {
     const { transaction, changeTransaction } = useTransactionContext();
 
     const [categoryList, setCategoryList] = useState<CategoryList | null>(null);
-    const { user } = useUserData();
+    const { currentUser } = useUser();
 
     const { getCategories } = useCategory();
 
     useEffect(() => {
         (async () => {
             const res = await getCategories(transaction.type);
-
-            changeTransaction("big_category_id", res.data[0].big_category_id);
-            changeTransaction("small_category_id", res.data[0].small_categories[0].small_category_id);
-            setCategoryList(() => res.data);
+            changeTransaction("big_category_id", res?.data[0].big_category_id);
+            changeTransaction("small_category_id", res?.data[0].small_categories[0].small_category_id);
+            setCategoryList(() => res?.data);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transaction.type]);

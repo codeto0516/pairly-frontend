@@ -4,35 +4,10 @@ import { SessionProvider as NextAuthSessionProvider, useSession } from "next-aut
 import { createContext, useContext, useEffect, useState } from "react";
 import Loading from "../app/loading";
 import { usePathname } from "next/navigation";
+import { auth } from "../app/(auth)/api/auth/[...nextauth]/config";
 
-const SessionContext = createContext<any>({});
-
-export const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
-    const { data: session, status } = useSession();
-    const [user, setUser] = useState(session ? session.user : null);
-    const updateUser = (newUserData: any) => setUser(() => newUserData);
-    const [partner, setPartner] = useState(session ? session.partner : null);
-    const pathName = usePathname();
-
-    useEffect(() => {
-        if (session) {
-            setUser(session.user);
-            setPartner(session.partner);
-        }
-    }, [session]);
-
-    if (pathName === "/signin" || pathName === "/signup") {
-        return children; // ローディングを表示しない
-    }
-
-    if (status === "loading" || user === null) {
-        return <Loading />;
-    }
-
-    // console.log(user, partner);
-
-    return <SessionContext.Provider value={{ user, setUser, partner }}>{children}</SessionContext.Provider>;
-};
+export const SessionContext = createContext<any>({});
+export const useUserData = () => useContext(SessionContext);
 
 export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -42,6 +17,30 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
     );
 };
 
-export const useUserData = () => {
-    return useContext(SessionContext);
+const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
+    const pathName = usePathname();
+
+    const { data: session, status } = useSession();
+
+    const [currentUser, setCurrentUser] = useState(null);
+    const updateUser = (newUserData: any) => setCurrentUser(() => newUserData);
+
+    useEffect(() => {
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                updateUser(user);
+            }
+        });
+    }, []);
+
+
+    if (pathName === "/signin" || pathName === "/signup" || pathName === "/api/auth/error") {
+        return children; // ローディングを表示しない
+    }
+
+    if (status === "loading" || currentUser === null) {
+        return <Loading />;
+    }
+
+    return <SessionContext.Provider value={{ currentUser, setCurrentUser }}>{children}</SessionContext.Provider>;
 };

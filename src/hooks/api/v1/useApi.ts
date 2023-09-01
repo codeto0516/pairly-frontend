@@ -1,10 +1,9 @@
 // customHooks/useApi.ts
 
+import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
 import { useUserData } from "@/src/providers/SessionProvider";
-import axios from "axios";
 
-
-type Cache = "force-cache" | "no-cache" | "no-store"
+type Cache = "force-cache" | "no-cache" | "no-store";
 
 interface ApiConfig extends Api {
     method: string;
@@ -18,56 +17,51 @@ interface Api {
     cache?: Cache;
 }
 
-
 export const useApi = () => {
-    const {user} = useUserData();
-
+    const { currentUser } = useUserData();
     const sendRequest = async <T>(config: ApiConfig): Promise<T | null> => {
-        if (!user.idToken) return null;
-        // console.log(JSON.stringify(config.data));
-        
+        if (!currentUser) return null;
         try {
             const res = await fetch(config.url, {
                 cache: config.cache,
                 method: config.method,
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.idToken}`,
+                    Authorization: `Bearer ${currentUser.accessToken}`,
                 },
                 body: JSON.stringify(config.data),
             });
-            const data = await res.json()
+            const data = await res.json();
             return data as T;
         } catch (error) {
             return null;
         }
     };
 
-    const get = async <T>({ url, headers = {}, cache="no-cache" }: Api): Promise<T | null> => {
+    const get = async <T>({ url, headers = {}, cache = "no-cache" }: Api): Promise<T | null> => {
         const config = {
             method: "GET",
             headers: headers,
             url: url,
             cache: cache,
         };
-        
+
         return await sendRequest<T>(config);
     };
 
-    const post = async <T>({ url, data = {}, headers = {}, cache="no-cache" }: Api): Promise<T | null> => {
+    const post = async <T>({ url, data = {}, headers = {}, cache = "no-cache" }: Api): Promise<T | null> => {
         const config = {
             method: "POST",
             headers: headers,
             url: url,
             data: data,
-            cache: cache
+            cache: cache,
         };
 
         return await sendRequest<T>(config);
     };
 
-    const put = async <T>({ url, data = {}, headers = {}, cache="no-cache" }: Api): Promise<T | null> => {
-        
+    const put = async <T>({ url, data = {}, headers = {}, cache = "no-cache" }: Api): Promise<T | null> => {
         const config = {
             method: "PUT",
             headers: headers,
@@ -78,7 +72,7 @@ export const useApi = () => {
         return await sendRequest<T>(config);
     };
 
-    const del = async <T>({ url, headers = {}, cache="no-cache" }: Api): Promise<T | null> => {
+    const del = async <T>({ url, headers = {}, cache = "no-cache" }: Api): Promise<T | null> => {
         const config = {
             method: "DELETE",
             headers: headers,

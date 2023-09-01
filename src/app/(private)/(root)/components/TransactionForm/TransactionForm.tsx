@@ -48,6 +48,8 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
 
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
+        console.log(transaction);
+        
         const res = await sendTransaction(transaction);
         if (res.status === "SUCCESS") {
             setIsClickButton((prev) => !prev);

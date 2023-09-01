@@ -28,6 +28,8 @@ const SignIn = () => {
             try {
                 const res = await signIn(email, password);
             } catch (error: any) {
+                console.log(error);
+                
                 setErrorMessage(error.message);
             }
         }

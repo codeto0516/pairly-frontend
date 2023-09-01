@@ -16,8 +16,8 @@ import { UserIcon } from "@/src/components/elements/icon/UsersIcon";
 import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/src/hooks/useAuth";
-import { useUserData } from "@/src/providers/SessionProvider";
 import Link from "next/link";
+import { useUser } from "@/src/hooks/api/v1/useUser";
 // import { useAuth } from "@/src/hooks/useAuth";
 
 const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
@@ -40,7 +40,7 @@ export const UserIconMenu = () => {
         setAnchorEl(null);
     };
 
-    const { user } = useUserData();
+    const { currentUser } = useUser();
 
     const { signOut } = useAuth();
 
@@ -55,7 +55,7 @@ export const UserIconMenu = () => {
                     aria-expanded={open ? "true" : undefined}
                     sx={{ padding: 0 }}
                 >
-                    <UserIcon user={user} />
+                    <UserIcon user={currentUser} />
                 </IconButton>
             </Box>
 
@@ -96,7 +96,7 @@ export const UserIconMenu = () => {
             >
                 <Link href="/profile">
                     <CustomMenuitem handler={handleClose} title="プロフィール">
-                        <UserIcon user={user} />
+                        <UserIcon user={currentUser} />
                     </CustomMenuitem>
                 </Link>
 

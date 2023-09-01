@@ -3,13 +3,8 @@ import Logo from "../../elements/icon/Logo";
 import HumburgerMenu from "./HumburgerMenu";
 import HeaderNav from "./HeaderNav";
 import { UserIconMenu } from "./UserIconMenu";
-import { useEffect, useState } from "react";
 
-import { usePathname } from "next/navigation";
-import { useAuth } from "@/src/hooks/useAuth";
-import { useUserData } from "@/src/providers/SessionProvider";
 import { useSession } from "next-auth/react";
-// import { useAuth } from "@/src/hooks/useAuth";
 
 const menuList = [
     {

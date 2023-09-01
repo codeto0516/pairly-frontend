@@ -35,11 +35,11 @@ export const AmountForm = () => {
 const BaseAmountForm = ({ item, changeAmount }: { item: any; changeAmount: any }) => {
     const [user, setUser] = useState<any>(null);
     const { getUser } = useUser();
-
+    
     useEffect(() => {
         (async () => {
-            const res: any = await getUser(item.user_id);
-            setUser(() => res.user);
+            const user: any = await getUser(item.user_id);
+            setUser(() => user);
         })();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,7 +60,7 @@ const BaseAmountForm = ({ item, changeAmount }: { item: any; changeAmount: any }
             <UserIcon user={user} />
             {/* 入力フォーム */}
             <TextField
-                label={`${user.name ?? user.email} の支払い額を入力`}
+                label={`${user.displayName ?? user.email} の支払い額を入力`}
                 variant="standard"
                 className="w-full"
                 type="number"
