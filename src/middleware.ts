@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export default withAuth(
     (req: NextRequest) => {
+        // console.log(req);
+        
         // console.log(req.url);
         // if (req.url === "http://localhost:3000/signin") {
         //     if (req.nextauth?.token) {
@@ -15,9 +17,11 @@ export default withAuth(
     {
         callbacks: {
             authorized: ({ token }) => {
-                console.log(token);
-                // return token ? true : false;
-                return true;
+                console.log("???????" + token);
+                console.log("???????" + token ? true : false);
+                
+                return token ? true : false;
+                // return false;
             },
         },
         pages: {
