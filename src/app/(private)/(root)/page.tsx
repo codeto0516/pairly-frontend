@@ -15,16 +15,19 @@ import { useObject } from "../../../hooks/useObject";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { countSelector, pageSelector } from "@/src/recoil/transactionListParams";
 import { useUser } from "@/src/hooks/api/v1/useUser";
+import { ContainerTop } from "@/src/components/layouts/Container";
 
 const Page = () => {
     return (
-        <div className="flex flex-col md:flex-row gap-8 w-full">
-            {/* 取引の新規登録フォーム */}
-            <NewTransactionForm />
+        <ContainerTop>
+            <div className="flex flex-col md:flex-row gap-8 w-full">
+                {/* 取引の新規登録フォーム */}
+                <NewTransactionForm />
 
-            {/* 取引一覧とその他のコンポーネント */}
-            <TransactionListWrapper />
-        </div>
+                {/* 取引一覧とその他のコンポーネント */}
+                <TransactionListWrapper />
+            </div>
+        </ContainerTop>
     );
 };
 
@@ -72,8 +75,8 @@ const TransactionListWrapper = () => {
 const NewTransactionForm = () => {
     const [isModal, toggleModal] = useToggle();
     const { currentUser } = useUser();
-    const partner = null
-    
+    const partner = null;
+
     // 新規データ
     const newTransaction: TransactionType = {
         paid_date: format(new Date(), "yyyy-MM-dd"),
