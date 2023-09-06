@@ -8,16 +8,31 @@ import {
 import { signIn as signInByNextAuth, signOut as signOutByNextAuth } from "next-auth/react";
 import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
 import { useState } from "react";
+import { useApi } from "./api/v1/useApi";
 
 export const useAuth = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const api = useApi();
+
+    const enableInvitation = async (token: string, uid: string) => {
+        const res = await api.post({
+            url: "http://localhost/api/v1/invitations",
+            data: {
+                token: token,
+                uid: uid,
+            },
+        });
+    };
 
     //////////////////////////////////////////////////////////////////////
     // 新規登録（メールアドレス・パスワード）
     //////////////////////////////////////////////////////////////////////
-    const signUp = async (email: string, password: string) => {
+    const signUp = async (email: string, password: string, token?: string) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+            token && enableInvitation(token, userCredential.user.uid);
+
             const idToken = await userCredential.user.getIdToken();
             await signInByNextAuth("credentials", {
                 idToken,
@@ -42,7 +57,7 @@ export const useAuth = () => {
     //////////////////////////////////////////////////////////////////////
     // ログイン（メールアドレス・パスワード）
     //////////////////////////////////////////////////////////////////////
-    const signIn = async (email: string, password: string) => {
+    const signIn = async (email: string, password: string, token?: string) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             // const isNotVerified = !userCredential.user.emailVerified;
@@ -50,6 +65,8 @@ export const useAuth = () => {
             //     // await reSendVerifyMail(userCredencial.user);
             //     // await signOut();
             // }
+            token && enableInvitation(token, userCredential.user.uid);
+
             const idToken = await userCredential.user.getIdToken();
             await signInByNextAuth("credentials", {
                 idToken,
@@ -74,9 +91,10 @@ export const useAuth = () => {
     //////////////////////////////////////////////////////////////////////
     // Googleアカウントで新規登録・ログイン
     //////////////////////////////////////////////////////////////////////
-    const signInWithGoogle = async () => {
+    const signInWithGoogle = async (token?: string) => {
         const provider = new GoogleAuthProvider();
         const userCredential = await signInWithPopup(auth, provider);
+        token && enableInvitation(token, userCredential.user.uid);
         const idToken = await userCredential.user.getIdToken();
         await signInByNextAuth("credentials", {
             idToken,
