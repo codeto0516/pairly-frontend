@@ -1,4 +1,4 @@
-import { TransactionType } from "@/src/types/transaction";
+import { TransactionType } from "@/src/types/transaction.d";
 import { useApi } from "./useApi";
 
 export const useTransaction = () => {
