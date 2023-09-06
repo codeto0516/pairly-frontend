@@ -40,7 +40,8 @@
         "recoil": "^0.7.7",
         "swr": "^2.2.1",
         "tailwindcss": "3.3.3",
-        "typescript": "5.1.6"
+        "typescript": "5.1.6",
+        "url-join": "^5.0.0"
     },
     "devDependencies": {
         "encoding": "^0.1.13"
