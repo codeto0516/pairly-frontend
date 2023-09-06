@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="ja" className="overflow-x-hidden">
-            <body className={`${roboto.className} text-gray-800 overflow-x-hidden`}>
+            <body className={`${roboto.className} text-gray-800 overflow-x-hidden min-h-screen flex flex-col`}>
                 <RecoilProvider>
                     <Suspense fallback={<Loading />}>
                         <SessionProvider>
