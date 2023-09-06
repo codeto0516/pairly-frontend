@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
             authorize: async ({ idToken }: any, req): Promise<any | null> => {
                 if (idToken) {
                     try {
-                        const res = await fetch("http://localhost:80/api/v1/users", {
+                        const res = await fetch("https://api.pairly.life/api/v1/users", {
                             // cache: "force-cache",
                             method: "GET",
                             headers: {
