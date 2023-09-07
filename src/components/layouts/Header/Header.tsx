@@ -4,8 +4,6 @@ import HumburgerMenu from "./HumburgerMenu";
 import HeaderNav from "./HeaderNav";
 import { UserIconMenu } from "./UserIconMenu";
 
-import { useSession } from "next-auth/react";
-
 const menuList = [
     {
         name: "ホーム",
@@ -25,40 +23,22 @@ const menuList = [
     },
 ];
 
-const BaseHeader = () => {
-    return (
-        <div className="container flex justify-between items-center max-w-5xl">
-            {/* ハンバーガーメニュー */}
-            <HumburgerMenu menuList={menuList} />
-
-            {/* ロゴ */}
-            <Logo />
-
-            {/* ナビゲーションメニュー */}
-            <HeaderNav menuList={menuList} />
-
-            {/* アバター */}
-            <UserIconMenu />
-        </div>
-    );
-};
-
 export const Header = () => {
+    return (
+        <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50">
+            <div className="container flex justify-between items-center max-w-5xl">
+                {/* ハンバーガーメニュー */}
+                <HumburgerMenu menuList={menuList} />
 
-
-    const {status} = useSession()
-
-    if (status === "authenticated") {
-        return (
-            <header className="fixed  min-w-full bg-white flex justify-center p-4 md:p-4 z-50">
-                <BaseHeader />
-            </header>
-        );
-    } else {
-        return (
-            <header className="fixed  min-w-full flex justify-center p-4 md:p-4 z-50 ">
+                {/* ロゴ */}
                 <Logo />
-            </header>
-        );
-    }
+
+                {/* ナビゲーションメニュー */}
+                <HeaderNav menuList={menuList} />
+
+                {/* アバター */}
+                <UserIconMenu />
+            </div>
+        </header>
+    );
 };
