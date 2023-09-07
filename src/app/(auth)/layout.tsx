@@ -30,7 +30,7 @@ const Header = () => {
 const Main = ({ children }: { children: React.ReactNode }) => {
     return (
         <main className="flex flex-col items-center justify-center w-full bg-white">
-            <div className="container px-2 sm:px-4 py-16 max-w-5xl w-full flex justify-center items-center">{children}</div>
+            <div className="container px-4 py-16 max-w-5xl w-full flex justify-center items-center">{children}</div>
         </main>
     );
 };

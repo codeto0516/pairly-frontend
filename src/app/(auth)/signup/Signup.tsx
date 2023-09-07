@@ -45,19 +45,18 @@ const SignUpForm = (props: { invitationToken: InvitationToken }) => {
     };
 
     return (
-        <div className="mt-2 flex flex-col items-center gap-4 sm:gap-8 w-3xl">
+        <div className="mt-2 flex flex-col items-center gap-4 sm:gap-8 w-full max-w-[380px]">
             <h1 className="text-xl mb-4">新規登録</h1>
 
             <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
                 <CircularProgress color="inherit" />
             </Backdrop>
 
-       
-            <GoogleSignUpButton onClick={handleGoogleSignIn}/>
+            <GoogleSignUpButton onClick={handleGoogleSignIn} />
 
             <hr className="border w-full" />
 
-            <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-3 w-full sm:w-[380px]">
+            <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-3 w-full">
                 <MailField />
                 <PasswordField />
                 <ConfirmPasswordField />
