@@ -20,19 +20,14 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
 const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
     const pathName = usePathname();
 
-    const { data: session, status } = useSession();
+    const { status } = useSession();
 
     const [currentUser, setCurrentUser] = useState(null);
     const updateUser = (newUserData: any) => setCurrentUser(() => newUserData);
 
     useEffect(() => {
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                updateUser(user);
-            }
-        });
+        auth.onAuthStateChanged(user => updateUser(user));
     }, []);
-
 
     if (pathName === "/signin" || pathName === "/signup" || pathName === "/api/auth/error") {
         return children; // ローディングを表示しない

@@ -1,114 +1,154 @@
 import {
     GoogleAuthProvider,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
+    signInWithEmailAndPassword as FireBaseSignInWithEmailAndPassword,
     signInWithPopup,
-    signOut as signOutFireBase,
+    signOut as FireBaseSignOut,
 } from "firebase/auth";
 import { signIn as signInByNextAuth, signOut as signOutByNextAuth } from "next-auth/react";
 import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApi } from "./api/v1/useApi";
+import urlJoin from "url-join";
+import { useToggle } from "./useToggle";
 
+const errorMessages: Record<string, string> = {
+    "auth/email-already-in-use": "このメールアドレスは既に使用されています。",
+    "auth/invalid-email": "無効なメールアドレスです。",
+    "auth/operation-not-allowed": "この操作は許可されていません。",
+    "auth/weak-password": "パスワードが弱すぎます。6文字以上入力してください。",
+    "auth/user-not-found": "ユーザーが存在しません。",
+    "auth/wrong-password": "パスワードが間違っています。",
+    Unauthorized: "認証エラーが発生しました。",
+    default: "エラーが発生しました。もう一度お試しください。",
+};
+
+const getErrorMessage = (errorCode: any) => errorMessages[errorCode] || errorMessages["default"];
+
+//////////////////////////////////////////////////////////////////////
+// 本体
+//////////////////////////////////////////////////////////////////////
 export const useAuth = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    // ローディング状態
+    const [isLoading, toggleLoading] = useToggle(false);
+
+    // エラーメッセージ
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const visibleErrorMessage = (message: string) => setErrorMessage(() => message);
+
+    // APIカスタムフック
     const api = useApi();
 
-    const enableInvitation = async (token: string, uid: string) => {
+    //////////////////////////////////////////////////////////////////////
+    // 招待の有効期限を有効化
+    //////////////////////////////////////////////////////////////////////
+    const enableInvitation = async (invitationCode: string, uid: string) => {
         const res = await api.post({
             url: "http://localhost/api/v1/invitations",
             data: {
-                token: token,
+                code: invitationCode,
                 uid: uid,
             },
         });
     };
 
     //////////////////////////////////////////////////////////////////////
-    // 新規登録（メールアドレス・パスワード）
+    // IDトークンを検証
     //////////////////////////////////////////////////////////////////////
-    const signUp = async (email: string, password: string, token?: string) => {
+    const verificationIdToken = async (idToken: string) => {
+        const endpoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "users");
+
+        const res = await fetch(endpoint, {
+            // cache: "force-cache",
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+            },
+        });
+
+        if (!res.ok) throw new Error(res.statusText);
+    };
+
+    //////////////////////////////////////////////////////////////////////
+    // 新規登録 と ログイン の共通処理
+    //////////////////////////////////////////////////////////////////////
+    const common = async (handler: any, invitationCode?: string) => {
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            // ローディングを開始
+            toggleLoading(true);
 
-            token && enableInvitation(token, userCredential.user.uid);
+            // 新規登録 or ログイン してユーザー情報を取得
+            const userCredential = await handler;
 
+            // パラメータにトークンがあれば招待の有効期限を有効化
+            invitationCode && enableInvitation(invitationCode, userCredential.user.uid);
+
+            // ユーザー情報からIDトークンを取得
             const idToken = await userCredential.user.getIdToken();
+
+            // IDトークンを検証（失敗するとエラーハンドラーに飛ぶ）
+            await verificationIdToken(idToken);
+
+            // NextAuth.jsのログイン
             await signInByNextAuth("credentials", {
                 idToken,
                 callbackUrl: "/",
             });
+
+            // ローディングを終了
+            // toggleLoading(false);
         } catch (error: any) {
-            switch (error.code) {
-                case "auth/email-already-in-use":
-                    throw new Error("このメールアドレスは既に使用されています。");
-                case "auth/invalid-email":
-                    throw new Error("無効なメールアドレスです。");
-                case "auth/operation-not-allowed":
-                    throw new Error("この操作は許可されていません。");
-                case "auth/weak-password":
-                    throw new Error("パスワードが弱すぎます。6文字以上入力してください。");
-                default:
-                    throw new Error("エラーが発生しました。もう一度お試しください。");
-            }
+            // ローディングを終了
+            toggleLoading(false);
+
+            // エラーメッセージを取得
+            const errorMessage = getErrorMessage(error.code);
+
+            // エラーメッセージを表示
+            visibleErrorMessage(errorMessage);
         }
+    };
+
+    //////////////////////////////////////////////////////////////////////
+    // 新規登録（メールアドレス・パスワード）
+    //////////////////////////////////////////////////////////////////////
+    const signUpWithEmailAndPassword = async (email: string, password: string, invitationCode?: string) => {
+        common(createUserWithEmailAndPassword(auth, email, password), invitationCode);
     };
 
     //////////////////////////////////////////////////////////////////////
     // ログイン（メールアドレス・パスワード）
     //////////////////////////////////////////////////////////////////////
-    const signIn = async (email: string, password: string, token?: string) => {
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            // const isNotVerified = !userCredential.user.emailVerified;
-            // if (isNotVerified) {
-            //     // await reSendVerifyMail(userCredencial.user);
-            //     // await signOut();
-            // }
-            token && enableInvitation(token, userCredential.user.uid);
-
-            const idToken = await userCredential.user.getIdToken();
-            await signInByNextAuth("credentials", {
-                idToken,
-                callbackUrl: "/",
-            });
-        } catch (error: any) {
-            console.log(error.code);
-
-            switch (error.code) {
-                case "auth/user-not-found":
-                    throw new Error("ユーザーが存在しません。");
-                case "auth/invalid-email":
-                    throw new Error("無効なメールアドレスです。");
-                case "auth/wrong-password":
-                    throw new Error("パスワードが間違っています。");
-                default:
-                // throw new Error("エラーが発生しました。もう一度お試しください。");
-            }
-        }
+    const signInWithEmailAndPassword = async (email: string, password: string, invitationCode?: string) => {
+        common(FireBaseSignInWithEmailAndPassword(auth, email, password), invitationCode);
     };
 
     //////////////////////////////////////////////////////////////////////
-    // Googleアカウントで新規登録・ログイン
+    // 新規登録・ログイン（Googleアカウント）
     //////////////////////////////////////////////////////////////////////
-    const signInWithGoogle = async (token?: string) => {
+    const signInWithGoogle = async (invitationCode?: string) => {
         const provider = new GoogleAuthProvider();
-        const userCredential = await signInWithPopup(auth, provider);
-        token && enableInvitation(token, userCredential.user.uid);
-        const idToken = await userCredential.user.getIdToken();
-        await signInByNextAuth("credentials", {
-            idToken,
-            callbackUrl: "/",
-        });
+        common(signInWithPopup(auth, provider), invitationCode);
     };
 
     //////////////////////////////////////////////////////////////////////
     // ログアウト（共通）
     //////////////////////////////////////////////////////////////////////
     const signOut = async () => {
-        await signOutFireBase(auth); // Firebaseのログアウト
-        await signOutByNextAuth(); // NextAuth.jsのログアウト
+        // Firebaseのログアウト
+        await FireBaseSignOut(auth);
+
+        // NextAuth.jsのログアウト
+        await signOutByNextAuth();
     };
 
-    return { signUp, signIn, signOut, signInWithGoogle, isLoading };
+    return {
+        signUpWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut,
+        signInWithGoogle,
+        isLoading,
+        errorMessage,
+    };
 };
