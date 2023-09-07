@@ -4,11 +4,12 @@ import { updateProfile } from "firebase/auth";
 
 import { useContext } from "react";
 import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
+import urlJoin from "url-join";
 
 export const useUser = () => {
     const api = useApi();
 
-    const endPoint = "http://192.168.1.10:80/api/v1/users";
+    const endPoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "users");
 
     const { currentUser, setCurrentUser } = useUserData();
 
@@ -16,7 +17,7 @@ export const useUser = () => {
         if (userId === currentUser.uid) return currentUser;
 
         const res: any = await api.get({
-            url: `http://localhost:80/api/v1/users/${userId}`,
+            url: urlJoin(endPoint, userId),
             cache: "force-cache",
         });
 
