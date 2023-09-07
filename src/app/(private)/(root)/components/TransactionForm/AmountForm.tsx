@@ -4,7 +4,7 @@ import { UserIcon } from "../../../../../components/elements/icon/UsersIcon";
 import { useTransactionContext } from "@/src/app/(private)/(root)/components/TransactionForm/TransactionForm";
 import { useEffect, useState } from "react";
 import { useUser } from "@/src/hooks/api/v1/useUser";
-import { Amount, TransactionType } from "@/src/types/transaction";
+import { Amount, TransactionType } from "@/src/types/transaction.d";
 
 export const AmountForm = () => {
     const { transaction, setTransaction } = useTransactionContext();
@@ -35,7 +35,7 @@ export const AmountForm = () => {
 const BaseAmountForm = ({ item, changeAmount }: { item: any; changeAmount: any }) => {
     const [user, setUser] = useState<any>(null);
     const { getUser } = useUser();
-    
+
     useEffect(() => {
         (async () => {
             const user: any = await getUser(item.user_id);

@@ -14,7 +14,7 @@ import { IconButton, Collapse, Skeleton } from "@mui/material";
 
 // 型定義
 import { TransactionForm } from "./TransactionForm/TransactionForm";
-import { TransactionListType, TransactionType } from "@/src/types/transaction";
+import { TransactionListType, TransactionType } from "@/src/types/transaction.d";
 
 import { useToggle } from "@/src/hooks/useToggle";
 import { useTransaction } from "@/src/hooks/api/v1/useTransaction";
@@ -68,7 +68,6 @@ export const TransactionList = () => {
         })();
     }, [page, perPage, isClickButton]);
 
-
     if (transactionList === undefined) {
         return (
             <div className="flex flex-col gap-1 w-full">
@@ -95,8 +94,6 @@ export const TransactionList = () => {
         );
     }
 
-
-    
     return (
         <div className="flex flex-col gap-4 w-full text-gray-500">
             {/* 取得したデータをmapで1つずつ取り出す */}
@@ -133,7 +130,7 @@ const TransactionItem = ({ transaction }: { transaction: TransactionType }) => {
             key={transaction.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0}}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
             className="border border-gray-300 rounded-md overflow-hidden"
         >

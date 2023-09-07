@@ -10,7 +10,7 @@ import { Modal } from "@/src/components/elements/utils/Modal";
 import { CloseButton } from "@/src/components/elements/button/IconButton";
 import { useToggle } from "../../../hooks/useToggle";
 import { ChangeEvent, useState } from "react";
-import { TransactionType } from "../../../types/transaction";
+import { TransactionType } from "../../../types/transaction.d";
 import { useObject } from "../../../hooks/useObject";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { countSelector, pageSelector } from "@/src/recoil/transactionListParams";

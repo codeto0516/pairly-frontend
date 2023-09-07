@@ -1,17 +1,14 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MenuItemType } from "@/src/types/menu";
+import { MenuItemType } from "@/src/types/menu.d";
 
 const HeaderNav = ({ menuList }: { menuList: MenuItemType[] }) => {
-
     const pathname = usePathname();
 
-    
     return (
         <ul className="hidden gap-0 md:gap-4 items-center sm:flex">
             {menuList.map((menu, index) => {
-                
                 return (
                     <li key={index} className="font-bold">
                         {pathname === menu.href ? (

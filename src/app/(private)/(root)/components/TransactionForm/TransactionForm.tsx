@@ -15,7 +15,7 @@ import { AmountForm } from "@/src/app/(private)/(root)/components/TransactionFor
 import { DeleteDialog } from "@/src/components/elements/utils/Dialog";
 
 // 型定義
-import { TransactionType } from "@/src/types/transaction";
+import { TransactionType } from "@/src/types/transaction.d";
 import { useToggle } from "@/src/hooks/useToggle";
 import { LoadingButton } from "@mui/lab";
 import { useTransaction } from "@/src/hooks/api/v1/useTransaction";
@@ -49,7 +49,7 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
         console.log(transaction);
-        
+
         const res = await sendTransaction(transaction);
         if (res.status === "SUCCESS") {
             setIsClickButton((prev) => !prev);

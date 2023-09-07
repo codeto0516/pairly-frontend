@@ -1,15 +1,17 @@
-import { TransactionType } from "@/src/types/transaction";
+import { TransactionType } from "@/src/types/transaction.d";
 import { useApi } from "./useApi";
+import urlJoin from "url-join";
 
 export const useTransaction = () => {
     const api = useApi();
 
-    const endPoint = "http://192.168.1.10:80/api/v1/transactions";
+    const endPoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "transactions");
 
     const getTransactionList = async ({ page, perPage }: { page: number; perPage: number }) => {
         // page: 何ページ目か  perPage: 表示数
         const res: any = await api.get({
-            url: `${endPoint}?page=${page}&per-page=${perPage}`,
+            // url: `${endPoint}?page=${page}&per-page=${perPage}`,
+            url: urlJoin(endPoint, `?page=${page}`, `?per-page=${perPage}`),
         });
 
         return res;
