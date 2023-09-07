@@ -39,16 +39,16 @@ const SignInForm = (props: { invitationToken: InvitationToken }) => {
 
     return (
         <Suspense fallback={<Loading />}>
-            <div className="mt-2 flex flex-col items-center gap-4 sm:gap-8 w-3xl">
+            <div className="mt-2 flex flex-col items-center gap-4 sm:gap-8 w-full max-w-[380px]">
                 <h1 className="text-xl mb-4">ログイン</h1>
                 <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
                     <CircularProgress color="inherit" />
                 </Backdrop>
-             
+
                 <GoogleSignInButton onClick={handleGoogleSignIn} />
-                
+
                 <hr className="border w-full"></hr>
-                <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-3 w-full sm:w-[380px] ">
+                <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-3 w-full">
                     <MailField />
                     <PasswordField />
                     <LoadingButton type="submit" fullWidth variant="outlined" className="h-14" loading={false}>
@@ -56,7 +56,11 @@ const SignInForm = (props: { invitationToken: InvitationToken }) => {
                     </LoadingButton>
 
                     {/* エラーメッセージ */}
-                    {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                    {errorMessage && (
+                        <Alert severity="error" sx={{ width: "100%" }}>
+                            {errorMessage}
+                        </Alert>
+                    )}
                 </form>
                 <div className="w-full px-4">
                     <Link href="/signup" className="text-sm text-blue-800 flex justify-end mt-4">
