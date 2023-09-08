@@ -99,6 +99,9 @@ export const useAuth = () => {
             // ローディングを終了
             // toggleLoading(false);
         } catch (error: any) {
+
+            console.log(error);
+            
             // ローディングを終了
             toggleLoading(false);
 
