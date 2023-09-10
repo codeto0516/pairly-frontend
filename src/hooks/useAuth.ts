@@ -56,7 +56,7 @@ export const useAuth = () => {
     // IDトークンを検証
     //////////////////////////////////////////////////////////////////////
     const verificationIdToken = async (idToken: string) => {
-        const endpoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "users");
+        const endpoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "users", "me");
 
         const res = await fetch(endpoint, {
             // cache: "force-cache",
