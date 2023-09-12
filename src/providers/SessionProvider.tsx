@@ -6,30 +6,25 @@ import Loading from "../app/loading";
 import { usePathname } from "next/navigation";
 import { auth } from "../app/(auth)/api/auth/[...nextauth]/config";
 
+// ローディングを表示しないページ
+const excludedPaths = ["/signin", "/signup", "/api/auth/error"];
+
 export const SessionContext = createContext<any>({});
 export const useUserData = () => useContext(SessionContext);
 
-export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <NextAuthSessionProvider>
-            <CustomSessionProvider>{children}</CustomSessionProvider>
-        </NextAuthSessionProvider>
-    );
-};
-
 const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
     const pathName = usePathname();
-
     const { status } = useSession();
-
-    const [currentUser, setCurrentUser] = useState(null);
-    const updateUser = (newUserData: any) => setCurrentUser(() => newUserData);
+    const [currentUser, setCurrentUser] = useState<any>(null);
 
     useEffect(() => {
-        auth.onAuthStateChanged(user => updateUser(user));
+        auth.onAuthStateChanged((user) => setCurrentUser(() => user));
     }, []);
 
-    if (pathName === "/signin" || pathName === "/signup" || pathName === "/api/auth/error") {
+    // if (pathName === "/signin" || pathName === "/signup" || pathName === "/api/auth/error") {
+    //     return children; // ローディングを表示しない
+    // }
+    if (excludedPaths.includes(pathName)) {
         return children; // ローディングを表示しない
     }
 
@@ -38,4 +33,12 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     return <SessionContext.Provider value={{ currentUser, setCurrentUser }}>{children}</SessionContext.Provider>;
+};
+
+export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
+    return (
+        <NextAuthSessionProvider>
+            <CustomSessionProvider>{children}</CustomSessionProvider>
+        </NextAuthSessionProvider>
+    );
 };

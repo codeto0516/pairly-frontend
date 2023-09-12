@@ -4,10 +4,9 @@ import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { Alert, Avatar, Snackbar } from "@mui/material";
-import { useUser } from "@/src/hooks/api/v1/useUser";
 import { useFirebaseStorageImage } from "@/src/hooks/useFirebaseStorage";
 import { useToggle } from "@/src/hooks/useToggle";
-
+import { useUser } from "@/src/hooks/useUser";
 //////////////////////////////////////////////////////////////////////////////////////////
 // 本体
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +16,6 @@ export const ProfileEditForm = () => {
     const { currentUser } = useUser();
     const { editUser } = useUser();
     const { uploadImage, deleteImage } = useFirebaseStorageImage();
-    
 
     const [displayName, setDisplayName] = useState(currentUser.displayName);
     const [imageFile, setImageFile] = useState(currentUser.photoURL);
@@ -30,7 +28,7 @@ export const ProfileEditForm = () => {
 
     const handleSubmit = async (event: any) => {
         console.log(displayName, imageFile);
-        
+
         // ローディング開始
         loadingToggle(true);
 
@@ -56,8 +54,6 @@ export const ProfileEditForm = () => {
             setIsSuccess(null);
         }, 5000);
     };
-
-
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-8 justify-center items-center w-[300px]">

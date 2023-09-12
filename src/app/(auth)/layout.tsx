@@ -1,4 +1,4 @@
-import Logo from "@/src/components/elements/icon/Logo";
+import Logo from "@/src/components/dataDisplay/Logo";
 import Footer from "@/src/components/layouts/Footer";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

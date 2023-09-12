@@ -1,5 +1,4 @@
-import { SignIn } from "./SignIn";
-
+import { SignIn } from "./components/SignIn";
 const Page = () => {
     return <SignIn />;
 };

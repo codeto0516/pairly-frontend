@@ -1,5 +1,5 @@
 import TextField from "@mui/material/TextField";
-import { Invitation } from "./Invitation";
+import { Invitation } from "./components/Invitation";
 import { ContainerCenter } from "@/src/components/layouts/Container";
 
 const Page = () => {

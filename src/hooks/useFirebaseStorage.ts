@@ -1,7 +1,6 @@
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
-import { auth, storage } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
-import { useUser } from "./api/v1/useUser";
-
+import { storage } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
+import { useUser } from "./useUser";
 export const useFirebaseStorageImage = () => {
     const { currentUser } = useUser();
 
@@ -24,11 +23,9 @@ export const useFirebaseStorageImage = () => {
                 const imageUrl = await getDownloadURL(uploadRef);
                 return imageUrl;
             }
-            
         } catch (error) {
             console.log(error);
-            
-         }
+        }
 
         return null;
     };
