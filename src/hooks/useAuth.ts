@@ -8,7 +8,7 @@ import {
 import { signIn as signInByNextAuth, signOut as signOutByNextAuth } from "next-auth/react";
 import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
 import { useEffect, useState } from "react";
-import { useApi } from "./api/v1/useApi";
+import { useApi } from "./useApi";
 import urlJoin from "url-join";
 import { useToggle } from "./useToggle";
 
@@ -99,9 +99,8 @@ export const useAuth = () => {
             // ローディングを終了
             // toggleLoading(false);
         } catch (error: any) {
-
             console.log(error);
-            
+
             // ローディングを終了
             toggleLoading(false);
 

@@ -1,7 +1,7 @@
-import { SignUp } from "./Signup";
+import { SignUp } from "./components/Signup";
 
 const Page = ({ searchParams }: { searchParams: { token: string } }) => {
-    return <SignUp  />;
+    return <SignUp />;
 };
 
 export default Page;

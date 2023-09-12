@@ -1,5 +1,5 @@
 "use client";
-import Logo from "../../elements/icon/Logo";
+import Logo from "../../dataDisplay/Logo";
 import HumburgerMenu from "./HumburgerMenu";
 import HeaderNav from "./HeaderNav";
 import { UserIconMenu } from "./UserIconMenu";

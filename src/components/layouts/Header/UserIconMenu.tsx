@@ -6,31 +6,15 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Logout from "@mui/icons-material/Logout";
-
-import { UserIcon } from "@/src/components/elements/icon/UsersIcon";
-
-// import { logoutAction } from "../../../hooks/providers/AuthProvider";
-import { redirect, useRouter } from "next/navigation";
+import { UserIcon } from "@/src/components/dataDisplay/UsersIcon";
 import { useState } from "react";
-import { useAuth } from "@/src/hooks/useAuth";
 import Link from "next/link";
-import { useUser } from "@/src/hooks/api/v1/useUser";
-// import { useAuth } from "@/src/hooks/useAuth";
-
-const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
-    return (
-        <MenuItem onClick={() => props.handler()}>
-            <ListItemIcon>{props.children}</ListItemIcon>
-            {props.title}
-        </MenuItem>
-    );
-};
+import { useAuth } from "@/src/hooks/useAuth";
+import { useUser } from "@/src/hooks/useUser";
 
 export const UserIconMenu = () => {
-    const router = useRouter();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -115,5 +99,15 @@ export const UserIconMenu = () => {
                 </CustomMenuitem>
             </Menu>
         </>
+    );
+};
+
+
+const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
+    return (
+        <MenuItem onClick={() => props.handler()}>
+            <ListItemIcon>{props.children}</ListItemIcon>
+            {props.title}
+        </MenuItem>
     );
 };
