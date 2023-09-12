@@ -10,36 +10,48 @@ import { useUser } from "@/src/hooks/useUser";
 //////////////////////////////////////////////////////////////////////////////////////////
 // 本体
 //////////////////////////////////////////////////////////////////////////////////////////
-export const ProfileEditForm = () => {
-    const { getUser } = useUser();
 
+// const uploadImage = async (currentUser: any, imageFile: any) => {
+//     console.log(imageFile);
+
+//     const res = await fetch("http://localhost/api/v1/users/" + currentUser.uid, {
+//         method: "PUT",
+//         headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${currentUser.accessToken}`,
+//         },
+//         body: JSON.stringify({ image: imageFile }),
+//     });
+//     const data = await res.json();
+//     return data.imageUrl;
+// };
+
+export const ProfileEditForm = () => {
     const { currentUser } = useUser();
     const { editUser } = useUser();
-    const { uploadImage, deleteImage } = useFirebaseStorageImage();
+    // const { uploadImage, deleteImage } = useFirebaseStorageImage();
 
     const [displayName, setDisplayName] = useState(currentUser.displayName);
-    const [imageFile, setImageFile] = useState(currentUser.photoURL);
+    const [imageFile, setImageFile] = useState<any | null>(null);
+    const [previewPhotoURL, setPreviewPhotoURL] = useState<string | null>(currentUser.photoURL);
     const changeDisplayName = (newDisplayName: string) => setDisplayName(() => newDisplayName);
     const changeImageFile = (newImageFile: string) => setImageFile(() => newImageFile);
+    const changePreviewPhotoURL = (newPreviewPhotoURL: string) => setPreviewPhotoURL(() => newPreviewPhotoURL);
 
     const [loading, loadingToggle] = useToggle(false);
 
     const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
 
     const handleSubmit = async (event: any) => {
-        console.log(displayName, imageFile);
 
         // ローディング開始
         loadingToggle(true);
 
         // デフォルトのイベントをキャンセル
         event.preventDefault();
-
-        // Firebase Storageに画像をアップロード
-        const imageUrl = await uploadImage(imageFile);
-
+        
         // Firebase Authのユーザー情報を更新
-        const res = await editUser(displayName, imageUrl ?? currentUser.photoURL);
+        const res = await editUser(displayName, imageFile);
 
         if (res) {
             setIsSuccess(true);
@@ -57,7 +69,12 @@ export const ProfileEditForm = () => {
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-8 justify-center items-center w-[300px]">
-            <EditProfoleImage imageFile={imageFile} changeImageFile={changeImageFile} />
+            <EditProfoleImage
+                imageFile={imageFile}
+                changeImageFile={changeImageFile}
+                previewPhotoURL={previewPhotoURL}
+                changePreviewPhotoURL={changePreviewPhotoURL}
+            />
             <TextField
                 id="displayName"
                 label="名前"
@@ -86,21 +103,28 @@ export const ProfileEditForm = () => {
 //////////////////////////////////////////////////////////////////////////////////////////
 // 画像選択
 //////////////////////////////////////////////////////////////////////////////////////////
-const EditProfoleImage = (props: { imageFile: any; changeImageFile: any }) => {
-    const [previewPhotoURL, setPreviewPhotoURL] = useState<string | null>(null);
-
+const EditProfoleImage = (props: {
+    imageFile: any;
+    changeImageFile: any;
+    previewPhotoURL: any;
+    changePreviewPhotoURL: any;
+}) => {
     const handleImageChange = (event: any) => {
         const selectedImage = event.target.files[0];
 
         if (selectedImage instanceof File) {
             props.changeImageFile(selectedImage);
-            setPreviewPhotoURL(() => URL.createObjectURL(selectedImage));
+            props.changePreviewPhotoURL(URL.createObjectURL(selectedImage));
         }
     };
 
     return (
         <div className="relative overflow-hidden rounded-full w-fit">
-            <Avatar alt="プロフィール画像" src={previewPhotoURL ?? props.imageFile} sx={{ width: 100, height: 100 }} />
+            <Avatar
+                alt="プロフィール画像"
+                src={props.previewPhotoURL ?? props.imageFile}
+                sx={{ width: 100, height: 100 }}
+            />
             <label htmlFor="image" className="absolute bottom-0 left-0 right-0 text-center cursor-pointer">
                 <div className="bg-black bg-opacity-60">
                     <p className="text-[10px] text-white pb-1.5 pt-1">変更する</p>
