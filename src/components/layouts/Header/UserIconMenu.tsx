@@ -39,7 +39,7 @@ export const UserIconMenu = () => {
                     aria-expanded={open ? "true" : undefined}
                     sx={{ padding: 0 }}
                 >
-                    <UserIcon user={currentUser} />
+                    <UserIcon label={currentUser?.displayName ?? currentUser?.email} image={currentUser?.photoUrl} />
                 </IconButton>
             </Box>
 
@@ -80,7 +80,7 @@ export const UserIconMenu = () => {
             >
                 <Link href="/profile">
                     <CustomMenuitem handler={handleClose} title="プロフィール">
-                        <UserIcon user={currentUser} />
+                        <UserIcon label={currentUser?.displayName ?? currentUser?.email} image={currentUser?.photoUrl} />
                     </CustomMenuitem>
                 </Link>
 
