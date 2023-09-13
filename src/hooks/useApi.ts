@@ -1,6 +1,5 @@
 // customHooks/useApi.ts
 
-import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
 import { useUserData } from "@/src/providers/SessionProvider";
 
 type Cache = "force-cache" | "no-cache" | "no-store";
@@ -23,7 +22,7 @@ export const useApi = () => {
         try {
             const headers: Record<string, string> = {
                 // "Content-Type": "application/json",
-                Authorization: `Bearer ${currentUser.accessToken}`,
+                Authorization: `Bearer ${currentUser.token}`,
             };
 
             // オブジェクト型の場合にのみ JSON.stringify を適用
@@ -39,6 +38,9 @@ export const useApi = () => {
                 body: config.data as BodyInit | null | undefined, // オブジェクトをそのまま送信
             });
             const data = await res.json();
+            data.ok = res.ok;
+            data.status = res.status;
+            data.statusText = res.statusText;
             return data as T;
         } catch (error) {
             return null;
