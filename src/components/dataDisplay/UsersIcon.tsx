@@ -1,19 +1,18 @@
+"use client";
 import { Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 
-export const UserIcon = ({ user, size = 32 }: { user: any; size?: number }) => {
-    let title: string;
-    if (user.name) {
-        title = user.displayName;
-    } else if (user.email) {
-        title = user.email;
-    } else {
-        title = "ユーザー";
-    }
+interface UserIconProps {
+    label?: string | null;
+    image?: string | null;
+    size?: number;
+}
+
+export const UserIcon = ({ label = "ユーザー", image, size = 32 }: UserIconProps) => {
 
     return (
-        <Tooltip title={title}>
-            <Avatar alt={title} src={user?.photoURL ?? ""} sx={{ width: size, height: size }} />
+        <Tooltip title={label}>
+            <Avatar alt={label ?? ""} src={image ?? ""} sx={{ width: size, height: size }} />
         </Tooltip>
     );
 };

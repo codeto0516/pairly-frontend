@@ -5,6 +5,7 @@ import { Amount, TransactionType } from "../../types";
 import { UserIcon } from "@/src/components/dataDisplay/UsersIcon";
 import { useTransactionContext } from "./main";
 import { useUser } from "@/src/hooks/useUser";
+import { User } from "@/src/types/user";
 
 export const TransactionFormAmount = () => {
     const { transaction, setTransaction } = useTransactionContext();
@@ -33,7 +34,7 @@ export const TransactionFormAmount = () => {
 };
 
 const BaseAmountForm = (props: { item: any; changeAmount: any }) => {
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<User | null>(null);
     const { getUser } = useUser();
 
     useEffect(() => {
@@ -57,7 +58,7 @@ const BaseAmountForm = (props: { item: any; changeAmount: any }) => {
     return (
         <div key={props.item.user_id} className="flex items-end gap-4">
             {/* ユーザーアイコン */}
-            <UserIcon user={user} />
+            <UserIcon label={user.displayName ?? user.email} image={user.photoUrl} />
             {/* 入力フォーム */}
             <TextField
                 label={`${user.displayName ?? user.email} の支払い額を入力`}
