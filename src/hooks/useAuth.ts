@@ -36,31 +36,15 @@ export const useAuth = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const visibleErrorMessage = (message: string) => setErrorMessage(() => message);
 
-    // APIカスタムフック
-    const api = useApi();
-
     //////////////////////////////////////////////////////////////////////
-    // 招待の有効期限を有効化
-    //////////////////////////////////////////////////////////////////////
-    const enableInvitation = async (invitationCode: string, uid: string) => {
-        const res = await api.post({
-            url: "http://localhost/api/v1/invitations",
-            data: {
-                code: invitationCode,
-                uid: uid,
-            },
-        });
-    };
-
-    //////////////////////////////////////////////////////////////////////
-    // IDトークンを検証
+    // IDトークンをサーバーで検証
     //////////////////////////////////////////////////////////////////////
     const verificationIdToken = async (idToken: string) => {
-        const endpoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "users", "me");
+        const endpoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "auth");
 
         const res = await fetch(endpoint, {
             // cache: "force-cache",
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${idToken}`,
@@ -81,9 +65,6 @@ export const useAuth = () => {
             // 新規登録 or ログイン してユーザー情報を取得
             const userCredential = await handler;
 
-            // パラメータにトークンがあれば招待の有効期限を有効化
-            invitationCode && enableInvitation(invitationCode, userCredential.user.uid);
-
             // ユーザー情報からIDトークンを取得
             const idToken = await userCredential.user.getIdToken();
 
@@ -95,9 +76,7 @@ export const useAuth = () => {
                 idToken,
                 callbackUrl: "/",
             });
-
-            // ローディングを終了
-            // toggleLoading(false);
+            
         } catch (error: any) {
             console.log(error);
 
