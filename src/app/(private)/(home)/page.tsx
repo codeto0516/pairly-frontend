@@ -27,14 +27,13 @@ const Page = () => {
 
 export default Page;
 
-
 ///////////////////////////////////////////////////////////////////////////
 // 取引の新規登録フォーム
 ///////////////////////////////////////////////////////////////////////////
 const NewTransactionForm = () => {
     const [isModal, toggleModal] = useToggle();
     const { currentUser } = useUser();
-    const partner = null;
+    if (!currentUser) return null;
 
     // 新規データ
     const newTransaction: TransactionType = {
@@ -43,14 +42,14 @@ const NewTransactionForm = () => {
         big_category_id: 1,
         small_category_id: 1,
         content: "",
-        amounts: partner
+        amounts: currentUser.partner
             ? [
-                  { user_id: currentUser.uid, amount: 0 },
-                  { user_id: partner, amount: 0 },
+                  { user_id: currentUser.localId, amount: 0 },
+                  { user_id: currentUser.partner.localId, amount: 0 },
               ]
-            : [{ user_id: currentUser.uid, amount: 0 }],
+            : [{ user_id: currentUser.localId, amount: 0 }],
 
-        created_by: currentUser.uid,
+        created_by: currentUser.localId,
     };
 
     return (

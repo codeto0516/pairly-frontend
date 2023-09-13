@@ -1,6 +1,6 @@
 
 export interface Amount {
-    user_id: number;
+    user_id: string;
     amount: number;
 }
 
@@ -11,7 +11,7 @@ export interface TransactionType {
     big_category_id: number;
     small_category_id: number;
     content: string;
-    created_by: number;
+    created_by: string;
     amounts: Amount[];
 }
 
