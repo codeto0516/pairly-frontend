@@ -1,6 +1,6 @@
 import TextField from "@mui/material/TextField";
 import { InputAdornment, Skeleton } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Amount, Transaction } from "../../types/transaction";
 import { UserIcon } from "@/src/components/dataDisplay/UsersIcon";
 import { useTransactionContext } from "./main";
@@ -10,19 +10,10 @@ import { User } from "@/src/types/user";
 export const TransactionFormAmount = () => {
     const { transaction, setTransaction } = useTransactionContext();
 
-    const changeAmount = (userId: number, amount: number) => {
-        setTransaction((prevTransaction: Transaction) => ({
-            ...prevTransaction,
-            amounts: prevTransaction.amounts.map((item: any) =>
-                item.user_id === userId ? { ...item, amount: amount } : item
-            ),
-        }));
-    };
-
     return (
         <div className="flex flex-col gap-2">
             {transaction.amounts.map((item: Amount) => {
-                return <BaseAmountForm key={item.user_id} item={item} changeAmount={changeAmount} />;
+                return <BaseAmountForm key={item.user_id} item={item} />;
             })}
 
             <p className="text-gray-500">
@@ -33,9 +24,22 @@ export const TransactionFormAmount = () => {
     );
 };
 
-const BaseAmountForm = (props: { item: any; changeAmount: any }) => {
+const BaseAmountForm = (props: { item: any }) => {
+    const { _, setTransaction } = useTransactionContext();
     const [user, setUser] = useState<User | null>(null);
     const { getUser } = useUser();
+
+    const changeAmount = (e: ChangeEvent<HTMLInputElement>) => {
+        const userId = props.item.user_id;
+        const amount = Number(e.target.value);
+
+        setTransaction((prevTransaction: Transaction) => ({
+            ...prevTransaction,
+            amounts: prevTransaction.amounts.map((item: any) =>
+                item.user_id === userId ? { ...item, amount: amount } : item
+            ),
+        }));
+    };
 
     useEffect(() => {
         (async () => {
@@ -66,7 +70,7 @@ const BaseAmountForm = (props: { item: any; changeAmount: any }) => {
                 className="w-full"
                 type="number"
                 value={props.item.amount <= 0 ? null : props.item.amount}
-                onChange={(e) => props.changeAmount(props.item.user_id, Number(e.target.value))}
+                onChange={changeAmount}
                 InputProps={{
                     inputProps: {
                         inputMode: "numeric",

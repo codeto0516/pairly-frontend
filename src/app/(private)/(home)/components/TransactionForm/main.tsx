@@ -29,7 +29,7 @@ export const useTransactionContext = () => useContext(TransactionContext);
 export const TransactionForm = (props: { transaction: Transaction }) => {
     const [isDialog, toggleDialog] = useToggle(false);
     const [isLoading, toggleLoading] = useToggle(false);
-    const [isButtonDisable, toggleButtonDisable] = useToggle(false);
+    const [isButtonDisable, toggleButtonDisable] = useToggle(true);
 
     const { createTransaction, updateTransaction, delteTransaction } = useTransaction();
 
@@ -69,10 +69,10 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
     };
 
     useEffect(() => {
+        const totalAmout = transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0);
         // フォームが編集されたら検知して保存ボタンのDisabledを解除
-        toggleButtonDisable(false);
-        
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        totalAmout === 0 ? toggleButtonDisable(true) : toggleButtonDisable(false);
+
     }, [transaction]);
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +110,6 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
                     <TransactionFormDate />
                 </div>
 
-
                 {/* カテゴリー選択ボタン */}
                 <TransactionFormCategory />
 
@@ -142,4 +141,4 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
             </div>
         </TransactionContext.Provider>
     );
-}
+};
