@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState, createContext, useEffect, useCallback } from "react";
+import { useContext, useState, createContext, useEffect, useCallback, memo } from "react";
 
 // Material UI
 import { Button } from "@mui/material";
@@ -14,7 +14,6 @@ import { useTransaction } from "@/src/app/(private)/(home)/api/useTransaction";
 import { useSetRecoilState } from "recoil";
 import { isButtonClickSelector } from "../../stores/transactionListParams";
 import { TransactionFormDate } from "./Date";
-import { TransactionFormType } from "./Type";
 import { TransactionFormCategory } from "./Category";
 import { TransactionFormContent } from "./Content";
 import { TransactionFormAmount } from "./Amount";
@@ -72,7 +71,7 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
     useEffect(() => {
         // フォームが編集されたら検知して保存ボタンのDisabledを解除
         toggleButtonDisable(false);
-
+        
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transaction]);
 
@@ -111,8 +110,6 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
                     <TransactionFormDate />
                 </div>
 
-                {/* タイプ（支出 or 収入）選択ボタン */}
-                <TransactionFormType />
 
                 {/* カテゴリー選択ボタン */}
                 <TransactionFormCategory />
@@ -145,4 +142,4 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
             </div>
         </TransactionContext.Provider>
     );
-};
+}

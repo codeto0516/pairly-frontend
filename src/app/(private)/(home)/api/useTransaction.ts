@@ -19,8 +19,6 @@ export const useTransaction = () => {
         const res = await api.get<TransactionApiResponse>({
             url: urlJoin(endPoint, `?page=${page}`, `?per-page=${perPage}`),
         });
-        console.log(res);
-
         return res as TransactionApiResponse;
     };
 

@@ -40,7 +40,7 @@ const NewTransactionForm = () => {
         paid_date: format(new Date(), "yyyy-MM-dd"),
         type: "spending",
         big_category_id: 1,
-        small_category_id: 1,
+        small_category_id: 2,
         content: "",
         amounts: currentUser.partner
             ? [
