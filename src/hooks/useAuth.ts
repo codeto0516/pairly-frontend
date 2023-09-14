@@ -4,6 +4,7 @@ import {
     signInWithEmailAndPassword as FireBaseSignInWithEmailAndPassword,
     signInWithPopup,
     signOut as FireBaseSignOut,
+    UserCredential,
 } from "firebase/auth";
 import { signIn as signInByNextAuth, signOut as signOutByNextAuth } from "next-auth/react";
 import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
@@ -11,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useApi } from "./useApi";
 import urlJoin from "url-join";
 import { useToggle } from "./useToggle";
+import { FirebaseError } from "firebase/app";
 
 const errorMessages: Record<string, string> = {
     "auth/email-already-in-use": "このメールアドレスは既に使用されています。",
@@ -57,7 +59,7 @@ export const useAuth = () => {
     //////////////////////////////////////////////////////////////////////
     // 新規登録 と ログイン の共通処理
     //////////////////////////////////////////////////////////////////////
-    const common = async (handler: any, invitationCode?: string) => {
+    const common = async (handler: Promise<UserCredential>, invitationCode?: string) => {
         try {
             // ローディングを開始
             toggleLoading(true);
@@ -76,8 +78,7 @@ export const useAuth = () => {
                 idToken,
                 callbackUrl: "/",
             });
-            
-        } catch (error: any) {
+        } catch (error: FirebaseError | any) {
             console.log(error);
 
             // ローディングを終了

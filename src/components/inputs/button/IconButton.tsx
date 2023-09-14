@@ -2,8 +2,8 @@ import { IconButton as MuiIconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 interface BaseIconButtonProps {
-    children?: React.ReactElement;
-    onClick?: any;
+    children?: React.ReactNode;
+    onClick?: () => void;
     color?: string;
     size?: string;
 }
@@ -28,7 +28,7 @@ const BaseIconButton = (props: BaseIconButtonProps) => {
 };
 
 interface IconButtonProps {
-    onClick: any;
+    onClick: () => void;
     color?: string;
     // size?: string;
 }

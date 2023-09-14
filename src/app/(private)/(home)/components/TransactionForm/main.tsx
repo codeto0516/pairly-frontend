@@ -7,7 +7,7 @@ import { Button } from "@mui/material";
 
 // 自作コンポーネント
 // 型定義
-import { TransactionType } from "../../types";
+import { Transaction } from "../../types/transaction";
 import { useToggle } from "@/src/hooks/useToggle";
 import { LoadingButton } from "@mui/lab";
 import { useTransaction } from "@/src/app/(private)/(home)/api/useTransaction";
@@ -27,12 +27,12 @@ export const useTransactionContext = () => useContext(TransactionContext);
 // 本体
 //////////////////////////////////////////////////////////////////////////////////
 
-export const TransactionForm = (props: { transaction: TransactionType }) => {
+export const TransactionForm = (props: { transaction: Transaction }) => {
     const [isDialog, toggleDialog] = useToggle(false);
     const [isLoading, toggleLoading] = useToggle(false);
     const [isButtonDisable, toggleButtonDisable] = useToggle(false);
 
-    const { sendTransaction, updateTransaction, delteTransaction } = useTransaction();
+    const { createTransaction, updateTransaction, delteTransaction } = useTransaction();
 
     const [isNewTransaction] = useState(props.transaction.id ? false : true);
 
@@ -45,7 +45,7 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
 
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
-        const res = await sendTransaction(transaction);
+        const res = await createTransaction(transaction);
         if (res.status === "SUCCESS") {
             setIsClickButton((prev) => !prev);
             toggleButtonDisable(true);
@@ -72,7 +72,6 @@ export const TransactionForm = (props: { transaction: TransactionType }) => {
     useEffect(() => {
         // フォームが編集されたら検知して保存ボタンのDisabledを解除
         toggleButtonDisable(false);
-
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transaction]);

@@ -2,9 +2,15 @@ import type { NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 
+declare module "next-auth/jwt" {
+    interface JWT {
+        idToken: string;
+    }
+}
+
 declare module "next-auth" {
     interface Session {
-        token: {} | null;
+        token: string | null;
     }
 }
 

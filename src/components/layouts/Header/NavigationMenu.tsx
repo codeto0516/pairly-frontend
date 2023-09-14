@@ -4,7 +4,10 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { MenuItemType } from "@/src/types/menu.d";
 
-const NavigationMenu = (props: { menuList: MenuItemType[] }) => {
+interface NavigationMenuProps {
+    menuList: MenuItemType[];
+}
+export const NavigationMenu = (props: NavigationMenuProps) => {
     const pathname = usePathname();
     return (
         <Box sx={{ display: { xs: "none", sm: "flex" }, gap: { xs: "8px", md: "16px" } }}>
@@ -29,5 +32,3 @@ const NavigationMenu = (props: { menuList: MenuItemType[] }) => {
         </Box>
     );
 };
-
-export default NavigationMenu;

@@ -1,5 +1,4 @@
 "use client";
-
 import Drawer from "@mui/material/Drawer";
 import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -7,13 +6,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+
 interface TemporaryDrawerProps {
     menuList: {
         name: string;
         href: string;
     }[];
 }
-export default function TemporaryDrawer({ menuList }: TemporaryDrawerProps) {
+export const HumburgerMenu = (props: TemporaryDrawerProps) => {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -48,7 +48,7 @@ export default function TemporaryDrawer({ menuList }: TemporaryDrawerProps) {
                         <CloseIcon />
                     </IconButton>
                     <ul className="flex flex-col gap-2">
-                        {menuList.map((menu, index) => {
+                        {props.menuList.map((menu, index) => {
                             return (
                                 <li
                                     key={index}
@@ -60,7 +60,7 @@ export default function TemporaryDrawer({ menuList }: TemporaryDrawerProps) {
                                     {pathname == menu.href ? (
                                         <Link
                                             href={menu.href}
-                                            className="text-gray-50 bg-red-300  font-bold p-4 rounded-sm block"
+                                            className="text-gray-50 bg-red-300 font-bold p-4 rounded-sm block"
                                         >
                                             {menu.name}
                                         </Link>
@@ -77,4 +77,4 @@ export default function TemporaryDrawer({ menuList }: TemporaryDrawerProps) {
             </Drawer>
         </div>
     );
-}
+};

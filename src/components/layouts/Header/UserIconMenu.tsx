@@ -25,7 +25,6 @@ export const UserIconMenu = () => {
     };
 
     const { currentUser } = useUser();
-
     const { signOut } = useAuth();
 
     return (
@@ -79,35 +78,53 @@ export const UserIconMenu = () => {
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
                 <Link href="/profile">
-                    <CustomMenuitem handler={handleClose} title="プロフィール">
-                        <UserIcon label={currentUser?.displayName ?? currentUser?.email} image={currentUser?.photoUrl} />
-                    </CustomMenuitem>
+                    <MenuItem onClick={handleClose}>
+                        <ListItemIcon>
+                            <UserIcon
+                                label={currentUser?.displayName ?? currentUser?.email}
+                                image={currentUser?.photoUrl}
+                            />
+                        </ListItemIcon>
+                        プロフィール
+                    </MenuItem>
                 </Link>
 
-                <CustomMenuitem handler={handleClose} title="パートナーを招待">
-                    <PersonAdd fontSize="small" />
-                </CustomMenuitem>
-
-                <Divider />
+                <Link href="/partner">
+                    <MenuItem onClick={handleClose}>
+                        {currentUser?.partner ? (
+                            <>
+                                <ListItemIcon>
+                                    <UserIcon
+                                        label={currentUser.partner.displayName ?? currentUser.partner.email}
+                                        image={currentUser.partner.photoUrl}
+                                    />
+                                </ListItemIcon>
+                                パートナー
+                            </>
+                        ) : (
+                            <>
+                                <ListItemIcon>
+                                    <PersonAdd fontSize="small" />
+                                </ListItemIcon>
+                                パートナーを招待
+                            </>
+                        )}
+                    </MenuItem>
+                </Link>
+                <Divider sx={{ my: 1 }} />
 
                 {/* <CustomMenuitem handler={handleClose} title="設定">
                     <Settings fontSize="small" />
                 </CustomMenuitem> */}
 
-                <CustomMenuitem handler={signOut} title="ログアウト">
-                    <Logout fontSize="small" />
-                </CustomMenuitem>
+                <MenuItem onClick={signOut}>
+                    <ListItemIcon>
+                        <Logout fontSize="small" />
+                    </ListItemIcon>
+                    ログアウト
+                </MenuItem>
             </Menu>
         </>
     );
 };
 
-
-const CustomMenuitem = (props: { handler: any; children: React.ReactNode; title: string }) => {
-    return (
-        <MenuItem onClick={() => props.handler()}>
-            <ListItemIcon>{props.children}</ListItemIcon>
-            {props.title}
-        </MenuItem>
-    );
-};

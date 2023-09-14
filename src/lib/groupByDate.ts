@@ -1,13 +1,13 @@
-import { TransactionType } from "../types/index";
+import { Transaction } from "../app/(private)/(home)/types/transaction";
 
-interface GroupByDateType {
+export interface TransactionGroupByDate {
     date: string;
-    transactions: TransactionType[];
+    transactions: Transaction[];
 }
 
 // 日付ごとに取引データをグループ化し、各グループ内の取引データをソートする関数
-export const groupByDate = (transactionList: TransactionType[]) => {
-    const groupedAndSortedData: GroupByDateType[] = [];
+export const groupByDate = (transactionList: Transaction[]) => {
+    const groupedAndSortedData: TransactionGroupByDate[] = [];
     const dateMap = new Map();
 
     if (!transactionList) return groupedAndSortedData;

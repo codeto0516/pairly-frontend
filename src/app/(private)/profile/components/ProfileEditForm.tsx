@@ -1,11 +1,12 @@
 "use client";
 
 import TextField from "@mui/material/TextField";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
-import { Alert, Avatar, Snackbar } from "@mui/material";
+import { Alert } from "@mui/material";
 import { useToggle } from "@/src/hooks/useToggle";
 import { useUser } from "@/src/hooks/useUser";
+import { EditProfoleImage } from "./EditProfoleImage";
 //////////////////////////////////////////////////////////////////////////////////////////
 // 本体
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -14,24 +15,23 @@ export const ProfileEditForm = () => {
     const { editUser } = useUser();
 
     const [displayName, setDisplayName] = useState(currentUser?.displayName ?? "");
-    const [imageFile, setImageFile] = useState<any | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [previewPhotoURL, setPreviewPhotoURL] = useState<string | null>(currentUser?.photoUrl ?? null);
     const changeDisplayName = (newDisplayName: string) => setDisplayName(() => newDisplayName);
-    const changeImageFile = (newImageFile: string) => setImageFile(() => newImageFile);
+    const changeImageFile = (newImageFile: File) => setImageFile(() => newImageFile);
     const changePreviewPhotoURL = (newPreviewPhotoURL: string) => setPreviewPhotoURL(() => newPreviewPhotoURL);
 
     const [loading, loadingToggle] = useToggle(false);
-
     const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
 
-    const handleSubmit = async (event: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setIsSuccess(null);
 
         // ローディング開始
         loadingToggle(true);
 
         // デフォルトのイベントをキャンセル
-        event.preventDefault();
+        e.preventDefault();
 
         // Firebase Authのユーザー情報を更新
         const res = await editUser(displayName, imageFile);
@@ -61,7 +61,7 @@ export const ProfileEditForm = () => {
                 id="displayName"
                 label="名前"
                 value={displayName}
-                onChange={(e: any) => changeDisplayName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => changeDisplayName(e.target.value)}
                 sx={{ width: "100%" }}
             />
 
@@ -82,46 +82,5 @@ export const ProfileEditForm = () => {
                 </Alert>
             )}
         </form>
-    );
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// 画像選択
-//////////////////////////////////////////////////////////////////////////////////////////
-const EditProfoleImage = (props: {
-    imageFile: any;
-    changeImageFile: any;
-    previewPhotoURL: any;
-    changePreviewPhotoURL: any;
-}) => {
-    const handleImageChange = (event: any) => {
-        const selectedImage = event.target.files[0];
-
-        if (selectedImage instanceof File) {
-            props.changeImageFile(selectedImage);
-            props.changePreviewPhotoURL(URL.createObjectURL(selectedImage));
-        }
-    };
-
-    return (
-        <div className="relative overflow-hidden rounded-full w-fit">
-            <Avatar
-                alt="プロフィール画像"
-                src={props.previewPhotoURL ?? props.imageFile}
-                sx={{ width: 100, height: 100 }}
-            />
-            <label htmlFor="image" className="absolute bottom-0 left-0 right-0 text-center cursor-pointer">
-                <div className="bg-black bg-opacity-60">
-                    <p className="text-[10px] text-white pb-1.5 pt-1 hover:opacity-80">変更する</p>
-                </div>
-                <input
-                    type="file"
-                    id="image"
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    onChange={handleImageChange}
-                />
-            </label>
-        </div>
     );
 };

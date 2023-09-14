@@ -1,12 +1,13 @@
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { ReactNode } from "react";
 
 
 interface SelectorButtonProps {
     selectedItem: string | number;
-    handler: any;
+    handler: (event: SelectChangeEvent<string>) => void;
     itemList: {
         name: string | number;
         value: string | number;

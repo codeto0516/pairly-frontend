@@ -51,9 +51,9 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
                 decoded?.data?.user && setCurrentUser(() => decoded?.data.user);
             })();
         } catch (error) {
-            // (async () => {
-            //     await signOut();
-            // })();
+            (async () => {
+                await signOut();
+            })();
             console.log(error);
         }
     }, [session?.token]);

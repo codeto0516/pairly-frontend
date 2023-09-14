@@ -18,11 +18,11 @@ interface PerPageSelectorButton {
 }
 
 export const PerPageSelectorButton = () => {
-    const [perPage, setPerPage] = useRecoilState<any>(perPageSelector);
+    const [perPage, setPerPage] = useRecoilState(perPageSelector);
     return (
         <SelectorButton
             selectedItem={perPage}
-            handler={(e: SelectChangeEvent) => setPerPage(Number(e.target.value))}
+            handler={e => setPerPage(Number(e.target.value))}
             itemList={selectorItemList}
             label={"表示件数"}
         />

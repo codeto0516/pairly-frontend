@@ -5,8 +5,8 @@ interface CustomToggleButtonProps {
         title: string;
         value: string;
     }[];
-    handler: any
-    value:string
+    handler: ((event: React.MouseEvent<HTMLElement>, value: any) => void) | undefined;
+    value: string;
 }
 
 export const ToggleButton = (props: CustomToggleButtonProps) => {
@@ -25,7 +25,6 @@ export const ToggleButton = (props: CustomToggleButtonProps) => {
                     </MuiToggleButton>
                 );
             })}
-
         </MuiToggleButtonGroup>
     );
 };

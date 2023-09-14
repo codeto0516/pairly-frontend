@@ -2,7 +2,17 @@ import { useUserData } from "@/src/providers/SessionProvider";
 import urlJoin from "url-join";
 import { useApi } from "./useApi";
 import { User } from "../types/user";
-import { converImageToBlob } from "../app/(private)/(home)/lib/converImageToBlob";
+import { converImageToBlob } from "../lib/converImageToBlob";
+
+interface UserApi {
+    data: {
+        user: User;
+    };
+    message: string;
+    ok: boolean;
+    status: number;
+    statusText: string;
+}
 
 export const useUser = () => {
     const api = useApi();
@@ -14,17 +24,16 @@ export const useUser = () => {
         if (userId === currentUser.localId) return currentUser;
         if (userId === currentUser.partner?.localId) return currentUser.partner;
 
-        const res: any = await api.get({
+        const res = await api.get<UserApi>({
             url: urlJoin(endPoint, userId),
             cache: "force-cache",
         });
 
-        const data = await res?.data;
-
+        const data = res?.data;
         return data?.user;
     };
 
-    const editUser = async (displayName: string, imageFile: File) => {
+    const editUser = async (displayName: string | null, imageFile: File | null) => {
         if (!currentUser) return false;
 
         try {
@@ -43,14 +52,14 @@ export const useUser = () => {
             }
 
             // プロフィール情報を更新
-            const res: any = await api.put({
+            const res = await api.put<UserApi>({
                 url: urlJoin(endPoint, currentUser?.localId),
                 data: formData,
             });
 
-            if (!res.ok) throw new Error(res.statusText);
-            if (!res.data) throw new Error("データがありません。");
-            if (!res.data.user) throw new Error("ユーザーが見つかりません。");
+            if (!res?.ok) throw new Error(res?.statusText);
+            if (!res?.data) throw new Error("データがありません。");
+            if (!res?.data.user) throw new Error("ユーザーが見つかりません。");
 
             const user: User = res.data.user;
 

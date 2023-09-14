@@ -1,5 +1,13 @@
-import { useApi } from "../../../../hooks/useApi";
+import { ApiResponse, useApi } from "../../../../hooks/useApi";
 import urlJoin from "url-join";
+import { Transaction } from "../types/transaction";
+
+interface TransactionApiResponse extends ApiResponse {
+    data: {
+        total_count: number;
+        transactions: Transaction[];
+    };
+}
 
 export const useTransaction = () => {
     const api = useApi();
@@ -7,16 +15,17 @@ export const useTransaction = () => {
     const endPoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "transactions");
 
     const getTransactionList = async ({ page, perPage }: { page: number; perPage: number }) => {
-        // page: 何ページ目か  perPage: 表示数
-        const res: any = await api.get({
-            // url: `${endPoint}?page=${page}&per-page=${perPage}`,
+        // page: 何ページ目を表示するか  perPage: 表示件数
+        const res = await api.get<TransactionApiResponse>({
             url: urlJoin(endPoint, `?page=${page}`, `?per-page=${perPage}`),
         });
+        console.log(res);
 
-        return res;
+        return res as TransactionApiResponse;
     };
 
-    const sendTransaction = async (transaction: any) => {
+    const createTransaction = async (transaction: Transaction) => {
+        if (transaction.id) return;
         const res: any = await api.post({
             url: endPoint,
             data: transaction,
@@ -25,22 +34,23 @@ export const useTransaction = () => {
         return res;
     };
 
-    const updateTransaction = async (transaction: any) => {
+    const updateTransaction = async (transaction: Transaction) => {
+        if (!transaction.id) return;
         const res: any = await api.put({
-            url: `${endPoint}/${transaction.id}`,
+            url: urlJoin(endPoint, transaction.id.toString()),
             data: transaction,
         });
 
         return res;
     };
 
-    const delteTransaction = async (transaction_id: number) => {
+    const delteTransaction = async (transactionId: number) => {
         const res: any = await api.del({
-            url: `${endPoint}/${transaction_id}`,
+            url: urlJoin(endPoint, transactionId.toString()),
         });
 
         return res;
     };
 
-    return { getTransactionList, sendTransaction, updateTransaction, delteTransaction };
+    return { getTransactionList, createTransaction, updateTransaction, delteTransaction };
 };

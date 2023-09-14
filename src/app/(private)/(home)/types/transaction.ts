@@ -1,10 +1,9 @@
-
 export interface Amount {
     user_id: string;
     amount: number;
 }
 
-export interface TransactionType {
+export interface Transaction {
     id?: number;
     paid_date: string;
     type: string;
@@ -15,7 +14,4 @@ export interface TransactionType {
     amounts: Amount[];
 }
 
-export interface TransactionListType {
-    date: string;
-    transactions: TransactionType[];
-}
+
