@@ -1,19 +1,18 @@
 "use client";
 
 import { useApi } from "@/src/hooks/useApi";
-import {
-    TextField,
-    FormControl,
-    InputAdornment,
-    IconButton,
-    Skeleton,
-    Tooltip,
-} from "@mui/material";
+import { TextField, FormControl, InputAdornment, IconButton, Skeleton, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useUser } from "@/src/hooks/useUser";
 
 type InvitationLink = string | null;
+
+interface InvitationLinkResponse {
+    data: {
+        url: string;
+    };
+}
 
 export const Invitation = () => {
     // 表示する内容
@@ -29,10 +28,11 @@ export const Invitation = () => {
     const { currentUser } = useUser();
 
     const generateInvitationToken = async () => {
-        const res: any = await api.get({
-            url: `http://192.168.1.10/api/v1/invitations/${currentUser?.uid}`,
+        const res = await api.get<InvitationLinkResponse>({
+            url: `http://192.168.1.10/api/v1/invitations/${currentUser?.localId}`,
         });
-        const url = await res?.data.url;
+        const url: InvitationLink | undefined = res?.data.url;
+        if (url === undefined) return;
         setInvitationLink(() => url);
     };
 

@@ -1,5 +1,11 @@
 import urlJoin from "url-join";
-import { useApi } from "../../../../hooks/useApi";
+import { ApiResponse, useApi } from "../../../../hooks/useApi";
+
+interface GategoryApiResponse extends ApiResponse {
+    data: {
+
+    };
+}
 
 export const useCategory = () => {
     const api = useApi();
@@ -7,12 +13,15 @@ export const useCategory = () => {
     const endPoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "categories");
 
     const getCategories = async (type: "spending" | "income"): Promise<any> => {
-        const res: any = await api.get({
+        const res = await api.get<GategoryApiResponse>({
             url: urlJoin(endPoint, type),
             cache: "force-cache",
         });
 
-        return await res;
+        console.log(res);
+        
+
+        return res;
     };
 
     return { getCategories };

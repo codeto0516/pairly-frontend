@@ -4,24 +4,32 @@ import { useUserData } from "@/src/providers/SessionProvider";
 
 type Cache = "force-cache" | "no-cache" | "no-store";
 
-interface ApiConfig extends Api {
+interface ApiConfig extends ApiProps {
     method: string;
 }
 
-interface Api {
+interface ApiProps {
     url: string;
     data?: any;
-    headers?: any;
+    headers?: {};
     cache?: Cache;
+}
+
+export interface ApiResponse {
+    data: any;
+    message: string;
+    ok: boolean;
+    status: number;
+    statusText: string;
 }
 
 export const useApi = () => {
     const { currentUser } = useUserData();
+
     const sendRequest = async <T>(config: ApiConfig): Promise<T | null> => {
         if (!currentUser) return null;
         try {
             const headers: Record<string, string> = {
-                // "Content-Type": "application/json",
                 Authorization: `Bearer ${currentUser.token}`,
             };
 
@@ -37,17 +45,20 @@ export const useApi = () => {
                 headers,
                 body: config.data as BodyInit | null | undefined, // オブジェクトをそのまま送信
             });
+
             const data = await res.json();
+
             data.ok = res.ok;
             data.status = res.status;
             data.statusText = res.statusText;
+
             return data as T;
         } catch (error) {
             return null;
         }
     };
 
-    const get = async <T>({ url, headers = {}, cache = "no-cache" }: Api): Promise<T | null> => {
+    const get = async <T>({ url, headers = {}, cache = "no-cache" }: ApiProps): Promise<T | null> => {
         const config = {
             method: "GET",
             headers: headers,
@@ -58,7 +69,7 @@ export const useApi = () => {
         return await sendRequest<T>(config);
     };
 
-    const post = async <T>({ url, data = {}, headers = {}, cache = "no-cache" }: Api): Promise<T | null> => {
+    const post = async <T>({ url, data = {}, headers = {}, cache = "no-cache" }: ApiProps): Promise<T | null> => {
         const config = {
             method: "POST",
             headers: headers,
@@ -70,7 +81,7 @@ export const useApi = () => {
         return await sendRequest<T>(config);
     };
 
-    const put = async <T>({ url, data, headers = {}, cache = "no-cache" }: Api): Promise<T | null> => {
+    const put = async <T>({ url, data, headers = {}, cache = "no-cache" }: ApiProps): Promise<T | null> => {
         const config = {
             method: "PUT",
             headers: headers,
@@ -82,7 +93,7 @@ export const useApi = () => {
         return await sendRequest<T>(config);
     };
 
-    const del = async <T>({ url, headers = {}, cache = "no-cache" }: Api): Promise<T | null> => {
+    const del = async <T>({ url, headers = {}, cache = "no-cache" }: ApiProps): Promise<T | null> => {
         const config = {
             method: "DELETE",
             headers: headers,

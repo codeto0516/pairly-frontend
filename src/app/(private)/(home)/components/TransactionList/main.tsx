@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Skeleton } from "@mui/material";
 
-import { TransactionType } from "../../types";
+import { Transaction } from "../../types/transaction";
 
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
@@ -14,19 +14,15 @@ import {
 } from "../../stores/transactionListParams";
 
 import { useTransaction } from "../../api/useTransaction";
-import { groupByDate } from "../../lib/groupByDate";
+import { TransactionGroupByDate, groupByDate } from "../../../../../lib/groupByDate";
 import { TransactionListItem } from "./ListItem";
 /* -----------------------------------------------------------------------
  リスト
 ----------------------------------------------------------------------- */
-interface TransactionListProps {
-    pagenation: any;
-    changePagenation: any;
-}
 
 export const TransactionList = () => {
     const { getTransactionList } = useTransaction();
-    const [transactionList, setTransactionList] = useState<any>();
+    const [transactionList, setTransactionList] = useState<TransactionGroupByDate[]>();
 
     const page = useRecoilValue<number>(pageSelector);
     const perPage = useRecoilValue<number>(perPageSelector);
@@ -42,13 +38,13 @@ export const TransactionList = () => {
             });
 
             if (!res?.data) {
-                setTransactionList(() => []);
+                setTransactionList(() => undefined);
                 return;
             }
 
             setCount(Math.ceil(res.data.total_count / perPage));
 
-            const groupByDateList: any = groupByDate(res.data.transactions);
+            const groupByDateList = groupByDate(res.data.transactions);
 
             setTransactionList(() => groupByDateList);
         })();
@@ -93,7 +89,7 @@ export const TransactionList = () => {
 
                     {/* その日付の全ての記録一覧を表示 */}
                     <ul className="flex flex-col gap-0.5">
-                        {transactionList.transactions.map((transaction: TransactionType) => (
+                        {transactionList.transactions.map((transaction: Transaction) => (
                             <TransactionListItem key={transaction.id} transaction={transaction} />
                             // ↓下のリストアイテムを表示
                         ))}

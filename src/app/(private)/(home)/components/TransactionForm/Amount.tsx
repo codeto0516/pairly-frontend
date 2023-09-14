@@ -1,7 +1,7 @@
 import TextField from "@mui/material/TextField";
 import { InputAdornment, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Amount, TransactionType } from "../../types";
+import { Amount, Transaction } from "../../types/transaction";
 import { UserIcon } from "@/src/components/dataDisplay/UsersIcon";
 import { useTransactionContext } from "./main";
 import { useUser } from "@/src/hooks/useUser";
@@ -11,7 +11,7 @@ export const TransactionFormAmount = () => {
     const { transaction, setTransaction } = useTransactionContext();
 
     const changeAmount = (userId: number, amount: number) => {
-        setTransaction((prevTransaction: TransactionType) => ({
+        setTransaction((prevTransaction: Transaction) => ({
             ...prevTransaction,
             amounts: prevTransaction.amounts.map((item: any) =>
                 item.user_id === userId ? { ...item, amount: amount } : item

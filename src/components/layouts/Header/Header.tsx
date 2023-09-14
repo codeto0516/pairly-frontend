@@ -1,7 +1,7 @@
 "use client";
 import Logo from "../../dataDisplay/Logo";
-import HumburgerMenu from "./HumburgerMenu";
-import HeaderNav from "./HeaderNav";
+import { HumburgerMenu } from "./HumburgerMenu";
+import { HeaderNav } from "./HeaderNav";
 import { UserIconMenu } from "./UserIconMenu";
 
 const menuList = [

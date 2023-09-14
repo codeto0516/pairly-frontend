@@ -9,10 +9,10 @@ import { IconButton, Collapse } from "@mui/material";
 // 型定義
 import { useToggle } from "@/src/hooks/useToggle";
 import { motion } from "framer-motion";
-import { TransactionType } from "../../types";
+import { Transaction } from "../../types/transaction";
 import { TransactionForm } from "../TransactionForm/main";
 
-export const TransactionListItem = (props: { transaction: TransactionType }) => {
+export const TransactionListItem = (props: { transaction: Transaction }) => {
     // アコーディオンの開閉状態管理用
     const [isAccordion, toggleAccordion] = useToggle(false);
 

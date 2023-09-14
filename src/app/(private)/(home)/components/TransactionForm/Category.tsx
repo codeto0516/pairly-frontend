@@ -6,20 +6,16 @@ import MenuItem from "@mui/material/MenuItem";
 import { useEffect, useState } from "react";
 import { useCategory } from "@/src/app/(private)/(home)/api/useCategory";
 import { useTransactionContext } from "./main";
-import { useUser } from "@/src/hooks/useUser";
-interface BigCategory {
+
+export interface BigCategory {
     big_category_id: number;
     big_category_name: string;
     small_categories: SmallCategory[];
 }
 
-interface SmallCategory {
+export interface SmallCategory {
     small_category_id: number;
     small_category_name: string;
-}
-
-interface CategoryList {
-    [index: number]: BigCategory;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,7 +27,7 @@ interface CategoryList {
 ///////////////////////////////////////////////////////////////////////////////
 export const TransactionFormCategory = () => {
     const { transaction, changeTransaction } = useTransactionContext();
-    const [categoryList, setCategoryList] = useState<CategoryList | null>(null);
+    const [categoryList, setCategoryList] = useState<BigCategory[] | null>(null);
     const { getCategories } = useCategory();
 
     useEffect(() => {
@@ -64,7 +60,7 @@ export const TransactionFormCategory = () => {
 ///////////////////////////////////////////////////////////////////////////////
 // 大カテゴリー
 ///////////////////////////////////////////////////////////////////////////////
-const BigCategorySelector = (categoryList: CategoryList) => {
+const BigCategorySelector = (categoryList: BigCategory[]) => {
     // 取引データのコンテキスト
     const { transaction, changeTransaction } = useTransactionContext();
     const changeBig = (newBigCategoryId: any) => changeTransaction("big_category_id", newBigCategoryId);
@@ -92,7 +88,7 @@ const BigCategorySelector = (categoryList: CategoryList) => {
 ///////////////////////////////////////////////////////////////////////////////
 // 小カテゴリー
 ///////////////////////////////////////////////////////////////////////////////
-const SmallCategorySelector = (categoryList: CategoryList) => {
+const SmallCategorySelector = (categoryList: BigCategory[]) => {
     // 取引データのコンテキスト
     const { transaction, changeTransaction } = useTransactionContext();
     const changeSmall = (newSmallCategoryId: number) => changeTransaction("small_category_id", newSmallCategoryId);
@@ -100,9 +96,13 @@ const SmallCategorySelector = (categoryList: CategoryList) => {
 
     useEffect(() => {
         (async () => {
-            const bigCategory: BigCategory = await Object.values(categoryList).find(
+            const bigCategory: BigCategory | undefined = Object.values(categoryList).find(
                 (bigCategory: BigCategory) => bigCategory.big_category_id == transaction.big_category_id
             );
+
+            if (!bigCategory) {
+                return;
+            }
 
             setSmallCategoryList(() => bigCategory?.small_categories);
 

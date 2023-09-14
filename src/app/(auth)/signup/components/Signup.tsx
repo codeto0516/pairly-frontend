@@ -1,9 +1,8 @@
 "use client";
 import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useSearchParams } from "next/navigation";
 import { Alert, LoadingButton } from "@mui/lab";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Backdrop, CircularProgress } from "@mui/material";
 import { MailField, ConfirmPasswordField, PasswordField } from "@/src/components/inputs/textField/TextField";
 import { GoogleSignUpButton } from "@/src/components/inputs/button/GoogleSignButton";

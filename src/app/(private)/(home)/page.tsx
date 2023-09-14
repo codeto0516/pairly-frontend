@@ -4,7 +4,7 @@ import { ContainerTop } from "@/src/components/layouts/Container";
 import { TransactionListWrapper } from "./components/TransactionList/ListWrapper";
 import { useToggle } from "@/src/hooks/useToggle";
 import { useUser } from "@/src/hooks/useUser";
-import { TransactionType } from "./types";
+import { Transaction } from "./types/transaction";
 import { format } from "date-fns";
 import { TransactionForm } from "./components/TransactionForm/main";
 import { FloatingButton } from "@/src/components/inputs/button/FloatingButton";
@@ -36,7 +36,7 @@ const NewTransactionForm = () => {
     if (!currentUser) return null;
 
     // 新規データ
-    const newTransaction: TransactionType = {
+    const newTransaction: Transaction = {
         paid_date: format(new Date(), "yyyy-MM-dd"),
         type: "spending",
         big_category_id: 1,
