@@ -45,7 +45,7 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
         const res = await createTransaction(transaction);
-        if (res.status === "SUCCESS") {
+        if (res.ok) {
             setIsClickButton((prev) => !prev);
             toggleButtonDisable(true);
         }
@@ -53,7 +53,7 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
 
     const handleUpdate = async () => {
         const res: any = await updateTransaction(transaction);
-        if (res.status === "SUCCESS") {
+        if (res.ok) {
             setIsClickButton((prev) => !prev);
             toggleButtonDisable(true);
         }
@@ -62,7 +62,7 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
     const handleDelete = async () => {
         if (transaction.id) {
             const res = await delteTransaction(transaction.id);
-            if (res.status === "SUCCESS") {
+            if (res.ok) {
                 setIsClickButton((prev) => !prev);
             }
         }
