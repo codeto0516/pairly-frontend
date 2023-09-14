@@ -1,10 +1,16 @@
 import urlJoin from "url-join";
 import { ApiResponse, useApi } from "../../../../hooks/useApi";
-import { BigCategory } from "../components/TransactionForm/Category";
+import { BigCategory, CategoryType } from "../components/TransactionForm/Category";
 
-interface GategoryApiResponse extends ApiResponse {
+interface GetCategoriesResponse extends ApiResponse {
     data: {
         categories: BigCategory[];
+    };
+}
+
+interface GetCategoryAllResponse extends ApiResponse {
+    data: {
+        types: CategoryType[];
     };
 }
 
@@ -13,15 +19,23 @@ export const useCategory = () => {
 
     const endPoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "categories");
 
-    const getCategories = async (type: "spending" | "income") => {
-        const res = await api.get<GategoryApiResponse>({
-            url: urlJoin(endPoint, type),
+    const getCategoryAll = async () => {
+        const res = await api.get<GetCategoryAllResponse>({
+            url: endPoint,
             cache: "force-cache",
         });
-        console.log(res);
 
         return res;
     };
 
-    return { getCategories };
+    const getCategories = async (type: "spending" | "income") => {
+        const res = await api.get<GetCategoriesResponse>({
+            url: urlJoin(endPoint, type),
+            cache: "force-cache",
+        });
+
+        return res;
+    };
+
+    return { getCategoryAll, getCategories };
 };
