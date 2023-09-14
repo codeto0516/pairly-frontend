@@ -91,7 +91,6 @@ export const TransactionList = () => {
                     <ul className="flex flex-col gap-0.5">
                         {transactionList.transactions.map((transaction: Transaction) => (
                             <TransactionListItem key={transaction.id} transaction={transaction} />
-                            // ↓下のリストアイテムを表示
                         ))}
                     </ul>
                 </div>
