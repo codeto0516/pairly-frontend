@@ -30,8 +30,6 @@ export const TransactionList = () => {
     const setCount = useSetRecoilState(countSelector);
 
     useEffect(() => {
-        console.log("helo");
-        
         (async () => {
             // 取引リストを取得
             const res = await getTransactionList({
