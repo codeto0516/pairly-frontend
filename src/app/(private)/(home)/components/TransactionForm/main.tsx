@@ -53,7 +53,7 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
         toggleLoading(true);
         const res = await createTransaction(transaction);
         if (res.ok) {
-            const newTransactionList = addTransactionAction(res.data)(transactionList);
+            const newTransactionList = addTransactionAction(res.data.transaction)(transactionList);
             setTransactionList(newTransactionList);
             toggleButtonDisable(true);
         }
@@ -64,7 +64,7 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
         toggleLoading(true);
         const res: any = await updateTransaction(transaction);
         if (res.ok) {
-            const updatedTransactionList = updateTransactionAction(res.data)(transactionList);
+            const updatedTransactionList = updateTransactionAction(res.data.transaction)(transactionList);
             setTransactionList(updatedTransactionList);
             toggleButtonDisable(true);
         }

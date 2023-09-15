@@ -17,7 +17,7 @@ import { transactionListState } from "../../stores/transactionList";
 ----------------------------------------------------------------------- */
 
 export const TransactionList = () => {
-    const { getTransactionsForSpecificMonth } = useTransaction();
+    const { getTransactionList } = useTransaction();
 
     const page = useRecoilValue<number>(pageSelector);
     const perPage = useRecoilValue<number>(perPageSelector);
@@ -31,9 +31,10 @@ export const TransactionList = () => {
     useEffect(() => {
         (async () => {
             // 取引リストを取得
-            const res = await getTransactionsForSpecificMonth({
-                year: 2023,
-                month: 9,
+            const res = await getTransactionList({
+                // 現在の年を取得
+                year: new Date().getFullYear(),
+                month: new Date().getMonth() + 1,
             });
 
             // もし取引リストがなければ終了

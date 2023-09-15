@@ -14,21 +14,14 @@ export const useTransaction = () => {
 
     const endPoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "transactions");
 
-    const getTransactionsForSpecificMonth = async ({ year, month }: { year: number; month: number }) => {
+    const getTransactionList = async ({ year, month }: { year: number; month: number }) => {
         // month, year
         const res = await api.get<TransactionApiResponse>({
-            url: urlJoin(endPoint, year.toString(), month.toString()),
+            url: urlJoin(endPoint, `?year=${year.toString()}`, `?month=${month.toString()}`),
         });
         return res as TransactionApiResponse;
     };
 
-    const getTransactionList = async ({ page, perPage }: { page: number; perPage: number }) => {
-        // page: 何ページ目を表示するか  perPage: 表示件数
-        const res = await api.get<TransactionApiResponse>({
-            url: urlJoin(endPoint, `?page=${page}`, `?per-page=${perPage}`),
-        });
-        return res as TransactionApiResponse;
-    };
 
     const createTransaction = async (transaction: Transaction) => {
         if (transaction.id) return;
@@ -59,7 +52,6 @@ export const useTransaction = () => {
     };
 
     return {
-        getTransactionsForSpecificMonth,
         getTransactionList,
         createTransaction,
         updateTransaction,
