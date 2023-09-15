@@ -43,8 +43,8 @@ export const groupByDate = (transactionList: Transaction[], perPage: number = 10
 
     // 日付の新しい順 かつ idが大きい順に並び替え
     copyTransactionList.sort((a, b) => {
-        const dateA = new Date(a.paid_date).getTime();
-        const dateB = new Date(b.paid_date).getTime();
+        const dateA = new Date(a.paidDate).getTime();
+        const dateB = new Date(b.paidDate).getTime();
 
         if (dateA === dateB) {
             const idA = a.id!;
@@ -69,7 +69,7 @@ export const groupByDate = (transactionList: Transaction[], perPage: number = 10
 
         transactionList.forEach((transaction) => {
             // 日付を取得
-            const date = transaction.paid_date;
+            const date = transaction.paidDate;
 
             // もし日付グループがまだ存在しなければ、新しいグループ（配列）を作成
             !dateMap.has(date) && dateMap.set(date, []);

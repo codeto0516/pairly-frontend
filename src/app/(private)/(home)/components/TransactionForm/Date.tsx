@@ -11,7 +11,6 @@ import { format } from "date-fns";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import { useTransactionContext } from "./main";
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 本体
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,7 +22,7 @@ export const TransactionFormDate = () => {
     const changeDate = (newDate: Date | null) => {
         if (newDate) {
             const formattedDate = format(new Date(newDate), "yyyy-MM-dd");
-            changeTransaction("paid_date", formattedDate);
+            changeTransaction("paidDate", formattedDate);
             setLabel(() => formattedDate);
         }
     };
