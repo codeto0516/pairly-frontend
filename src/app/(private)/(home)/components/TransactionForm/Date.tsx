@@ -18,7 +18,7 @@ import { useTransactionContext } from "./main";
 export const TransactionFormDate = () => {
     const { transaction, changeTransaction } = useTransactionContext();
 
-    const [label, setLabel] = useState<string | null>(transaction.paid_date ?? null);
+    const [label, setLabel] = useState<string | null>(transaction.paidDate ?? null);
 
     const changeDate = (newDate: Date | null) => {
         if (newDate) {
