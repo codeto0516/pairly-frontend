@@ -11,13 +11,19 @@ import { Transaction } from "../../types/transaction";
 import { useToggle } from "@/src/hooks/useToggle";
 import { LoadingButton } from "@mui/lab";
 import { useTransaction } from "@/src/app/(private)/(home)/api/useTransaction";
-import { useSetRecoilState } from "recoil";
-import { isButtonClickSelector } from "../../stores/transactionListParams";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { TransactionFormDate } from "./Date";
 import { TransactionFormCategory } from "./Category";
 import { TransactionFormContent } from "./Content";
 import { TransactionFormAmount } from "./Amount";
 import { DeleteDialog } from "@/src/components/utils/Dialog";
+import {
+    transactionListState,
+    transactionListSelector,
+    addTransaction as addTransactionAction,
+    updateTransaction as updateTransactionAction,
+    deleteTransaction as deleteTransactionAction,
+} from "../../stores/transactionList";
 // useContext
 export const TransactionContext = createContext<any>({});
 export const useTransactionContext = () => useContext(TransactionContext);
@@ -35,35 +41,42 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
 
     const [isNewTransaction] = useState(props.transaction.id ? false : true);
 
-    const setIsClickButton = useSetRecoilState(isButtonClickSelector);
-
     const [transaction, setTransaction] = useState(props.transaction);
     const changeTransaction = useCallback((field: string, value: string | number) => {
         setTransaction((prevTransaction) => ({ ...prevTransaction, [field]: value }));
     }, []);
 
+    const [transactionList, setTransactionList] = useRecoilState<any>(transactionListState);
+
     // 保存ボタンを押したらサーバーに送信
     const handleSave = async () => {
+        toggleLoading(true);
         const res = await createTransaction(transaction);
         if (res.ok) {
-            setIsClickButton((prev) => !prev);
+            const newTransactionList = addTransactionAction(res.data)(transactionList);
+            setTransactionList(newTransactionList);
             toggleButtonDisable(true);
         }
+        toggleLoading(false);
     };
 
     const handleUpdate = async () => {
+        toggleLoading(true);
         const res: any = await updateTransaction(transaction);
         if (res.ok) {
-            setIsClickButton((prev) => !prev);
+            const updatedTransactionList = updateTransactionAction(res.data)(transactionList);
+            setTransactionList(updatedTransactionList);
             toggleButtonDisable(true);
         }
+        toggleLoading(false);
     };
 
     const handleDelete = async () => {
         if (transaction.id) {
             const res = await delteTransaction(transaction.id);
             if (res.ok) {
-                setIsClickButton((prev) => !prev);
+                const updatedTransactionList = deleteTransactionAction(transaction.id)(transactionList);
+                setTransactionList(updatedTransactionList);
             }
         }
     };
@@ -72,7 +85,6 @@ export const TransactionForm = (props: { transaction: Transaction }) => {
         const totalAmout = transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0);
         // フォームが編集されたら検知して保存ボタンのDisabledを解除
         totalAmout === 0 ? toggleButtonDisable(true) : toggleButtonDisable(false);
-
     }, [transaction]);
 
     //////////////////////////////////////////////////////////////////////////////////
