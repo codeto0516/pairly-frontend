@@ -62,8 +62,12 @@ const NewTransactionForm = () => {
             {/* 【SP】フローティングボタンでモーダル表示 */}
             <div className="md:hidden ">
                 <FloatingButton onClick={() => toggleModal(true)} />
-                <Modal open={isModal} onClose={() => toggleModal(false)}>
-                    <div className="w-[350px] rounded-md overflow-hidden">
+                <Modal open={isModal} onClose={() => toggleModal(false)} sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}>
+                    <div className="w-[350px] rounded-md overflow-hidden relative">
                         <div className="absolute top-0 right-0">
                             <CloseButton onClick={() => toggleModal(false)} />
                         </div>
