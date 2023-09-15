@@ -40,11 +40,8 @@ export const TransactionListItem = (props: { transaction: Transaction }) => {
 
                 {/* 金額 */}
                 <p className="whitespace-nowrap">
-                    {props.transaction.type === "income" ? (
-                        <>¥ {props.transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0)}</>
-                    ) : (
-                        <>¥ -{props.transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0)}</>
-                    )}
+                    <span>¥ {props.transaction.type === "spending" && "-"}</span>
+                    {props.transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0)}
                 </p>
 
                 {/* 開閉ボタン */}
