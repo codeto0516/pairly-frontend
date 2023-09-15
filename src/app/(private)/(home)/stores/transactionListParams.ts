@@ -4,7 +4,7 @@ export interface TransactionListParams {
     page: number;
     perPage: number;
     count: number;
-    total: number;
+    total: number | null;
 }
 
 export const transactionListParamsState = atom<TransactionListParams>({
@@ -13,7 +13,7 @@ export const transactionListParamsState = atom<TransactionListParams>({
         page: 1,
         perPage: 10,
         count: 1,
-        total: 0,
+        total: null,
     },
 });
 
