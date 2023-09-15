@@ -37,19 +37,19 @@ const NewTransactionForm = () => {
 
     // 新規データ
     const newTransaction: Transaction = {
-        paid_date: format(new Date(), "yyyy-MM-dd"),
+        paidDate: format(new Date(), "yyyy-MM-dd"),
         type: "spending",
-        big_category_id: 1,
-        small_category_id: 2,
+        bigCategoryId: 1,
+        smallCategoryId: 2,
         content: "",
         amounts: currentUser.partner
             ? [
-                  { user_id: currentUser.localId, amount: 0 },
-                  { user_id: currentUser.partner.localId, amount: 0 },
+                  { userId: currentUser.localId, amount: 0 },
+                  { userId: currentUser.partner.localId, amount: 0 },
               ]
-            : [{ user_id: currentUser.localId, amount: 0 }],
+            : [{ userId: currentUser.localId, amount: 0 }],
 
-        created_by: currentUser.localId,
+        createdBy: currentUser.localId,
     };
 
     return (
@@ -62,8 +62,16 @@ const NewTransactionForm = () => {
             {/* 【SP】フローティングボタンでモーダル表示 */}
             <div className="md:hidden ">
                 <FloatingButton onClick={() => toggleModal(true)} />
-                <Modal open={isModal} onClose={() => toggleModal(false)}>
-                    <div className="w-[350px] rounded-md overflow-hidden">
+                <Modal
+                    open={isModal}
+                    onClose={() => toggleModal(false)}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <div className="w-[350px] rounded-md overflow-hidden relative">
                         <div className="absolute top-0 right-0">
                             <CloseButton onClick={() => toggleModal(false)} />
                         </div>

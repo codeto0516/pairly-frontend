@@ -7,21 +7,20 @@ import { SetStateAction, useEffect, useState } from "react";
 import { useCategory } from "@/src/app/(private)/(home)/api/useCategory";
 import { useTransactionContext } from "./main";
 import { ToggleButton } from "@/src/components/inputs/button/ToggleButton";
-import { useToggle } from "@/src/hooks/useToggle";
 
 export interface BigCategory {
-    big_category_id: number;
-    big_category_name: string;
-    small_categories: SmallCategory[];
+    bigCategoryId: number;
+    bigCategoryName: string;
+    smallCategories: SmallCategory[];
 }
 
 export interface SmallCategory {
-    small_category_id: number;
-    small_category_name: string;
+    smallCategoryId: number;
+    smallCategoryName: string;
 }
 
 export interface CategoryType {
-    type_name: string;
+    typeName: string;
     categories: BigCategory[];
 }
 
@@ -38,7 +37,7 @@ const categoryTypeList = [
 ///////////////////////////////////////////////////////////////////////////////
 export const TransactionFormCategory = () => {
     const { getCategoryAll } = useCategory();
-    const { transaction, changeTransaction } = useTransactionContext();
+    const { transaction } = useTransactionContext();
 
     const [categoryAll, setCategoryAll] = useState<CategoryType[] | undefined>(undefined);
     const [categoryList, setCategoryList] = useState<BigCategory[] | undefined>(undefined);
@@ -46,7 +45,7 @@ export const TransactionFormCategory = () => {
     const [smallCategoryList, setSmallCategoryList] = useState<SmallCategory[] | undefined>(undefined);
 
     const getCategoryList = (newCategoryType: string): BigCategory[] | undefined => {
-        return categoryAll?.find((categoryList: any) => categoryList.type_name === newCategoryType)?.categories;
+        return categoryAll?.find((categoryList: any) => categoryList.typeName === newCategoryType)?.categories;
     };
 
     useEffect(() => {
@@ -108,12 +107,12 @@ const CategoryTypeSelector = (props: {
         props.setCategoryList(() => result);
 
         // 大カテゴリーIDを未分類にリセット
-        const bigCategoryFirstId = result?.[0].big_category_id;
-        changeTransaction("big_category_id", bigCategoryFirstId);
+        const bigCategoryFirstId = result?.[0].bigCategoryId;
+        changeTransaction("bigCategoryId", bigCategoryFirstId);
 
         // 小カテゴリーIDを未分類にリセット
-        const smallCategoryFirstId = result?.[0].small_categories[0].small_category_id;
-        changeTransaction("small_category_id", smallCategoryFirstId);
+        const smallCategoryFirstId = result?.[0].smallCategories[0].smallCategoryId;
+        changeTransaction("smallCategoryId", smallCategoryFirstId);
     };
 
     // カテゴリータイプ（支出 or 収入）を変更
@@ -142,11 +141,11 @@ const BigCategorySelector = (props: {
     const updateSmallCategoryList = (newBigCategoryId: number) => {
         // 大カテゴリーを取得
         const bigCategory = props.categoryList?.find(
-            (bigCategory: BigCategory) => bigCategory.big_category_id == newBigCategoryId
+            (bigCategory: BigCategory) => bigCategory.bigCategoryId == newBigCategoryId
         );
 
         // 大カテゴリーに関連する小カテゴリーをセット
-        const smallCategoryList = bigCategory?.small_categories;
+        const smallCategoryList = bigCategory?.smallCategories;
         smallCategoryList && props.setSmallCategoryList(() => smallCategoryList);
         return smallCategoryList;
     };
@@ -154,18 +153,18 @@ const BigCategorySelector = (props: {
     // 大カテゴリーを変更
     const changeBig = (newBigCategoryId: number) => {
         // 大カテゴリーを変更
-        changeTransaction("big_category_id", newBigCategoryId);
+        changeTransaction("bigCategoryId", newBigCategoryId);
 
         // 大カテゴリーに関連する小カテゴリーをセット
         const smallCategoryList = updateSmallCategoryList(newBigCategoryId);
 
         // 小カテゴリーIDを未分類にリセット
-        const smallCategoryFirstId = smallCategoryList?.[0].small_category_id;
-        changeTransaction("small_category_id", smallCategoryFirstId);
+        const smallCategoryFirstId = smallCategoryList?.[0].smallCategoryId;
+        changeTransaction("smallCategoryId", smallCategoryFirstId);
     };
 
     useEffect(() => {
-        props.categoryList && updateSmallCategoryList(transaction.big_category_id);
+        props.categoryList && updateSmallCategoryList(transaction.bigCategoryId);
     }, [props.categoryList]);
 
     return (
@@ -173,14 +172,14 @@ const BigCategorySelector = (props: {
             <FormControl sx={{ m: 0, width: "100%" }} size="small">
                 <InputLabel>大カテゴリー</InputLabel>
                 <Select
-                    value={transaction.big_category_id}
+                    value={transaction.bigCategoryId}
                     label="大カテゴリー"
                     onChange={(e) => changeBig(Number(e.target.value))}
                 >
                     {props.categoryList?.map((item: any, index: number) => {
                         return (
-                            <MenuItem key={index} value={item.big_category_id}>
-                                {item.big_category_name}
+                            <MenuItem key={index} value={item.bigCategoryId}>
+                                {item.bigCategoryName}
                             </MenuItem>
                         );
                     })}
@@ -196,21 +195,21 @@ const BigCategorySelector = (props: {
 const SmallCategorySelector = (props: { smallCategoryList: SmallCategory[] | undefined }) => {
     // 取引データのコンテキスト
     const { transaction, changeTransaction } = useTransactionContext();
-    const changeSmall = (newSmallCategoryId: number) => changeTransaction("small_category_id", newSmallCategoryId);
+    const changeSmall = (newSmallCategoryId: number) => changeTransaction("smallCategoryId", newSmallCategoryId);
 
     return (
         <FormControl sx={{ m: 0, width: "100%" }} size="small">
             <InputLabel>小カテゴリー</InputLabel>
             <Select
-                value={transaction.small_category_id}
+                value={transaction.smallCategoryId}
                 label="小カテゴリー"
                 onChange={(e) => changeSmall(Number(e.target.value))}
-                disabled={transaction.big_category_id === 1 ? true : false}
+                disabled={transaction.bigCategoryId === 1 ? true : false}
             >
                 {props.smallCategoryList?.map((item: any, index: number) => {
                     return (
-                        <MenuItem key={index} value={item.small_category_id}>
-                            {item.small_category_name}
+                        <MenuItem key={index} value={item.smallCategoryId}>
+                            {item.smallCategoryName}
                         </MenuItem>
                     );
                 })}

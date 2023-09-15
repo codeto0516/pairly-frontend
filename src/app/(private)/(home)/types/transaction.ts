@@ -1,17 +1,15 @@
 export interface Amount {
-    user_id: string;
+    userId: string;
     amount: number;
 }
 
 export interface Transaction {
     id?: number;
-    paid_date: string;
+    paidDate: string;
     type: string;
-    big_category_id: number;
-    small_category_id: number;
+    bigCategoryId: number;
+    smallCategoryId: number;
     content: string;
-    created_by: string;
+    createdBy: string;
     amounts: Amount[];
 }
-
-

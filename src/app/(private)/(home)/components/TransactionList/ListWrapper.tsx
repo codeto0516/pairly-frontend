@@ -9,6 +9,7 @@ import { ChangeEvent } from "react";
 export const TransactionListWrapper = () => {
     const [page, setPage] = useRecoilState<number>(pageSelector);
     const count = useRecoilValue(countSelector);
+    const total = useRecoilValue(countSelector);
 
     return (
         <div className="flex flex-col gap-4 w-full">
@@ -28,13 +29,15 @@ export const TransactionListWrapper = () => {
             <TransactionList />
 
             {/* ページネーション */}
-            <Pagination
-                page={page}
-                count={count}
-                onChange={(e: ChangeEvent<unknown>, page: number) => setPage(page)}
-                shape="rounded"
-                className="flex justify-center mt-8"
-            />
+            {total >= 1 && (
+                <Pagination
+                    page={page}
+                    count={count}
+                    onChange={(e: ChangeEvent<unknown>, page: number) => setPage(page)}
+                    shape="rounded"
+                    className="flex justify-center mt-8"
+                />
+            )}
         </div>
     );
 };

@@ -27,6 +27,8 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const updateCurrentUser = (user: User) => setCurrentUser(() => user);
     const { signOut } = useAuth();
+
+    const [token, setToken] = useState<string | null>(null);
     useEffect(() => {
         try {
             

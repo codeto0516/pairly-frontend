@@ -4,7 +4,7 @@ export interface TransactionListParams {
     page: number;
     perPage: number;
     count: number;
-    isClickButton: boolean;
+    total: number | null;
 }
 
 export const transactionListParamsState = atom<TransactionListParams>({
@@ -13,11 +13,11 @@ export const transactionListParamsState = atom<TransactionListParams>({
         page: 1,
         perPage: 10,
         count: 1,
-        isClickButton: false,
+        total: null,
     },
 });
 
-type FieldToUpdate = "page" | "perPage" | "count" | "isClickButton";
+type FieldToUpdate = "page" | "perPage" | "count" | "total";
 
 function createFieldUpdateSelector(fieldName: FieldToUpdate) {
     return selector({
@@ -38,4 +38,4 @@ function createFieldUpdateSelector(fieldName: FieldToUpdate) {
 export const pageSelector = createFieldUpdateSelector("page") as RecoilState<number>;
 export const perPageSelector = createFieldUpdateSelector("perPage") as RecoilState<number>;
 export const countSelector = createFieldUpdateSelector("count") as RecoilState<number>;
-export const isButtonClickSelector = createFieldUpdateSelector("isClickButton") as RecoilState<boolean>;
+export const totalSelector = createFieldUpdateSelector("total") as RecoilState<number>;

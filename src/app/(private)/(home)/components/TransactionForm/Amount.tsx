@@ -13,7 +13,7 @@ export const TransactionFormAmount = () => {
     return (
         <div className="flex flex-col gap-2">
             {transaction.amounts.map((item: Amount) => {
-                return <BaseAmountForm key={item.user_id} item={item} />;
+                return <BaseAmountForm key={item.userId} item={item} />;
             })}
 
             <p className="text-gray-500">
@@ -30,20 +30,20 @@ const BaseAmountForm = (props: { item: any }) => {
     const { getUser } = useUser();
 
     const changeAmount = (e: ChangeEvent<HTMLInputElement>) => {
-        const userId = props.item.user_id;
+        const userId = props.item.userId;
         const amount = Number(e.target.value);
 
         setTransaction((prevTransaction: Transaction) => ({
             ...prevTransaction,
             amounts: prevTransaction.amounts.map((item: any) =>
-                item.user_id === userId ? { ...item, amount: amount } : item
+                item.userId === userId ? { ...item, amount: amount } : item
             ),
         }));
     };
 
     useEffect(() => {
         (async () => {
-            const user: any = await getUser(props.item.user_id);
+            const user: any = await getUser(props.item.userId);
             setUser(() => user);
         })();
 
@@ -60,7 +60,7 @@ const BaseAmountForm = (props: { item: any }) => {
     }
 
     return (
-        <div key={props.item.user_id} className="flex items-end gap-4">
+        <div key={props.item.userId} className="flex items-end gap-4">
             {/* ユーザーアイコン */}
             <UserIcon label={user.displayName ?? user.email} image={user.photoUrl} />
             {/* 入力フォーム */}
