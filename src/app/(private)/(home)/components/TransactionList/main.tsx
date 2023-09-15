@@ -5,50 +5,53 @@ import { Skeleton } from "@mui/material";
 
 import { Transaction } from "../../types/transaction";
 
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import {
-    countSelector,
-    isButtonClickSelector,
-    pageSelector,
-    perPageSelector,
-} from "../../stores/transactionListParams";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { countSelector, pageSelector, perPageSelector, totalSelector } from "../../stores/transactionListParams";
 
 import { useTransaction } from "../../api/useTransaction";
 import { TransactionGroupByDate, groupByDate } from "../../../../../lib/groupByDate";
 import { TransactionListItem } from "./ListItem";
+import { transactionListState } from "../../stores/transactionList";
 /* -----------------------------------------------------------------------
  リスト
 ----------------------------------------------------------------------- */
 
 export const TransactionList = () => {
-    const { getTransactionList } = useTransaction();
-    const [transactionList, setTransactionList] = useState<TransactionGroupByDate[]>();
+    const { getTransactionList, getTransactionsForSpecificMonth } = useTransaction();
+    // const [transactionList, setTransactionList] = useState<TransactionGroupByDate[]>();
 
     const page = useRecoilValue<number>(pageSelector);
     const perPage = useRecoilValue<number>(perPageSelector);
-    const isClickButton = useRecoilValue<boolean>(isButtonClickSelector);
+    const [total, setTotal] = useRecoilState<number>(totalSelector);
+
     const setCount = useSetRecoilState(countSelector);
+
+    const [transactionGroupByDate, setTransactionGroupByDate] = useState<any | undefined>(undefined);
+    const [transactionList, setTransactionList] = useRecoilState<any>(transactionListState);
 
     useEffect(() => {
         (async () => {
             // 取引リストを取得
-            const res = await getTransactionList({
-                page: page,
-                perPage: perPage,
+            const res = await getTransactionsForSpecificMonth({
+                year: 2023,
+                month: 9,
             });
 
-            if (!res?.data) {
-                setTransactionList(() => undefined);
-                return;
-            }
+            if (!res?.data) return;
 
-            setCount(Math.ceil(res.data.total_count / perPage));
-
-            const groupByDateList = groupByDate(res.data.transactions);
-
-            setTransactionList(() => groupByDateList);
+            setTransactionList(() => res.data.transactions);
         })();
-    }, [page, perPage, isClickButton]);
+    }, []);
+
+    useEffect(() => {
+        if (transactionList) {
+            setTotal(transactionList.length);
+            setCount(Math.ceil(transactionList.length / perPage));
+
+            const groupByDateList = groupByDate(transactionList, perPage);
+            setTransactionGroupByDate(() => groupByDateList);
+        }
+    }, [transactionList, perPage]);
 
     if (transactionList === undefined) {
         return (
@@ -68,7 +71,15 @@ export const TransactionList = () => {
         );
     }
 
-    if (transactionList.length === 0) {
+    if (transactionGroupByDate === undefined) {
+        return (
+            <div className="flex justify-center">
+                <p>取得中...</p>
+            </div>
+        );
+    }
+
+    if (transactionGroupByDate.length === 0) {
         return (
             <div className="flex justify-center">
                 <p>取引はありません</p>
@@ -79,7 +90,7 @@ export const TransactionList = () => {
     return (
         <div className="flex flex-col gap-4 w-full text-gray-500">
             {/* 取得したデータをmapで1つずつ取り出す */}
-            {transactionList.map((transactionList: any, index: number) => (
+            {transactionGroupByDate[page - 1].map((transactionList: any, index: number) => (
                 // 日付ごとに取引を分けて表示する
                 <div key={index} className="rounded-sm overflow-hidden">
                     {/* 日付 */}
