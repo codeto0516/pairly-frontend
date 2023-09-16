@@ -44,7 +44,7 @@ export const TransactionList = () => {
             setTransactionList(() => res.data.transactions);
 
             // 取引リストの総数をセット
-            setTotal(res.data.total_count);
+            setTotal(res.data.totalCount);
         })();
     }, []);
 

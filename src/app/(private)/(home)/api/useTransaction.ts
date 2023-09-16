@@ -4,7 +4,7 @@ import { Transaction } from "../types/transaction";
 
 interface TransactionApiResponse extends ApiResponse {
     data: {
-        total_count: number;
+        totalCount: number;
         transactions: Transaction[];
     };
 }
