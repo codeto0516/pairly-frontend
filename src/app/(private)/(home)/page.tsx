@@ -75,7 +75,7 @@ const NewTransactionForm = () => {
                         <div className="absolute top-0 right-0">
                             <CloseButton onClick={() => toggleModal(false)} />
                         </div>
-                        <TransactionForm transaction={newTransaction} />
+                        <TransactionForm transaction={newTransaction} toggleModal={toggleModal} />
                     </div>
                 </Modal>
             </div>
