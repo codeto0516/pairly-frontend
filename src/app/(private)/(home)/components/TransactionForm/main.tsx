@@ -35,6 +35,9 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
     // 新規取引かどうか
     const isNewTransaction = props.transaction.id ? false : true;
 
+    // 取引の初期値を保持（保存後にフォームを初期化するため）
+    const initialTransaction = props.transaction;
+
     // 取引の状態
     const [transaction, setTransaction] = useState(props.transaction);
     const changeTransaction = useCallback((field: string, value: string | number) => {
@@ -45,8 +48,6 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
     return (
         <TransactionContext.Provider value={{ transaction, changeTransaction, setTransaction }}>
             <div className="flex flex-col gap-2 text-sx bg-white w-full px-6 py-8">
-             
-
                 {isNewTransaction ? (
                     <div className="flex justify-end items-center">
                         {/* 日付 */}
@@ -73,7 +74,12 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
 
                 {/* ボタン */}
                 {isNewTransaction ? (
-                    <SaveButton transaction={transaction} setTransaction={setTransaction} />
+                    <SaveButton
+                        initialTransaction={initialTransaction}
+                        toggleModal={props.toggleModal}
+                        transaction={transaction}
+                        setTransaction={setTransaction}
+                    />
                 ) : (
                     <UpdateButton transaction={transaction} />
                 )}
@@ -86,13 +92,11 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
 // 保存ボタン
 ///////////////////////////////////////////////////////////////////////////////////////
 const SaveButton = (props: {
+    initialTransaction: Transaction;
     toggleModal?: (value: boolean) => void;
     transaction: Transaction;
     setTransaction: (value: React.SetStateAction<Transaction>) => void;
 }) => {
-    // 取引の初期値を保持（保存後にフォームを初期化するため）
-    const initialTransaction = props.transaction;
-
     // ローディング、ボタンの状態
     const [isLoading, toggleLoading] = useToggle(false);
     const [isButtonDisable, toggleButtonDisable] = useToggle(true);
@@ -123,7 +127,7 @@ const SaveButton = (props: {
             setTransactionList(newTransactionList);
 
             // フォームを初期化
-            props.setTransaction(initialTransaction);
+            props.setTransaction(props.initialTransaction);
 
             // モーダルを閉じる
             props.toggleModal?.(false);
