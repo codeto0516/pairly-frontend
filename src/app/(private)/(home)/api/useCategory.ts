@@ -22,8 +22,11 @@ export const useCategory = () => {
     const getCategoryAll = async () => {
         const res = await api.get<GetCategoryAllResponse>({
             url: endPoint,
-            cache: "force-cache",
+            // cache: "force-cache",
         });
+
+        console.log(res);
+        
 
         return res;
     };
