@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { User } from "../types/user";
 import { auth } from "../app/(auth)/api/auth/[...nextauth]/config";
 import { useAuth } from "../hooks/useAuth";
+import urlJoin from "url-join";
 
 // ローディングを表示しないページ
 const excludedPaths = ["/signin", "/signup", "/api/auth/error"];
@@ -28,20 +29,22 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
     const updateCurrentUser = (user: User) => setCurrentUser(() => user);
     const { signOut } = useAuth();
 
-    const [token, setToken] = useState<string | null>(null);
     useEffect(() => {
         try {
-            
             if (!session?.token) return;
-            (async () => {
-                auth.onAuthStateChanged((user) => {
-                    console.log(user);
-                });
-                const res = await fetch("http://localhost/api/v1/users/me", {
+            auth.onAuthStateChanged(async (user) => {
+                console.log(user);
+
+                const token = await user?.getIdToken()
+
+                // トークンがない場合はサインアウト
+                if (!token) return
+                
+                const res = await fetch(urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "users", "me"), {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${session?.token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
 
@@ -51,7 +54,7 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
                 console.log(decoded);
 
                 decoded?.data?.user && setCurrentUser(() => decoded?.data.user);
-            })();
+            });
         } catch (error) {
             (async () => {
                 await signOut();
