@@ -10,9 +10,10 @@ import {
 } from "@mui/icons-material";
 import { Button, IconButton, Collapse, TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { YearMonthSelectorButton } from "./YearMonthSelector";
+import { LoadingButton } from "@mui/lab";
 
-
-const SearchBox = () => {
+export const SearchBox = () => {
     const [accordionIsOpen, setAccordionIdOpen] = useState(false);
 
     return (
@@ -42,7 +43,7 @@ const SearchBox = () => {
             ----------------------------------------------------------------------- */}
             <Collapse in={accordionIsOpen} timeout="auto" unmountOnExit>
                 <div className="p-4">
-                    <div className="flex items-center">
+                    <div className="flex flex-col justify-start items-start gap-4">
                         <TextField
                             label="キーワード検索"
                             variant="standard"
@@ -60,11 +61,18 @@ const SearchBox = () => {
                                 ),
                             }}
                         />
+                        {/* <LoadingButton
+                            fullWidth
+                            variant="outlined"
+                            // onClick={handleUpdate}
+                            // loading={isLoading}
+                            // disabled={isButtonDisable}
+                        >
+                            検索
+                        </LoadingButton> */}
                     </div>
                 </div>
             </Collapse>
         </div>
     );
 };
-
-export default SearchBox;
