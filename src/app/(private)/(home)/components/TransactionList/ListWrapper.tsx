@@ -1,10 +1,11 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import { countSelector, pageSelector } from "../../stores/transactionListParams";
-import SearchBox from "../SearchBox/main";
+import { SearchBox } from "../SearchBox/main";
 import { PerPageSelectorButton } from "../SearchBox/PerPage";
 import { TransactionList } from "./main";
 import { Pagination } from "@mui/material";
 import { ChangeEvent } from "react";
+import { YearMonthSelectorButton } from "../SearchBox/YearMonthSelector";
 
 export const TransactionListWrapper = () => {
     const [page, setPage] = useRecoilState<number>(pageSelector);
@@ -14,14 +15,14 @@ export const TransactionListWrapper = () => {
     return (
         <div className="flex flex-col gap-4 w-full">
             {/* 検索ボックス */}
-            <SearchBox />
-
-            {/* <DisplayMonthSelectorButton /> */}
+            {/* <SearchBox /> */}
 
             {/* 表示件数を選択するボタン */}
-            <div className="flex justify-end w-full gap-2 ju">
+            <div className="flex justify-between w-full gap-2 ju">
                 {/* 表示する月を選択 */}
-                {/* <DisplayOrderSelectorButton /> */}
+                <YearMonthSelectorButton />
+
+                {/* 表示件数 */}
                 <PerPageSelectorButton />
             </div>
 

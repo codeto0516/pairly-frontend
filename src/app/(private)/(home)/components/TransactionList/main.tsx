@@ -6,7 +6,7 @@ import { Skeleton } from "@mui/material";
 import { Transaction } from "../../types/transaction";
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { countSelector, pageSelector, perPageSelector, totalSelector } from "../../stores/transactionListParams";
+import { countSelector, monthSelector, pageSelector, perPageSelector, totalSelector, yearSelector } from "../../stores/transactionListParams";
 
 import { useTransaction } from "../../api/useTransaction";
 import { TransactionGroupByDate, groupByDate } from "../../../../../lib/groupByDate";
@@ -22,6 +22,8 @@ export const TransactionList = () => {
     const page = useRecoilValue<number>(pageSelector);
     const perPage = useRecoilValue<number>(perPageSelector);
     const [total, setTotal] = useRecoilState<number>(totalSelector);
+    const year = useRecoilValue<number>(yearSelector);
+    const month = useRecoilValue<number>(monthSelector);
 
     const setCount = useSetRecoilState(countSelector);
 
@@ -33,8 +35,8 @@ export const TransactionList = () => {
             // 取引リストを取得
             const res = await getTransactionList({
                 // 現在の年を取得
-                year: new Date().getFullYear(),
-                month: new Date().getMonth() + 1,
+                year: year,
+                month: month,
             });
 
             // もし取引リストがなければ終了
@@ -46,7 +48,7 @@ export const TransactionList = () => {
             // 取引リストの総数をセット
             setTotal(res.data.totalCount);
         })();
-    }, []);
+    }, [year, month]);
 
     useEffect(() => {
         // 上の処理よりも前に実行されたら終了
