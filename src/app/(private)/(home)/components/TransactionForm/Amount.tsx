@@ -57,7 +57,7 @@ const BaseAmountForm = (props: { item: any }) => {
                 inputRef.current.value = "";
             }
         } else {
-            setValue(props.item.amount);
+            setValue(() => props.item.amount);
         }
     }, [props.item.amount]);
 
