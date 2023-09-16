@@ -57,6 +57,9 @@ export const TransactionList = () => {
         // ページネーションの数を計算してセット
         setCount(Math.ceil(transactionList.length / perPage));
 
+        // 取引リストの総数をセット
+        setTotal(transactionList.length);
+
         if (transactionList.length === 0) {
             // 取引がなければnullをセット => 「取引がありません」と表示
             setTransactionGroupByDate(() => null);
