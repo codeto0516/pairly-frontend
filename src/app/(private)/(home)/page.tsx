@@ -10,6 +10,7 @@ import { TransactionForm } from "./components/TransactionForm/main";
 import { FloatingButton } from "@/src/components/inputs/button/FloatingButton";
 import { Modal } from "@mui/material";
 import { CloseButton } from "@/src/components/inputs/button/IconButton";
+import { motion } from "framer-motion";
 
 const Page = () => {
     return (
@@ -69,14 +70,23 @@ const NewTransactionForm = () => {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        "&:focus": {
+                            outline: "none", // フォーカス時にアウトラインを削除
+                        },
                     }}
                 >
-                    <div className="w-[350px] rounded-md overflow-hidden relative">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="w-[350px] rounded-md overflow-hidden relative"
+                    >
                         <div className="absolute top-0 right-0">
                             <CloseButton onClick={() => toggleModal(false)} />
                         </div>
                         <TransactionForm transaction={newTransaction} toggleModal={toggleModal} />
-                    </div>
+                    </motion.div>
                 </Modal>
             </div>
         </>

@@ -47,7 +47,7 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
     //////////////////////////////////////////////////////////////////////////////////
     return (
         <TransactionContext.Provider value={{ transaction, changeTransaction, setTransaction }}>
-            <div className="flex flex-col gap-2 text-sx bg-white w-full px-6 py-8">
+            <div className="flex flex-col gap-2 text-sx bg-white w-full p-8">
                 {isNewTransaction ? (
                     <div className="flex justify-end items-center">
                         {/* 日付 */}
@@ -81,7 +81,7 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
                         setTransaction={setTransaction}
                     />
                 ) : (
-                    <UpdateButton transaction={transaction} />
+                    <UpdateButton transaction={transaction} toggleModal={props.toggleModal} />
                 )}
             </div>
         </TransactionContext.Provider>
@@ -146,7 +146,7 @@ const SaveButton = (props: {
 ///////////////////////////////////////////////////////////////////////////////////////
 // 更新ボタン
 ///////////////////////////////////////////////////////////////////////////////////////
-const UpdateButton = (props: { transaction: Transaction }) => {
+const UpdateButton = (props: { transaction: Transaction; toggleModal?: (value: boolean) => void }) => {
     const { updateTransaction } = useTransaction();
 
     const [isLoading, toggleLoading] = useToggle(false);
@@ -166,6 +166,9 @@ const UpdateButton = (props: { transaction: Transaction }) => {
             toggleButtonDisable(true);
         }
         toggleLoading(false);
+
+        // モーダルを閉じる
+        props.toggleModal?.(false);
     };
 
     useEffect(() => {
