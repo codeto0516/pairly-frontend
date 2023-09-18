@@ -1,18 +1,24 @@
 "use client";
 
 import { ContainerTop } from "@/src/components/layouts/Container";
-import { TransactionListWrapper } from "./components/TransactionList/ListWrapper";
 import { useToggle } from "@/src/hooks/useToggle";
 import { useUser } from "@/src/hooks/useUser";
 import { Transaction } from "./types/transaction";
 import { format } from "date-fns";
-import { TransactionForm } from "./components/TransactionForm/main";
+import { TransactionForm, TransactionFormModal } from "./components/TransactionForm/main";
 import { FloatingButton } from "@/src/components/inputs/button/FloatingButton";
-import { Modal } from "@mui/material";
-import { CloseButton } from "@/src/components/inputs/button/IconButton";
-import { motion } from "framer-motion";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { countSelector, pageSelector } from "./stores/transactionListParams";
+import { YearMonthSelectorButton } from "./components/SearchBox/YearMonthSelector";
+import { PerPageSelectorButton } from "./components/SearchBox/PerPage";
+import { TransactionList } from "./components/TransactionList/main";
+import { Pagination } from "@mui/material";
+import { ChangeEvent } from "react";
 
 const Page = () => {
+    const [page, setPage] = useRecoilState<number>(pageSelector);
+    const count = useRecoilValue(countSelector);
+    const total = useRecoilValue(countSelector);
     return (
         <ContainerTop>
             <div className="flex flex-col md:flex-row gap-8 w-full">
@@ -20,7 +26,33 @@ const Page = () => {
                 <NewTransactionForm />
 
                 {/* 取引一覧とその他のコンポーネント */}
-                <TransactionListWrapper />
+                <div className="flex flex-col gap-4 w-full">
+                    {/* 検索ボックス */}
+                    {/* <SearchBox /> */}
+
+                    {/* 表示件数を選択するボタン */}
+                    <div className="flex justify-between w-full gap-2 ju">
+                        {/* 表示する月を選択 */}
+                        <YearMonthSelectorButton />
+
+                        {/* 表示件数 */}
+                        <PerPageSelectorButton />
+                    </div>
+
+                    {/* 取引記録一覧を表示 */}
+                    <TransactionList />
+
+                    {/* ページネーション */}
+                    {total >= 1 && (
+                        <Pagination
+                            page={page}
+                            count={count}
+                            onChange={(e: ChangeEvent<unknown>, page: number) => setPage(page)}
+                            shape="rounded"
+                            className="flex justify-center mt-8"
+                        />
+                    )}
+                </div>
             </div>
         </ContainerTop>
     );
@@ -63,31 +95,7 @@ const NewTransactionForm = () => {
             {/* 【SP】フローティングボタンでモーダル表示 */}
             <div className="md:hidden ">
                 <FloatingButton onClick={() => toggleModal(true)} />
-                <Modal
-                    open={isModal}
-                    onClose={() => toggleModal(false)}
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        "&:focus": {
-                            outline: "none", // フォーカス時にアウトラインを削除
-                        },
-                    }}
-                >
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="w-[350px] rounded-md overflow-hidden relative"
-                    >
-                        <div className="absolute top-0 right-0">
-                            <CloseButton onClick={() => toggleModal(false)} />
-                        </div>
-                        <TransactionForm transaction={newTransaction} toggleModal={toggleModal} />
-                    </motion.div>
-                </Modal>
+                <TransactionFormModal transaction={newTransaction} isModal={isModal} toggleModal={toggleModal} />
             </div>
         </>
     );
