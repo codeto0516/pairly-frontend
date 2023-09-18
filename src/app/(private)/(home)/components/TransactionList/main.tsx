@@ -103,7 +103,7 @@ export const TransactionList = () => {
             {/* 取得したデータをmapで1つずつ取り出す */}
             {transactionGroupByDate[page - 1].map((transactionList: TransactionGroupByDate, index: number) => (
                 // 日付ごとに取引を分けて表示する
-                <div key={index} className="rounded-sm overflow-hidden">
+                <div key={index} className="rounded-sm ">
                     {/* 日付 */}
                     <time className="bg-whte font-bold text-gray-500 mb-1 text-xs md:text-sm px-2 py-0.5 md:py-1 ">
                         {transactionList.date}

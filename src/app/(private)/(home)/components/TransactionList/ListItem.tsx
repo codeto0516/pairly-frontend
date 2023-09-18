@@ -4,7 +4,7 @@ import {
     KeyboardArrowDown as KeyboardArrowDownIcon,
     KeyboardArrowUp as KeyboardArrowUpIcon,
 } from "@mui/icons-material";
-import { IconButton, Collapse } from "@mui/material";
+import { IconButton, Collapse, Modal } from "@mui/material";
 
 // 型定義
 import { useToggle } from "@/src/hooks/useToggle";
@@ -15,10 +15,12 @@ import { useUser } from "@/src/hooks/useUser";
 import { UserIcon } from "@/src/components/dataDisplay/UsersIcon";
 import { useEffect, useState } from "react";
 import { User } from "@/src/types/user";
-
+import { FloatingButton } from "@/src/components/inputs/button/FloatingButton";
+import { CloseButton } from "@/src/components/inputs/button/IconButton";
 export const TransactionListItem = (props: { transaction: Transaction }) => {
     // アコーディオンの開閉状態管理用
     const [isAccordion, toggleAccordion] = useToggle(false);
+    const [isModal, toggleModal] = useToggle(false);
 
     const [user, setUser] = useState<User | null>(null);
     const { getUser } = useUser();
@@ -37,14 +39,14 @@ export const TransactionListItem = (props: { transaction: Transaction }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="border border-gray-300 rounded-md overflow-hidden"
+            className="border border-gray-300 rounded-md hover:cursor-pointer hover:bg-gray-100 "
         >
             {/* -----------------------------------------------------------------------
              最初に表示される個別のリストアイテム。下のアコーディオンを開けば詳細が見れる
             ----------------------------------------------------------------------- */}
             <li
-                className="flex flex-row gap-4 items-center justify-between px-4 py-3 text-black text-sm"
-                onClick={() => toggleAccordion()}
+                className="flex flex-row gap-4 items-center justify-between p-4 text-black text-sm"
+                onClick={() => toggleModal(true)}
             >
                 {/* 支出 or 収入 */}
                 {props.transaction.type === "spending" ? (
@@ -66,20 +68,34 @@ export const TransactionListItem = (props: { transaction: Transaction }) => {
                     <span>¥ {props.transaction.type === "spending" && "-"}</span>
                     {props.transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0)}
                 </p>
-                {/* 開閉ボタン */}
-                <IconButton size="small">
-                    {isAccordion ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                </IconButton>
             </li>
-
-            {/* -----------------------------------------------------------------------
-             詳細（アコーディオンで表示）
-            ----------------------------------------------------------------------- */}
-            <li>
-                <Collapse in={isAccordion} timeout="auto" unmountOnExit>
-                    <TransactionForm transaction={props.transaction} />
-                </Collapse>
-            </li>
+            {isModal && (
+                <Modal
+                    open={isModal}
+                    onClose={() => toggleModal(false)}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        "&:focus": {
+                            outline: "none", // フォーカス時にアウトラインを削除
+                        },
+                    }}
+                >
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1}}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="w-[350px] rounded-md overflow-hidden relative"
+                    >
+                        <div className="absolute top-0 right-0">
+                            <CloseButton onClick={() => toggleModal(false)} />
+                        </div>
+                        <TransactionForm transaction={props.transaction} toggleModal={toggleModal} />
+                    </motion.div>
+                </Modal>
+            )}
         </motion.div>
     );
 };
