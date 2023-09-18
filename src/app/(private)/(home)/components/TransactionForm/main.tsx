@@ -3,7 +3,7 @@
 import { useContext, useState, createContext, useEffect, useCallback, memo, SetStateAction } from "react";
 
 // Material UI
-import { Button } from "@mui/material";
+import { Button, Modal } from "@mui/material";
 
 // 自作コンポーネント
 // 型定義
@@ -17,6 +17,8 @@ import { TransactionFormCategory } from "./Category";
 import { TransactionFormContent } from "./Content";
 import { TransactionFormAmount } from "./Amount";
 import { DeleteDialog } from "@/src/components/utils/Dialog";
+import { motion } from "framer-motion";
+import { CloseButton } from "@/src/components/inputs/button/IconButton";
 import {
     transactionListState,
     addTransaction as addTransactionAction,
@@ -28,9 +30,42 @@ export const TransactionContext = createContext<any>({});
 export const useTransactionContext = () => useContext(TransactionContext);
 
 //////////////////////////////////////////////////////////////////////////////////
-// 本体
+// 本体（モーダル表示）
 //////////////////////////////////////////////////////////////////////////////////
+export const TransactionFormModal = (props: {
+    isModal: boolean;
+    toggleModal: (value: boolean) => void;
+    transaction: Transaction;
+}) => {
+    return (
+        <Modal
+            open={props.isModal}
+            onClose={() => props.toggleModal(false)}
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+            }}
+        >
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="w-[350px] min-h-[445px] rounded-md overflow-hidden relative outline-none"
+            >
+                <div className="absolute top-0 right-0">
+                    <CloseButton onClick={() => props.toggleModal(false)} />
+                </div>
+                <TransactionForm transaction={props.transaction} toggleModal={props.toggleModal} />
+            </motion.div>
+        </Modal>
+    );
+};
 
+//////////////////////////////////////////////////////////////////////////////////
+// 本体（通常表示）
+//////////////////////////////////////////////////////////////////////////////////
 export const TransactionForm = (props: { transaction: Transaction; toggleModal?: (value: boolean) => void }) => {
     // 新規取引かどうか
     const isNewTransaction = props.transaction.id ? false : true;
