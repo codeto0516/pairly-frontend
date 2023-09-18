@@ -77,7 +77,7 @@ export const UserIconMenu = () => {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-                <Link href="/profile">
+                <Link href="/setting/profile">
                     <MenuItem onClick={handleClose}>
                         <ListItemIcon>
                             <UserIcon
@@ -89,7 +89,7 @@ export const UserIconMenu = () => {
                     </MenuItem>
                 </Link>
 
-                <Link href="/partner">
+                <Link href="/setting/partner">
                     <MenuItem onClick={handleClose}>
                         {currentUser?.partner ? (
                             <>

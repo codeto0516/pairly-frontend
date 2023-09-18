@@ -47,7 +47,7 @@ export const ProfileEditForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 justify-center items-center w-[300px]">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 justify-center items-center max-w-[300px] w-full">
             {/* 画像表示・変更ボタン */}
             <EditProfoleImage
                 imageFile={imageFile}
@@ -62,7 +62,7 @@ export const ProfileEditForm = () => {
                 label="名前"
                 value={displayName}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => changeDisplayName(e.target.value)}
-                sx={{ width: "100%" }}
+                fullWidth
             />
 
             {/* 更新ボタン */}
