@@ -41,43 +41,35 @@ export const TransactionFormCategory = () => {
     const { transaction } = useTransactionContext();
 
     const [categoryAll, setCategoryAll] = useState<CategoryType[] | undefined>(undefined);
-    const [categoryList, setCategoryList] = useState<BigCategory[] | undefined>(undefined);
 
+    const [bigCategoryList, setBigCategoryList] = useState<BigCategory[] | undefined>(undefined);
     const [smallCategoryList, setSmallCategoryList] = useState<SmallCategory[] | undefined>(undefined);
 
-    const getCategoryList = (newCategoryType: string): BigCategory[] | undefined => {
+    const getBigCategoryList = (newCategoryType: string): BigCategory[] | undefined => {
         return categoryAll?.find((categoryList: any) => categoryList.typeName === newCategoryType)?.categories;
     };
 
     useEffect(() => {
         (async () => {
             const res = await getCategoryAll();
-            const categoryTypes = res?.data.types
+            const categoryTypes = res?.data.types;
             categoryTypes && setCategoryAll(() => categoryTypes);
         })();
     }, []);
 
     useEffect(() => {
-        const result = getCategoryList(transaction.type);
+        const result = getBigCategoryList(transaction.type);
 
         // カテゴリーリストをセット
-        result && setCategoryList(() => result);
+        result && setBigCategoryList(() => result);
     }, [categoryAll]);
 
     return (
         <>
-            <CategoryTypeSelector
-                categoryAll={categoryAll}
-                setCategoryList={setCategoryList}
-                getCategoryList={getCategoryList}
-            />
+            <CategoryTypeSelector categoryAll={categoryAll} setBigCategoryList={setBigCategoryList} />
             <div className="flex w-full gap-1 mt-2">
-                <BigCategorySelector
-                    categoryAll={categoryAll}
-                    getCategoryList={getCategoryList}
-                    setSmallCategoryList={setSmallCategoryList}
-                />
-                <SmallCategorySelector categoryList={categoryList} />
+                <BigCategorySelector bigCategoryList={bigCategoryList} setSmallCategoryList={setSmallCategoryList} />
+                <SmallCategorySelector smallCategoryList={smallCategoryList} />
             </div>
         </>
     );
@@ -88,16 +80,39 @@ export const TransactionFormCategory = () => {
 ///////////////////////////////////////////////////////////////////////////////
 const CategoryTypeSelector = (props: {
     categoryAll: CategoryType[] | undefined;
-    setCategoryList: React.Dispatch<React.SetStateAction<BigCategory[] | undefined>>;
-    getCategoryList: (newCategoryType: string) => BigCategory[] | undefined;
+    setBigCategoryList: React.Dispatch<React.SetStateAction<BigCategory[] | undefined>>;
 }) => {
     const { transaction, changeTransaction } = useTransactionContext();
 
     // カテゴリータイプ（支出 or 収入）を変更
-    const changeCategoryType = async (event: React.MouseEvent<HTMLElement>, newCategoryType: string) => {
-        if (newCategoryType === null) return;
-        await changeTransaction("type", newCategoryType);
+    const changeCategoryType = (newCategoryType: string) => {
+        changeTransaction("type", newCategoryType);
+
+        const result = getBigCategoryList(newCategoryType);
+
+        // カテゴリーリストをセット
+        result && props.setBigCategoryList(() => result);
+        
+        const bigCategoryFirstId = result?.[0].bigCategoryId;
+        
+
+        // 大カテゴリーIDを未分類にリセット
+        changeTransaction("bigCategoryId", bigCategoryFirstId);
+
+        // 小カテゴリーIDを未分類にリセット
+        changeTransaction("smallCategoryId", result?.[0].smallCategories[0].smallCategoryId);
     };
+
+    const getBigCategoryList = (newCategoryType: string): BigCategory[] | undefined => { 
+        return props.categoryAll?.find((categoryList: any) => categoryList.typeName === newCategoryType)?.categories;
+    }
+
+    useEffect(() => {
+        if (props.categoryAll) {
+            const result = getBigCategoryList(transaction.type);
+            result && props.setBigCategoryList(() => result);
+        }
+    }, [props.categoryAll, transaction.type]);
 
     return <ToggleButton toggleList={categoryTypeList} handler={changeCategoryType} value={transaction.type} />;
 };
@@ -106,44 +121,41 @@ const CategoryTypeSelector = (props: {
 // 大カテゴリー
 ///////////////////////////////////////////////////////////////////////////////
 const BigCategorySelector = (props: {
-    categoryAll: CategoryType[] | undefined;
-    getCategoryList: (newCategoryType: string) => BigCategory[] | undefined;
-    setSmallCategoryList: React.Dispatch<SetStateAction<SmallCategory[] | undefined>>;
+    bigCategoryList: BigCategory[] | undefined;
+    setSmallCategoryList: React.Dispatch<React.SetStateAction<SmallCategory[] | undefined>>;
 }) => {
     // 取引データのコンテキスト
     const { transaction, changeTransaction } = useTransactionContext();
-    const [bigCategoryList, setBigCategoryList] = useState<BigCategory[] | undefined>(undefined);
     // 大カテゴリーを変更
-    const changeBig = (newBigCategoryId: number) => changeTransaction("bigCategoryId", newBigCategoryId);
+    const changeBig = (newBigCategoryId: number) => {
+        changeTransaction("bigCategoryId", newBigCategoryId);
 
-    const updateBigCategoryList = (newCategoryType: string) => {
-        // 大カテゴリーを取得
-        const bigCategoryList = props.categoryAll?.find(
-            (categoryType: CategoryType) => categoryType.typeName == newCategoryType
-        );
-        // 大カテゴリーリストをセット
-        bigCategoryList && setBigCategoryList(() => bigCategoryList.categories);
-        return bigCategoryList;
+        const oneBigCategory = getOneBigCategory(newBigCategoryId);
+        oneBigCategory && updateSmallCategoryList(oneBigCategory);
+
+        // 小カテゴリーIDを未分類にリセット
+        changeTransaction("smallCategoryId", oneBigCategory?.smallCategories[0].smallCategoryId);
+
+        // 大カテゴリーIDを未分類にリセット
+        changeTransaction("bigCategoryId", oneBigCategory?.bigCategoryId);
     };
 
-    // 大カテゴリーIDを未分類にリセット
-    const resetBigCategory = (bigCategoryList: CategoryType | undefined) => {
-        const bigCategoryFirstId = bigCategoryList?.categories[0].bigCategoryId;
-        bigCategoryFirstId && changeBig(bigCategoryFirstId);
+    const getOneBigCategory = (newBigCategoryId: number): BigCategory | undefined => {
+        return props.bigCategoryList?.find((item) => item.bigCategoryId === newBigCategoryId);
     };
 
-    useUpdateEffect(() => {
-        const bigCategoryList = updateBigCategoryList(transaction.type);
-        resetBigCategory(bigCategoryList);
-    }, [transaction.type]);
+    const updateSmallCategoryList = (OnebigCategory: BigCategory) => {
+        props.setSmallCategoryList(() => OnebigCategory.smallCategories);
+    };
 
     useEffect(() => {
-        if (transaction.type && props.categoryAll) {
-            updateBigCategoryList(transaction.type);
+        if (props.bigCategoryList) {
+            const oneBigCategory = getOneBigCategory(transaction.bigCategoryId);
+            oneBigCategory && updateSmallCategoryList(oneBigCategory);
         }
-    }, [transaction.type, props.categoryAll]);
+    }, [props.bigCategoryList, transaction.bigCategoryId]);
 
-    if (props.categoryAll === undefined || bigCategoryList === undefined) {
+    if (props.bigCategoryList === undefined) {
         return <Skeleton variant="rounded" animation="wave" height={40} style={{ width: "100%" }} />;
     } else {
         return (
@@ -155,7 +167,7 @@ const BigCategorySelector = (props: {
                         label="大カテゴリー"
                         onChange={(e) => changeBig(Number(e.target.value))}
                     >
-                        {bigCategoryList?.map((item: any, index: number) => {
+                        {props.bigCategoryList?.map((item: any, index: number) => {
                             return (
                                 <MenuItem key={index} value={item.bigCategoryId}>
                                     {item.bigCategoryName}
@@ -172,46 +184,12 @@ const BigCategorySelector = (props: {
 ///////////////////////////////////////////////////////////////////////////////
 // 小カテゴリー
 ///////////////////////////////////////////////////////////////////////////////
-const SmallCategorySelector = (props: { categoryList: BigCategory[] | undefined }) => {
-    // 初回レンダリング => 大カテゴリーをもとに小カテゴリーリストをセットする
-    // 大カテゴリーが変化したら小カテゴリーリストを更新し、小カテゴリーIDを初期値にリセットする
-
+const SmallCategorySelector = (props: { smallCategoryList: SmallCategory[] | undefined }) => {
     // 取引データのコンテキスト
     const { transaction, changeTransaction } = useTransactionContext();
     const changeSmall = (newSmallCategoryId: number) => changeTransaction("smallCategoryId", newSmallCategoryId);
-    const [smallCategoryList, setSmallCategoryList] = useState<SmallCategory[] | undefined>(undefined);
 
-    const updateSmallCategoryList = (newBigCategoryId: number) => {
-        // 大カテゴリーを取得
-        const OneBigCategory = props.categoryList?.find(
-            (bigCategory: BigCategory) => bigCategory.bigCategoryId == newBigCategoryId
-        );
-        // 小カテゴリーリストをセット
-        const smallCategoryList = OneBigCategory?.smallCategories;
-        smallCategoryList && setSmallCategoryList(() => smallCategoryList);
-        return smallCategoryList;
-    };
-
-    const resetSmallCategory = (smallCategoryList: SmallCategory[] | undefined) => {
-        // 小カテゴリーIDを未分類にリセット
-        const smallCategoryFirstId = smallCategoryList?.[0].smallCategoryId;
-        smallCategoryFirstId && changeSmall(smallCategoryFirstId);
-    };
-
-    useUpdateEffect(() => {
-        const smallCategoryList = updateSmallCategoryList(transaction.bigCategoryId);
-        // 小カテゴリーリストが変更されたら小カテゴリーIDを初期値にリセット
-        resetSmallCategory(smallCategoryList);
-    }, [transaction.bigCategoryId]);
-
-    useEffect(() => {
-        // 初回レンダリング時に小カテゴリーをセット
-        if (transaction.bigCategoryId && props.categoryList) {
-            updateSmallCategoryList(transaction.bigCategoryId);
-        }
-    }, [transaction.bigCategoryId, props.categoryList]);
-
-    if (props.categoryList === undefined) {
+    if (props.smallCategoryList === undefined) {
         return <Skeleton variant="rounded" animation="wave" height={40} style={{ width: "100%" }} />;
     } else {
         return (
@@ -222,9 +200,8 @@ const SmallCategorySelector = (props: { categoryList: BigCategory[] | undefined 
                     label="小カテゴリー"
                     onChange={(e) => changeSmall(Number(e.target.value))}
                     // disabled={transaction.bigCategoryId === 1 ? true : false}
-                    // defaultValue={props.smallCategoryList[0].smallCategoryId}
                 >
-                    {smallCategoryList?.map((item: any, index: number) => {
+                    {props.smallCategoryList?.map((item: any, index: number) => {
                         return (
                             <MenuItem key={index} value={item.smallCategoryId}>
                                 {item.smallCategoryName}
