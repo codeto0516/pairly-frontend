@@ -5,7 +5,7 @@ interface CustomToggleButtonProps {
         title: string;
         value: string;
     }[];
-    handler: ((event: React.MouseEvent<HTMLElement>, value: any) => void) | undefined;
+    handler: (value: string) => void;
     value: string;
 }
 
@@ -15,7 +15,7 @@ export const ToggleButton = (props: CustomToggleButtonProps) => {
             color="primary"
             value={props.value}
             exclusive
-            onChange={props.handler}
+            onChange={(e: React.MouseEvent<HTMLElement>, value: any) => props.handler && props.handler(value)}
             sx={{ width: "100%" }}
         >
             {props.toggleList.map((item, index) => {
