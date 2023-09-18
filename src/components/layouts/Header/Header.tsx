@@ -14,12 +14,8 @@ const menuList = [
         href: "/report",
     },
     {
-        name: "パートナー",
-        href: "/setting/partner",
-    },
-    {
         name: "設定",
-        href: "/setting",
+        href: "/setting/profile",
     },
 ];
 
