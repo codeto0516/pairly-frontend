@@ -11,11 +11,26 @@ import { useToggle } from "@/src/hooks/useToggle";
 import { motion } from "framer-motion";
 import { Transaction } from "../../types/transaction";
 import { TransactionForm } from "../TransactionForm/main";
-import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
-import SouthWestIcon from "@mui/icons-material/SouthWest";
+import { useUser } from "@/src/hooks/useUser";
+import { UserIcon } from "@/src/components/dataDisplay/UsersIcon";
+import { useEffect, useState } from "react";
+import { User } from "@/src/types/user";
+
 export const TransactionListItem = (props: { transaction: Transaction }) => {
     // アコーディオンの開閉状態管理用
     const [isAccordion, toggleAccordion] = useToggle(false);
+
+    const [user, setUser] = useState<User | null>(null);
+    const { getUser } = useUser();
+
+    useEffect(() => {
+        (async () => {
+            const user: any = await getUser(props.transaction.createdBy);
+            console.log(user);
+            
+            setUser(() => user);
+        })();
+    }, []);
 
     return (
         <motion.div
@@ -33,16 +48,17 @@ export const TransactionListItem = (props: { transaction: Transaction }) => {
                 className="flex flex-row gap-4 items-center justify-between px-4 py-3 text-black text-sm"
                 onClick={() => toggleAccordion()}
             >
-
+                {/* 支出 or 収入 */}
                 {props.transaction.type === "spending" ? (
                     // <ArrowOutwardIcon className="text-white bg-red-500 rounded-full p-1" />
-                        <div className="bg-red-200 text-white px-2 py-1 rounded-sm text-xs font-bold">支出</div>
-                    
-
+                    <div className="bg-red-200 text-white px-2 py-1 rounded-sm text-xs font-bold">支出</div>
                 ) : (
-                        // <SouthWestIcon className="text-white bg-blue-500 rounded-full p-1" />
-                        <div className="bg-blue-200 text-white px-2 py-1 rounded-sm text-xs font-bold">収入</div>
+                    // <SouthWestIcon className="text-white bg-blue-500 rounded-full p-1" />
+                    <div className="bg-blue-200 text-white px-2 py-1 rounded-sm text-xs font-bold">収入</div>
                 )}
+
+                {/* 投稿者 */}
+                <UserIcon label={user?.displayName ?? user?.email} image={user?.photoUrl} size={25} />
 
                 {/* 内容 */}
                 <p className="flex-grow truncate">{props.transaction.content}</p>
@@ -69,4 +85,3 @@ export const TransactionListItem = (props: { transaction: Transaction }) => {
         </motion.div>
     );
 };
-
