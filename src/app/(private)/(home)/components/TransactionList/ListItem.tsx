@@ -26,8 +26,6 @@ export const TransactionListItem = (props: { transaction: Transaction }) => {
     useEffect(() => {
         (async () => {
             const user: any = await getUser(props.transaction.createdBy);
-            console.log(user);
-            
             setUser(() => user);
         })();
     }, []);
