@@ -17,7 +17,6 @@ export const HeaderNav = (props: HeaderNavProps) => {
                         {pathname === menu.href ? (
                             <Link
                                 href={menu.href}
-                                // href="/partner"
                                 className="text-gray-50 bg-red-300 text-sm font-bold py-2 px-4 rounded-sm"
                             >
                                 {menu.name}
@@ -25,7 +24,6 @@ export const HeaderNav = (props: HeaderNavProps) => {
                         ) : (
                             <Link
                                 href={menu.href}
-                                // href="/partner"
                                 className="text-gray-700 text-sm font-bold py-2 px-4 hover:bg-red-50"
                             >
                                 {menu.name}

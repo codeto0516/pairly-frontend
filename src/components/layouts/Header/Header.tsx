@@ -15,7 +15,7 @@ const menuList = [
     },
     {
         name: "パートナー",
-        href: "/partner",
+        href: "/setting/partner",
     },
     {
         name: "設定",
