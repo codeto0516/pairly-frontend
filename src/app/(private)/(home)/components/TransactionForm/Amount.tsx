@@ -31,28 +31,41 @@ const BaseAmountForm = (props: { item: any }) => {
     const [value, setValue] = useState(props.item.amount);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const changeAmount = (e: ChangeEvent<HTMLInputElement>) => {
-        const userId = props.item.userId;
-        const amount = Number(e.target.value);
-
+    const updateTransactionAmount = (userId: string, amount: number) => {
         setTransaction((prevTransaction: Transaction) => ({
             ...prevTransaction,
             amounts: prevTransaction.amounts.map((item: any) =>
-                item.userId === userId ? { ...item, amount: amount } : item
+                item.userId === props.item.userId ? { ...item, amount: amount } : item
             ),
         }));
     };
 
-    useEffect(() => {
-        (async () => {
-            const user: any = await getUser(props.item.userId);
-            setUser(() => user);
-        })();
-    }, []);
+    const changeAmount = (e: ChangeEvent<HTMLInputElement>) => {
+        const userId = props.item.userId;
+        const amountStr = e.target.value;
+
+        // バリデーションチェック
+        if (!/^[1-9][0-9]*$/.test(amountStr) || amountStr === "0") {
+            // 入力できるのは0~9の数字だけで、先頭に0は不可
+            setValue("");
+            updateTransactionAmount(userId, 0);
+            return;
+        }
+
+        // 数字に変換
+        const amount = Number(amountStr);
+
+        // マイナスはだめ。プラスの数字のみ
+        if (amount > 0 && amount < 999999999) {
+            updateTransactionAmount(userId, amount);
+        }
+
+        
+    };
 
     useEffect(() => {
         if (props.item.amount === 0) {
-            setValue(() => null);
+            setValue("");
             if (inputRef.current) {
                 inputRef.current.value = "";
             }
@@ -60,6 +73,13 @@ const BaseAmountForm = (props: { item: any }) => {
             setValue(() => props.item.amount);
         }
     }, [props.item.amount]);
+
+    useEffect(() => {
+        (async () => {
+            const user: any = await getUser(props.item.userId);
+            setUser(() => user);
+        })();
+    }, []);
 
     if (user == null) {
         return (
