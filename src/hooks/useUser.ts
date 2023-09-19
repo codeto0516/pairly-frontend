@@ -67,7 +67,6 @@ export const useUser = () => {
             updateCurrentUser(user);
             return true;
         } catch (error) {
-            console.log(error);
             return false;
         }
     };

@@ -33,7 +33,6 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             if (!session?.token) return;
             auth.onAuthStateChanged(async (user) => {
-                console.log(user);
 
                 const token = await user?.getIdToken()
 
@@ -51,7 +50,6 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
                 if (!res.ok) throw new Error(res.statusText);
 
                 const decoded = await res.json();
-                console.log(decoded);
 
                 decoded?.data?.user && setCurrentUser(() => decoded?.data.user);
             });
@@ -59,7 +57,6 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
             (async () => {
                 await signOut();
             })();
-            console.log(error);
         }
     }, [session?.token]);
 

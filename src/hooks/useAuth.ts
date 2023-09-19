@@ -79,8 +79,6 @@ export const useAuth = () => {
                 callbackUrl: "/",
             });
         } catch (error: FirebaseError | any) {
-            console.log(error);
-
             // ローディングを終了
             toggleLoading(false);
 
