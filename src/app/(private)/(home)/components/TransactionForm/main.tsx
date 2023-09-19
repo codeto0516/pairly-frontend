@@ -52,7 +52,7 @@ export const TransactionFormModal = (props: {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="w-[350px] min-h-[445px] rounded-md overflow-hidden relative outline-none"
+                className="w-[350px] rounded-md overflow-hidden relative outline-none"
             >
                 <div className="absolute top-0 right-0">
                     <CloseButton onClick={() => props.toggleModal(false)} />
@@ -82,7 +82,7 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
     //////////////////////////////////////////////////////////////////////////////////
     return (
         <TransactionContext.Provider value={{ transaction, changeTransaction, setTransaction }}>
-            <div className="flex flex-col gap-2 text-sx bg-white w-full p-8">
+            <div className="flex flex-col gap-2 text-sx bg-white w-full px-8 py-10">
                 {isNewTransaction ? (
                     <div className="flex justify-end items-center">
                         {/* 日付 */}
