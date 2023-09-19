@@ -86,15 +86,20 @@ const CategoryTypeSelector = (props: {
 
     // カテゴリータイプ（支出 or 収入）を変更
     const changeCategoryType = (newCategoryType: string) => {
+        // 未選択防止
+        if (!newCategoryType) return;
+
+        // カテゴリータイプを変更
         changeTransaction("type", newCategoryType);
 
+        // 大カテゴリーリストを取得
         const result = getBigCategoryList(newCategoryType);
 
         // カテゴリーリストをセット
         result && props.setBigCategoryList(() => result);
-        
+
+        // 大カテゴリーの先頭のIDを取得
         const bigCategoryFirstId = result?.[0].bigCategoryId;
-        
 
         // 大カテゴリーIDを未分類にリセット
         changeTransaction("bigCategoryId", bigCategoryFirstId);
@@ -103,9 +108,9 @@ const CategoryTypeSelector = (props: {
         changeTransaction("smallCategoryId", result?.[0].smallCategories[0].smallCategoryId);
     };
 
-    const getBigCategoryList = (newCategoryType: string): BigCategory[] | undefined => { 
+    const getBigCategoryList = (newCategoryType: string): BigCategory[] | undefined => {
         return props.categoryAll?.find((categoryList: any) => categoryList.typeName === newCategoryType)?.categories;
-    }
+    };
 
     useEffect(() => {
         if (props.categoryAll) {
