@@ -63,7 +63,7 @@ const SignInForm = (props: { invitationToken: InvitationToken }) => {
                     )}
                 </form>
                 <div className="w-full px-4">
-                    <Link href="/password" className="text-sm text-blue-800 flex justify-end mt-4">
+                    <Link href="/forgot_password" className="text-sm text-blue-800 flex justify-end mt-4">
                         パスワードを忘れた方はこちら
                     </Link>
                     <Link href="/signup" className="text-sm text-blue-800 flex justify-end mt-4">
