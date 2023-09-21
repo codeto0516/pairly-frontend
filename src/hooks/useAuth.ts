@@ -5,6 +5,7 @@ import {
     signInWithPopup,
     signOut as FireBaseSignOut,
     UserCredential,
+    sendPasswordResetEmail as FireBaseSendPasswordResetEmail,
 } from "firebase/auth";
 import { signIn as signInByNextAuth, signOut as signOutByNextAuth } from "next-auth/react";
 import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
@@ -13,6 +14,7 @@ import { useApi } from "./useApi";
 import urlJoin from "url-join";
 import { useToggle } from "./useToggle";
 import { FirebaseError } from "firebase/app";
+import { useRouter } from "next/navigation";
 
 const errorMessages: Record<string, string> = {
     "auth/email-already-in-use": "このメールアドレスは既に使用されています。",
@@ -37,6 +39,16 @@ export const useAuth = () => {
     // エラーメッセージ
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const visibleErrorMessage = (message: string) => setErrorMessage(() => message);
+
+    // サクセスメッセージ
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const visibleSuccessMessage = (message: string) => setSuccessMessage(() => message);
+
+    // メッセージを全て非表示にする
+    const clearMessage = () => {
+        setErrorMessage(() => null);
+        setSuccessMessage(() => null);
+    };
 
     //////////////////////////////////////////////////////////////////////
     // IDトークンをサーバーで検証
@@ -80,7 +92,6 @@ export const useAuth = () => {
             });
         } catch (error: FirebaseError | any) {
             console.log(error);
-            
 
             // ローディングを終了
             toggleLoading(false);
@@ -126,12 +137,94 @@ export const useAuth = () => {
         await signOutByNextAuth();
     };
 
+    //////////////////////////////////////////////////////////////////////
+    // パスワードリセットのメールを送信
+    //////////////////////////////////////////////////////////////////////
+    const sendPasswordResetEmail = async (email: string) => {
+        const actionCodeSettings = {
+            // パスワード再設定後のリダイレクト URL
+            url: urlJoin("http://localhost:3000", "signin"),
+            handleCodeInApp: false,
+        };
+
+        // メッセージを全て非表示にする
+        clearMessage();
+
+        // ローディングを開始
+        toggleLoading(true);
+
+        try {
+            await FireBaseSendPasswordResetEmail(auth, email, actionCodeSettings);
+            visibleSuccessMessage("パスワードリセットメールを送信しました。");
+        } catch (error: FirebaseError | any) {
+            console.log(error);
+            const errorMessage = getErrorMessage(error.code);
+            visibleErrorMessage(errorMessage);
+        }
+
+        // ローディングを終了
+        toggleLoading(false);
+    };
+
+    //////////////////////////////////////////////////////////////////////
+    // パスワードをリセット
+    //////////////////////////////////////////////////////////////////////
+    const resetPassword = async (newPassword: string | undefined, oobCode: string | null): Promise<boolean> => {
+        toggleLoading(true);
+
+        if (oobCode === null) {
+            visibleErrorMessage("URLが無効です。");
+            return false;
+        }
+
+        if (newPassword === undefined) {
+            visibleErrorMessage("パスワードを入力してください。");
+            return false;
+        }
+
+        clearMessage();
+
+        try {
+            const endpoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "password");
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    newPassword: newPassword,
+                    oobCode: oobCode,
+                }),
+            });
+
+            const data = await res.json();
+            console.log(data);
+
+            if (!res.ok) throw new Error(res.statusText);
+
+            // visibleSuccessMessage("パスワードをリセットしました。");
+            // toggleLoading(false);
+            return true;
+        } catch (error) {
+            toggleLoading(false);
+            console.log(error);
+            visibleErrorMessage("パスワードのリセットに失敗しました。");
+            return false;
+        }
+
+        
+    };
+
+    //////////////////////////////////////////////////////////////////////
     return {
         signUpWithEmailAndPassword,
         signInWithEmailAndPassword,
         signOut,
         signInWithGoogle,
+        sendPasswordResetEmail,
+        resetPassword,
         isLoading,
+        successMessage,
         errorMessage,
     };
 };
