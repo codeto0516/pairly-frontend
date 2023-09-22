@@ -32,7 +32,7 @@ export const ConfirmPasswordField = () => {
     return (
         <TextField
             required
-            name="passwordConfirm"
+            name="conformPassword"
             label="パスワード（確認用）"
             type="password"
             autoComplete="password"

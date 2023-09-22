@@ -71,7 +71,7 @@ export const useAuth = () => {
     //////////////////////////////////////////////////////////////////////
     // 新規登録 と ログイン の共通処理
     //////////////////////////////////////////////////////////////////////
-    const common = async (handler: Promise<UserCredential>, invitationCode?: string) => {
+    const common = async (handler: Promise<UserCredential>) => {
         try {
             // ローディングを開始
             toggleLoading(true);
@@ -107,23 +107,28 @@ export const useAuth = () => {
     //////////////////////////////////////////////////////////////////////
     // 新規登録（メールアドレス・パスワード）
     //////////////////////////////////////////////////////////////////////
-    const signUpWithEmailAndPassword = async (email: string, password: string, invitationCode?: string) => {
-        common(createUserWithEmailAndPassword(auth, email, password), invitationCode);
+    const signUpWithEmailAndPassword = async (email: string, password: string, confirmPassword: string) => {
+        if (password !== confirmPassword) {
+            visibleErrorMessage("パスワードが一致しません。");
+            return;
+        }
+
+        common(createUserWithEmailAndPassword(auth, email, password));
     };
 
     //////////////////////////////////////////////////////////////////////
     // ログイン（メールアドレス・パスワード）
     //////////////////////////////////////////////////////////////////////
-    const signInWithEmailAndPassword = async (email: string, password: string, invitationCode?: string) => {
-        common(FireBaseSignInWithEmailAndPassword(auth, email, password), invitationCode);
+    const signInWithEmailAndPassword = async (email: string, password: string) => {
+        common(FireBaseSignInWithEmailAndPassword(auth, email, password));
     };
 
     //////////////////////////////////////////////////////////////////////
     // 新規登録・ログイン（Googleアカウント）
     //////////////////////////////////////////////////////////////////////
-    const signInWithGoogle = async (invitationCode?: string) => {
+    const signInWithGoogle = async () => {
         const provider = new GoogleAuthProvider();
-        common(signInWithPopup(auth, provider), invitationCode);
+        common(signInWithPopup(auth, provider));
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -211,8 +216,6 @@ export const useAuth = () => {
             visibleErrorMessage("パスワードのリセットに失敗しました。");
             return false;
         }
-
-        
     };
 
     //////////////////////////////////////////////////////////////////////
