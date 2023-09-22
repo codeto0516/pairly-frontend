@@ -1,9 +1,16 @@
 "use client";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Alert, LoadingButton } from "@mui/lab";
+import { Alert } from "@mui/lab";
 import { PasswordField } from "@/src/components/inputs/textField/TextField";
 import { useAuth } from "@/src/hooks/useAuth";
+import {
+    Form,
+    FormBottomLinkWrapperCenter,
+    FormSubmitButton,
+    FormTitle,
+    FormWrapper,
+} from "@/src/components/inputs/form/Form";
+import { LinkPrimary } from "@/src/components/navigation/Link";
 
 const Page = () => {
     const router = useRouter();
@@ -24,26 +31,21 @@ const Page = () => {
     };
 
     return (
-        <div className="mt-2 flex flex-col items-center gap-4 sm:gap-8 w-full max-w-[380px]">
-            <h1 className="text-xl mb-4">パスワード再設定</h1>
+        <FormWrapper>
+            <FormTitle>パスワード再設定</FormTitle>
 
-            <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-3 w-full">
+            <Form onSubmit={handleSubmit}>
                 <PasswordField />
-                <LoadingButton type="submit" fullWidth variant="outlined" className="h-14" disabled={isLoading}>
+                <FormSubmitButton isLoading={isLoading}>
                     {isLoading ? "パスワードを変更中..." : "パスワードを変更"}
-                </LoadingButton>
-
-                {/* エラーメッセージ */}
+                </FormSubmitButton>
                 {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-                {/* 成功メッセージ */}
                 {successMessage && <Alert severity="success">{successMessage}</Alert>}
-            </form>
-            <div className="w-full flex justify-center">
-                <Link href="/signin" className="text-sm text-blue-800 flex justify-end mt-4">
-                    ログイン画面に戻る
-                </Link>
-            </div>
-        </div>
+            </Form>
+            <FormBottomLinkWrapperCenter>
+                <LinkPrimary href="/signin">ログイン画面に戻る</LinkPrimary>
+            </FormBottomLinkWrapperCenter>
+        </FormWrapper>
     );
 };
 

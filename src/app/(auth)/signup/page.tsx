@@ -1,10 +1,17 @@
 "use client";
-import { Alert, LoadingButton } from "@mui/lab";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Alert } from "@mui/lab";
 import { MailField, ConfirmPasswordField, PasswordField } from "@/src/components/inputs/textField/TextField";
 import { GoogleSignUpButton } from "@/src/components/inputs/button/GoogleSignButton";
 import { useAuth } from "@/src/hooks/useAuth";
 import { LinkPrimary } from "@/src/components/navigation/Link";
+import {
+    Form,
+    FormBackdrop,
+    FormBottomLinkWrapperRight,
+    FormDivider,
+    FormSubmitButton,
+    FormTitle,
+} from "@/src/components/inputs/form/Form";
 
 const Page = () => {
     return <SignUp />;
@@ -28,29 +35,26 @@ const SignUp = () => {
 
     return (
         <div className="flex flex-col items-center gap-4 sm:gap-8 w-full max-w-[380px]">
-            <h1 className="text-xl mb-4">新規登録</h1>
+            <FormTitle>新規登録</FormTitle>
 
             <GoogleSignUpButton onClick={signInWithGoogle} />
 
-            <hr className="border w-full" />
+            <FormDivider />
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
+            <Form onSubmit={handleSubmit}>
                 <MailField />
                 <PasswordField />
                 <ConfirmPasswordField />
-                <LoadingButton type="submit" fullWidth variant="outlined" className="h-14" disabled={isLoading}>
-                    {isLoading ? "登録中..." : "登録"}
-                </LoadingButton>
+
+                <FormSubmitButton isLoading={isLoading}>{isLoading ? "登録中..." : "登録"}</FormSubmitButton>
 
                 {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-            </form>
-            <div className="flex flex-col items-end w-full">
+            </Form>
+            <FormBottomLinkWrapperRight>
                 <LinkPrimary href="/signin">既にアカウントを持っている方はこちら</LinkPrimary>
-            </div>
+            </FormBottomLinkWrapperRight>
 
-            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
+            <FormBackdrop isLoading={isLoading} />
         </div>
     );
 };
