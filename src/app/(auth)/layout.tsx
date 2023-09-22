@@ -15,13 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 const Header = () => {
     return (
-        <header
-            className="
-                p-4 bg-white
-                min-w-full flex justify-center
-                h-fit
-            "
-        >
+        <header className="p-4 bg-white min-w-full flex justify-center h-fit">
             <Logo />
         </header>
     );
