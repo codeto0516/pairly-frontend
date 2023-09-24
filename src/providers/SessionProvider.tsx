@@ -43,7 +43,7 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${session?.token}`,
                     },
                 });
 
