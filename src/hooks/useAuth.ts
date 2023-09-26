@@ -130,7 +130,7 @@ export const useAuth = () => {
     // ログイン（メールアドレス・パスワード）
     //////////////////////////////////////////////////////////////////////
     const signInWithEmailAndPassword = async (email: string, password: string) => {
-        const isGuest = email === process.env.NEXT_PUBLIC_GUEST_EMAIL;
+        const isGuest = email === process.env.NEXT_PUBLIC_GUEST_USER_EMAIL;
         common(FireBaseSignInWithEmailAndPassword(auth, email, password), isGuest);
     };
 
