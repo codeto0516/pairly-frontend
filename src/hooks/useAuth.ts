@@ -7,7 +7,7 @@ import {
     UserCredential,
     sendPasswordResetEmail as FireBaseSendPasswordResetEmail,
     sendEmailVerification,
-    applyActionCode
+    applyActionCode,
 } from "firebase/auth";
 import { signIn as signInByNextAuth, signOut as signOutByNextAuth } from "next-auth/react";
 import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
@@ -75,7 +75,7 @@ export const useAuth = () => {
     //////////////////////////////////////////////////////////////////////
     // 新規登録 と ログイン の共通処理
     //////////////////////////////////////////////////////////////////////
-    const common = async (handler: Promise<UserCredential>, isGuest:boolean=false) => {
+    const common = async (handler: Promise<UserCredential>, isGuest: boolean = false) => {
         try {
             // ローディングを開始
             toggleLoading(true);
@@ -83,16 +83,8 @@ export const useAuth = () => {
             // 新規登録 or ログイン してユーザー情報を取得
             const userCredential = await handler;
 
-
-
             if (!isGuest && !userCredential.user.emailVerified) {
-                const actionCodeSettings = {
-                    // パスワード再設定後のリダイレクト URL
-                    url: urlJoin(process.env.NEXTAUTH_URL, "signin"),
-                    handleCodeInApp: false,
-                };
-
-                await sendEmailVerification(userCredential.user, actionCodeSettings);
+                await sendEmailVerification(userCredential.user);
                 // エラーコードを設定
                 throw new FirebaseError("auth/email-not-verified", "auth/email-not-verified");
             }
@@ -139,7 +131,7 @@ export const useAuth = () => {
     //////////////////////////////////////////////////////////////////////
     const signInWithEmailAndPassword = async (email: string, password: string) => {
         const isGuest = email === process.env.NEXT_PUBLIC_GUEST_EMAIL;
-        common(FireBaseSignInWithEmailAndPassword(auth, email, password ), isGuest);
+        common(FireBaseSignInWithEmailAndPassword(auth, email, password), isGuest);
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -245,14 +237,14 @@ export const useAuth = () => {
             visibleErrorMessage("URLが無効です。");
             return false;
         }
-        
+
         try {
             // ローディングを開始
             toggleLoading(true);
 
             // メールアドレスを有効化
             await applyActionCode(auth, oobCode);
-            
+
             return true;
         } catch (error: FirebaseError | any) {
             console.log(error);
@@ -267,7 +259,6 @@ export const useAuth = () => {
             visibleErrorMessage(errorMessage);
             return false;
         }
-   
     };
 
     //////////////////////////////////////////////////////////////////////
