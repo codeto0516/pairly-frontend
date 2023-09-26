@@ -75,7 +75,7 @@ export const useAuth = () => {
     //////////////////////////////////////////////////////////////////////
     // 新規登録 と ログイン の共通処理
     //////////////////////////////////////////////////////////////////////
-    const common = async (handler: Promise<UserCredential>) => {
+    const common = async (handler: Promise<UserCredential>, isGuest:boolean=false) => {
         try {
             // ローディングを開始
             toggleLoading(true);
@@ -83,7 +83,9 @@ export const useAuth = () => {
             // 新規登録 or ログイン してユーザー情報を取得
             const userCredential = await handler;
 
-            if (!userCredential.user.emailVerified) {
+
+
+            if (!isGuest && !userCredential.user.emailVerified) {
                 const actionCodeSettings = {
                     // パスワード再設定後のリダイレクト URL
                     url: urlJoin("http://localhost:3000", "signin"),
@@ -136,7 +138,8 @@ export const useAuth = () => {
     // ログイン（メールアドレス・パスワード）
     //////////////////////////////////////////////////////////////////////
     const signInWithEmailAndPassword = async (email: string, password: string) => {
-        common(FireBaseSignInWithEmailAndPassword(auth, email, password));
+        const isGuest = email === process.env.NEXT_PUBLIC_GUEST_EMAIL;
+        common(FireBaseSignInWithEmailAndPassword(auth, email, password ), isGuest);
     };
 
     //////////////////////////////////////////////////////////////////////
