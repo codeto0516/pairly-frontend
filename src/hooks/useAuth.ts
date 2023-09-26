@@ -6,6 +6,8 @@ import {
     signOut as FireBaseSignOut,
     UserCredential,
     sendPasswordResetEmail as FireBaseSendPasswordResetEmail,
+    sendEmailVerification,
+    applyActionCode
 } from "firebase/auth";
 import { signIn as signInByNextAuth, signOut as signOutByNextAuth } from "next-auth/react";
 import { auth } from "@/src/app/(auth)/api/auth/[...nextauth]/config";
@@ -23,6 +25,8 @@ const errorMessages: Record<string, string> = {
     "auth/weak-password": "パスワードが弱すぎます。6文字以上入力してください。",
     "auth/user-not-found": "ユーザーが存在しません。",
     "auth/wrong-password": "パスワードが間違っています。",
+    "auth/email-not-verified": "アカウントが有効化されていません。メールを確認して、アカウントを有効にしてください。",
+    "auth/invalid-action-code": "URLが無効です。",
     Unauthorized: "認証エラーが発生しました。",
     default: "エラーが発生しました。もう一度お試しください。",
 };
@@ -78,6 +82,18 @@ export const useAuth = () => {
 
             // 新規登録 or ログイン してユーザー情報を取得
             const userCredential = await handler;
+
+            if (!userCredential.user.emailVerified) {
+                const actionCodeSettings = {
+                    // パスワード再設定後のリダイレクト URL
+                    url: urlJoin("http://localhost:3000", "signin"),
+                    handleCodeInApp: false,
+                };
+
+                await sendEmailVerification(userCredential.user, actionCodeSettings);
+                // エラーコードを設定
+                throw new FirebaseError("auth/email-not-verified", "auth/email-not-verified");
+            }
 
             // ユーザー情報からIDトークンを取得
             const idToken = await userCredential.user.getIdToken();
@@ -148,7 +164,7 @@ export const useAuth = () => {
     const sendPasswordResetEmail = async (email: string) => {
         const actionCodeSettings = {
             // パスワード再設定後のリダイレクト URL
-            url: urlJoin("http://localhost:3000", "signin"),
+            url: urlJoin(process.env.NEXTAUTH_URL, "signin"),
             handleCodeInApp: false,
         };
 
@@ -219,6 +235,39 @@ export const useAuth = () => {
     };
 
     //////////////////////////////////////////////////////////////////////
+    // メールアドレスの有効化
+    //////////////////////////////////////////////////////////////////////
+    const verifyEmail = async (oobCode: string | null): Promise<boolean> => {
+        if (oobCode === null) {
+            visibleErrorMessage("URLが無効です。");
+            return false;
+        }
+        
+        try {
+            // ローディングを開始
+            toggleLoading(true);
+
+            // メールアドレスを有効化
+            await applyActionCode(auth, oobCode);
+            
+            return true;
+        } catch (error: FirebaseError | any) {
+            console.log(error);
+
+            // ローディングを終了
+            toggleLoading(false);
+
+            // エラーメッセージを取得
+            const errorMessage = getErrorMessage(error.code);
+
+            // エラーメッセージを表示
+            visibleErrorMessage(errorMessage);
+            return false;
+        }
+   
+    };
+
+    //////////////////////////////////////////////////////////////////////
     return {
         signUpWithEmailAndPassword,
         signInWithEmailAndPassword,
@@ -226,6 +275,7 @@ export const useAuth = () => {
         signInWithGoogle,
         sendPasswordResetEmail,
         resetPassword,
+        verifyEmail,
         isLoading,
         successMessage,
         errorMessage,

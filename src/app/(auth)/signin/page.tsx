@@ -13,6 +13,7 @@ import {
     FormTitle,
     FormWrapper,
 } from "@/src/components/inputs/form/Form";
+import PersonIcon from "@mui/icons-material/Person";
 
 const Page = () => {
     return <SignIn />;
@@ -33,11 +34,21 @@ const SignIn = () => {
         }
     };
 
+    const handleSubmitGuest = async () => {
+        const email = "tarou@test.com";
+        const password = "123456";
+
+        await signInWithEmailAndPassword(email, password);
+    };
+
     return (
         <FormWrapper>
             <FormTitle>ログイン</FormTitle>
 
-            <GoogleSignInButton onClick={signInWithGoogle} />
+            <div className="w-full flex flex-col gap-2">
+                <GoogleSignInButton onClick={signInWithGoogle} />
+                <GuestSignInButton onClick={handleSubmitGuest} />
+            </div>
 
             <FormDivider />
 
@@ -54,5 +65,20 @@ const SignIn = () => {
 
             <FormBackdrop isLoading={isLoading} />
         </FormWrapper>
+    );
+};
+
+const GuestSignInButton = (props: { onClick: () => Promise<void> }) => {
+    return (
+        <button
+            onClick={props.onClick}
+            className={`
+                flex justify-center items-center gap-4
+                p-3 w-full rounded-sm text-white text-sm shadow-md bg-[#575757]
+            `}
+        >
+            <PersonIcon fontSize="small" />
+            テストユーザーでログイン
+        </button>
     );
 };

@@ -10,7 +10,7 @@ import { useAuth } from "../hooks/useAuth";
 import urlJoin from "url-join";
 
 // ローディングを表示しないページ
-const excludedPaths = ["/signin", "/signup", "/password", "/api/auth/error", "/forgot_password", "/reset_password"];
+const excludedPaths = ["/signin", "/signup", "/password", "/api/auth/error", "/forgot_password", "/reset_password", "/verify_email"];
 
 type SessionContextType = {
     currentUser: User | null; // ユーザー情報の型に合わせて定義
