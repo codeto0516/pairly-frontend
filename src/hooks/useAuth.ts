@@ -88,7 +88,7 @@ export const useAuth = () => {
             if (!isGuest && !userCredential.user.emailVerified) {
                 const actionCodeSettings = {
                     // パスワード再設定後のリダイレクト URL
-                    url: urlJoin("http://localhost:3000", "signin"),
+                    url: urlJoin(process.env.NEXTAUTH_URL, "signin"),
                     handleCodeInApp: false,
                 };
 
