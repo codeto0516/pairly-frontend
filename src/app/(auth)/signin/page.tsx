@@ -35,10 +35,11 @@ const SignIn = () => {
     };
 
     const handleSubmitGuest = async () => {
-        const email = "tarou@test.com";
-        const password = "123456";
-
-        await signInWithEmailAndPassword(email, password);
+        const email = process.env.NEXT_PUBLIC_GUEST_USER_EMAIL;
+        const password = process.env.NEXT_PUBLIC_GUEST_USER_PASSWORD;
+        if (email && password) {
+            await signInWithEmailAndPassword(email, password);
+        }
     };
 
     return (
