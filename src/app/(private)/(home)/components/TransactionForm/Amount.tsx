@@ -5,108 +5,163 @@ import { Amount, Transaction } from "../../types/transaction";
 import { UserIcon } from "@/src/components/dataDisplay/UsersIcon";
 import { useTransactionContext } from "./main";
 import { useUser } from "@/src/hooks/useUser";
-import { User } from "@/src/types/user";
+import { Partner, User } from "@/src/types/user";
 
-export const TransactionFormAmount = () => {
-    const { transaction } = useTransactionContext();
+interface TransactionFormAmountProps {
+    transaction: Transaction;
+    setTransaction: React.Dispatch<React.SetStateAction<Transaction>>;
+}
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// 本体
+//////////////////////////////////////////////////////////////////////////////////////////
+export const TransactionFormAmount = (props: TransactionFormAmountProps) => {
     return (
         <div className="flex flex-col gap-2">
-            {transaction.amounts.map((item: Amount) => {
-                return <BaseAmountForm key={item.userId} item={item} />;
+            {props.transaction.amounts.map((userAmount: Amount) => {
+                return (
+                    <TransactionFormAmountWrapper
+                        key={userAmount.userId}
+                        userAmount={userAmount}
+                        setTransaction={props.setTransaction}
+                    />
+                );
             })}
-
-            <p className="text-gray-500">
-                合計: ¥ {transaction.amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0)}
-                <span className="text-xs"> (税込)</span>
-            </p>
+            <TotalAmountIncludedTax transactionAmounts={props.transaction.amounts} />
         </div>
     );
 };
 
-const BaseAmountForm = (props: { item: any }) => {
-    const { setTransaction } = useTransactionContext();
-    const [user, setUser] = useState<User | null>(null);
+//////////////////////////////////////////////////////////////////////////////////////////
+// ラッパー（アイコン＋金額入力欄）
+//////////////////////////////////////////////////////////////////////////////////////////
+const TransactionFormAmountWrapper = (props: {
+    userAmount: Amount;
+    setTransaction: React.Dispatch<React.SetStateAction<Transaction>>;
+}) => {
     const { getUser } = useUser();
-    const [value, setValue] = useState(props.item.amount);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const [user, setUser] = useState<User | Partner | null>(null);
 
-    const updateTransactionAmount = (userId: string, amount: number) => {
-        setTransaction((prevTransaction: Transaction) => ({
+    const updateAmount = (newAmount: number) => {
+        props.setTransaction((prevTransaction: Transaction) => ({
             ...prevTransaction,
             amounts: prevTransaction.amounts.map((item: any) =>
-                item.userId === props.item.userId ? { ...item, amount: amount } : item
+                item.userId === user?.localId ? { ...item, amount: newAmount } : item
             ),
         }));
     };
 
-    const changeAmount = (e: ChangeEvent<HTMLInputElement>) => {
-        const userId = props.item.userId;
-        const amountStr = e.target.value;
-
-        // バリデーションチェック
-        if (!/^[1-9][0-9]*$/.test(amountStr) || amountStr === "0") {
-            // 入力できるのは0~9の数字だけで、先頭に0は不可
-            setValue("");
-            updateTransactionAmount(userId, 0);
-            return;
-        }
-
-        // 数字に変換
-        const amount = Number(amountStr);
-
-        // マイナスはだめ。プラスの数字のみ
-        if (amount > 0 && amount < 999999999) {
-            updateTransactionAmount(userId, amount);
-        }
-
-        
-    };
-
-    useEffect(() => {
-        if (props.item.amount === 0) {
-            setValue("");
-            if (inputRef.current) {
-                inputRef.current.value = "";
-            }
-        } else {
-            setValue(() => props.item.amount);
-        }
-    }, [props.item.amount]);
-
     useEffect(() => {
         (async () => {
-            const user: any = await getUser(props.item.userId);
-            setUser(() => user);
+            const user = await getUser(props.userAmount.userId);
+            user && setUser(() => user);
         })();
     }, []);
 
-    if (user == null) {
-        return (
-            <div className="flex flex-row gap-4 items-baseline">
-                <Skeleton variant="circular" animation="wave" style={{ minWidth: "32px", minHeight: "32px" }} />
-                <Skeleton variant="rectangular" animation="wave" width="100%" height={48} />
-            </div>
-        );
+    return (
+        <div className="flex items-end gap-4">
+            <UserIcon label={user?.displayName ?? user?.email} image={user?.photoUrl} />
+            <TransactionFormAmountInput
+                label={user?.displayName ?? user?.email}
+                amount={props.userAmount.amount}
+                updateAmount={updateAmount}
+            />
+        </div>
+    );
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// バリデーションチェック
+//////////////////////////////////////////////////////////////////////////////////////////
+// 入力文字のバリデーション
+const isValidInputString = (amount: string): boolean => {
+    // 入力できるのは0~9の数字だけで、先頭に0は不可
+    return /^[1-9][0-9]*$/.test(amount) || amount === "0";
+};
+
+// 金額のバリデーション
+const isValidAmountRange = (amount: number): boolean => {
+    const MIN = 0;
+    const MAX = 999999999;
+    return amount >= MIN && amount <= MAX;
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// 金額入力フォーム
+//////////////////////////////////////////////////////////////////////////////////////////
+const TransactionFormAmountInput = (props: {
+    label: string | undefined;
+    amount: number;
+    updateAmount: (amount: number) => void;
+}) => {
+    const [displayValue, setDisplayValue] = useState<string>(props.amount.toString());
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const clearDisplayValue = () => {
+        setDisplayValue(() => "");
+        if (inputRef.current) {
+            inputRef.current.value = "";
+        }
+    };
+    
+    const updateDisplayValue = (value: string) => setDisplayValue(() => value);
+
+    const changeAmount = (newValue: string): void => {
+        const amountAsString = newValue;
+        const amountAsNumber = Number(amountAsString);
+
+        // 入力文字のバリデーション
+        if (!isValidInputString(amountAsString)) {
+            clearDisplayValue();
+            props.updateAmount(0);
+            return;
+        }
+
+        // 金額の範囲チェック
+        if (isValidAmountRange(amountAsNumber)) {
+            updateDisplayValue(amountAsString);
+            props.updateAmount(amountAsNumber);
+        }
+    };
+
+    // データ取得中はスケルトン
+    if (props.amount === undefined) {
+        return <Skeleton variant="rectangular" animation="wave" width="100%" height={48} />;
     }
 
     return (
-        <div key={props.item.userId} className="flex items-end gap-4">
-            {/* ユーザーアイコン */}
-            <UserIcon label={user.displayName ?? user.email} image={user.photoUrl} />
-            {/* 入力フォーム */}
-            <TextField
-                inputRef={inputRef}
-                label={`${user.displayName ?? user.email} の支払い額を入力`}
-                variant="standard"
-                className="w-full"
-                type="number"
-                value={value}
-                onChange={changeAmount}
-                InputProps={{
-                    startAdornment: <InputAdornment position="start">¥</InputAdornment>,
-                }}
-            />
-        </div>
+        <TextField
+            inputRef={inputRef}
+            label={props.label ? `${props.label}の支払い額を入力` : "支払い額を入力"}
+            variant="standard"
+            className="w-full"
+            type="number"
+            value={displayValue === "0" ? "" : displayValue}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => changeAmount(e.target.value)}
+            InputProps={{
+                startAdornment: <InputAdornment position="start">¥</InputAdornment>,
+            }}
+        />
+    );
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// 合計表示
+//////////////////////////////////////////////////////////////////////////////////////////
+const TotalAmountIncludedTax = (props: { transactionAmounts: Amount[] }) => {
+    const [totalAmount, setTotalAmount] = useState<number>(0);
+
+    const calcTotalAmountIncludedTax = (amounts: Amount[]) => {
+        return amounts.reduce((sum: any, entry: any) => sum + entry.amount, 0);
+    };
+
+    useEffect(() => {
+        setTotalAmount(() => calcTotalAmountIncludedTax(props.transactionAmounts));
+    }, [props.transactionAmounts]);
+
+    return (
+        <p className="text-gray-500">
+            合計: ¥ {totalAmount} <span className="text-xs">(税込)</span>
+        </p>
     );
 };

@@ -102,7 +102,7 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
                 <TransactionFormCategory />
 
                 {/* 金額入力欄 */}
-                <TransactionFormAmount />
+                <TransactionFormAmount transaction={transaction} setTransaction={setTransaction} />
 
                 {/* 購入内容等の入力フォーム */}
                 <TransactionFormContent />
