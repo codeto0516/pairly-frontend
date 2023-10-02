@@ -63,7 +63,7 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
                     },
                 });
 
-                console.log(res.statusText);
+                console.log(res);
                 
 
                 if (res.statusText === "Unauthorized") {
