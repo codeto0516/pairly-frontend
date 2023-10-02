@@ -63,6 +63,9 @@ const CustomSessionProvider = ({ children }: { children: React.ReactNode }) => {
                     },
                 });
 
+                console.log(res.statusText);
+                
+
                 if (res.statusText === "Unauthorized") {
                     setIsExpired(true);
                     return;
