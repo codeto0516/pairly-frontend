@@ -1,71 +1,98 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import { Dialog as MuiDialog } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useEffect, useState } from "react";
 
-interface Texts {
-    title: string;
-    content: string;
-    execName?: string;
-    cancelName?: string;
-}
-
-interface DialogProps {
+interface BaseDialogProps {
     open: boolean;
-    handleExec: () => void;
-    handleClose: () => void;
-}
-
-interface BaseDialogProps extends DialogProps {
-    texts: Texts;
-}
-
-export const DeleteDialog = (props: DialogProps) => {
-    const texts = {
-        title: "本当に削除してもよろしいでしょうか？",
-        content: "一度削除するとデータを復元できません。",
-        execName: "削除",
+    texts: {
+        title: string;
+        content: string;
+        execName?: string;
+        cancelName?: string;
     };
-
-    const newProps = {
-        ...props,
-        texts,
-    };
-
-    // return <BaseDialog texts={texts} props={props} />;
-    return <BaseDialog {...newProps} />;
-};
-
+    buttons: {
+        buttonName?: string;
+        handler?: () => void;
+    }[];
+}
 const BaseDialog = (props: BaseDialogProps) => {
-    const handleExecClose = () => {
-        props.handleExec();
-        props.handleClose();
-    };
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        setOpen(props.open);
+    }, [props.open]);
 
     return (
         <div>
             <MuiDialog
-                open={props.open}
-                onClose={props.handleClose}
+                open={open}
+                onClose={() => setOpen(false)}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
+                {/* タイトル */}
                 <DialogTitle id="alert-dialog-title">{props.texts.title}</DialogTitle>
+
+                {/* コンテキスト */}
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">{props.texts.content}</DialogContentText>
                 </DialogContent>
+
+                {/* ボタン */}
                 <DialogActions>
-                    <Button onClick={props.handleClose}>
-                        {props.texts.cancelName ? props.texts.cancelName : "キャンセル"}
-                    </Button>
-                    <Button onClick={handleExecClose} autoFocus>
-                        {props.texts.execName ? props.texts.execName : "実行"}
-                    </Button>
+                    {props.buttons.map((button, index) => {
+                        return (
+                            <Button key={index} onClick={button.handler}>
+                                {button.buttonName}
+                            </Button>
+                        );
+                    })}
                 </DialogActions>
             </MuiDialog>
         </div>
     );
+};
+
+interface DialogProps {
+    open: boolean;
+    handleExec: () => void;
+    handleCancel?: () => void;
+}
+export const DeleteDialog = (props: DialogProps) => {
+    const texts = {
+        title: "本当に削除してもよろしいですか？",
+        content: "一度削除するとデータを復元できません。",
+        execName: "削除",
+    };
+
+    const execButton = {
+        buttonName: "削除",
+        handler: props.handleExec,
+    };
+
+    const cancelButton = {
+        buttonName: "キャンセル",
+        handler: props.handleCancel,
+    };
+
+    return <BaseDialog open={props.open} texts={texts} buttons={[execButton, cancelButton]} />;
+};
+
+export const ForceSignOutDialog = (props: DialogProps) => {
+    const texts = {
+        title: "セッションタイムアウト",
+        content: "セッションの有効期限が切れました。再度ログインしてください。",
+        execName: "ログイン画面へ",
+    };
+
+    const execButton = {
+        buttonName: "ログイン画面へ",
+        handler: props.handleExec,
+    };
+
+    return <BaseDialog open={true} texts={texts} buttons={[execButton]} />;
 };

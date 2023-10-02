@@ -72,7 +72,7 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
 
     // 取引の初期値を保持（保存後にフォームを初期化するため）
     const initialTransaction = props.transaction;
-    
+
     // 取引の状態
     const [transaction, setTransaction] = useState(props.transaction);
     const changeTransaction = useCallback((field: string, value: string | number) => {
@@ -246,7 +246,7 @@ const DeleteButton = (props: { transaction: Transaction }) => {
             <Button className="text-sm text-red-500" onClick={() => toggleDialog(true)}>
                 削除する
             </Button>
-            <DeleteDialog open={isDialog} handleExec={handleDelete} handleClose={() => toggleDialog(false)} />
+            <DeleteDialog open={isDialog} handleExec={handleDelete} handleCancel={() => toggleDialog(false)} />
         </div>
     );
 };
