@@ -9,7 +9,7 @@ import { jaJP } from "@mui/x-date-pickers";
 import { useState } from "react";
 import { format } from "date-fns";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import { useTransactionContext } from "./main";
+import { useTransactionContext } from "./TransactionForm";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 本体

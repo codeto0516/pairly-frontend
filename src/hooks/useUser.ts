@@ -1,7 +1,7 @@
 import { useUserData } from "@/src/providers/SessionProvider";
 import urlJoin from "url-join";
 import { useApi } from "./useApi";
-import { User } from "../types/user";
+import { Partner, User } from "../types/user";
 import { converImageToBlob } from "../lib/converImageToBlob";
 
 interface UserApi {
@@ -19,8 +19,8 @@ export const useUser = () => {
     const endPoint = urlJoin(process.env.NEXT_PUBLIC_API_BASE_URL, "users");
     const { currentUser, updateCurrentUser } = useUserData();
 
-    const getUser = async (userId: string) => {
-        if (!currentUser) return false;
+    const getUser = async (userId: string): Promise<User | Partner | undefined> => {
+        if (!currentUser) return undefined;
         if (userId === currentUser.localId) return currentUser;
         if (userId === currentUser.partner?.localId) return currentUser.partner;
 

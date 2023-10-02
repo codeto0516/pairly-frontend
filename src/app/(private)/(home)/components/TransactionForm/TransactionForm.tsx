@@ -72,7 +72,7 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
 
     // 取引の初期値を保持（保存後にフォームを初期化するため）
     const initialTransaction = props.transaction;
-
+    
     // 取引の状態
     const [transaction, setTransaction] = useState(props.transaction);
     const changeTransaction = useCallback((field: string, value: string | number) => {
@@ -102,7 +102,7 @@ export const TransactionForm = (props: { transaction: Transaction; toggleModal?:
                 <TransactionFormCategory />
 
                 {/* 金額入力欄 */}
-                <TransactionFormAmount />
+                <TransactionFormAmount transaction={transaction} setTransaction={setTransaction} />
 
                 {/* 購入内容等の入力フォーム */}
                 <TransactionFormContent />
