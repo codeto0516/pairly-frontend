@@ -1,6 +1,7 @@
 "use client";
-import { Tooltip } from "@mui/material";
+import { Skeleton, Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
+import { Suspense } from "react";
 
 interface UserIconProps {
     label?: string | null;
@@ -9,10 +10,13 @@ interface UserIconProps {
 }
 
 export const UserIcon = ({ label = "ユーザー", image, size = 32 }: UserIconProps) => {
-
     return (
-        <Tooltip title={label}>
-            <Avatar alt={label ?? ""} src={image ?? ""} sx={{ width: size, height: size }} />
-        </Tooltip>
+        <Suspense
+            fallback={<Skeleton variant="circular" animation="wave" style={{ minWidth: "32px", minHeight: "32px" }} />}
+        >
+            <Tooltip title={label}>
+                <Avatar alt={label ?? ""} src={image ?? ""} sx={{ width: size, height: size }} />
+            </Tooltip>
+        </Suspense>
     );
 };

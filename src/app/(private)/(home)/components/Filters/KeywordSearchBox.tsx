@@ -10,8 +10,7 @@ import {
 } from "@mui/icons-material";
 import { Button, IconButton, Collapse, TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { YearMonthSelectorButton } from "./YearMonthSelector";
-import { LoadingButton } from "@mui/lab";
+
 
 export const SearchBox = () => {
     const [accordionIsOpen, setAccordionIdOpen] = useState(false);
