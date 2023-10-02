@@ -3,7 +3,6 @@ import { InputAdornment, Skeleton } from "@mui/material";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Amount, Transaction } from "../../types/transaction";
 import { UserIcon } from "@/src/components/dataDisplay/UsersIcon";
-import { useTransactionContext } from "./TransactionForm";
 import { useUser } from "@/src/hooks/useUser";
 import { Partner, User } from "@/src/types/user";
 

@@ -1,5 +1,3 @@
-import { useRecoilState, useRecoilValue } from "recoil";
-import { perPageSelector, totalSelector } from "../../stores/transactionListParams";
 import { SelectorButton } from "@/src/components/inputs/select/SelectorButton";
 
 interface PerPageSelectorProps {

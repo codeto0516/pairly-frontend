@@ -2,7 +2,7 @@
 
 import { Skeleton } from "@mui/material";
 import { Transaction } from "../../types/transaction";
-import { TransactionGroupByDate, groupByDate } from "../../../../../lib/groupByDate";
+import { TransactionGroupByDate } from "../../../../../lib/groupByDate";
 import { TransactionListItem } from "./ListItem";
 
 //////////////////////////////////////////////////////////////////////////////////////////
