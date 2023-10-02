@@ -5,7 +5,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { SetStateAction, useEffect, useState } from "react";
 import { useCategory } from "@/src/app/(private)/(home)/api/useCategory";
-import { useTransactionContext } from "./main";
+import { useTransactionContext } from "./TransactionForm";
 import { ToggleButton } from "@/src/components/inputs/button/ToggleButton";
 import { useUpdateEffect } from "@/src/hooks/useUpdateEffect";
 
