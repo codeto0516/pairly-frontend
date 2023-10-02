@@ -3,7 +3,7 @@ import { InputAdornment, Skeleton } from "@mui/material";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Amount, Transaction } from "../../types/transaction";
 import { UserIcon } from "@/src/components/dataDisplay/UsersIcon";
-import { useTransactionContext } from "./main";
+import { useTransactionContext } from "./TransactionForm";
 import { useUser } from "@/src/hooks/useUser";
 import { Partner, User } from "@/src/types/user";
 
@@ -103,7 +103,7 @@ const TransactionFormAmountInput = (props: {
             inputRef.current.value = "";
         }
     };
-    
+
     const updateDisplayValue = (value: string) => setDisplayValue(() => value);
 
     const changeAmount = (newValue: string): void => {
@@ -123,6 +123,10 @@ const TransactionFormAmountInput = (props: {
             props.updateAmount(amountAsNumber);
         }
     };
+
+    useEffect(() => { 
+        changeAmount(props.amount.toString());
+    }, [props.amount]);
 
     // データ取得中はスケルトン
     if (props.amount === undefined) {
